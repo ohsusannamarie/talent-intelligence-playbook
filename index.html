@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talent Intelligence Toolkit — Field Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* === DESIGN TOKENS === */
+  :root {
+    --paper:       #F4F0E6;
+    --paper-soft:  #EAE4D4;
+    --paper-deep:  #DDD4BD;
+    --ink:         #1B212C;
+    --ink-soft:    #2A3140;
+    --ink-muted:   #4A5260;
+    --teal:        #0F6E56;
+    --teal-light:  #E6F2EE;
+    --amber:       #BA7517;
+    --amber-light: #F8EDD6;
+    --rust:        #A23A1D;
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body:    'Inter', system-ui, sans-serif;
+    --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  }
+
+  /* === RESET === */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === MASTHEAD === */
+  .masthead {
+    background: var(--ink);
+    border-bottom: 3px solid var(--amber);
+    padding: 40px 32px 36px;
+  }
+
+  .masthead-inner {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .crumb {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .crumb a {
+    color: var(--amber);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+  }
+
+  .crumb a:hover { opacity: 1; }
+  .crumb span { opacity: 0.4; margin: 0 6px; }
+
+  .masthead h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: -0.01em;
+    color: #F4F0E6;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+
+  .masthead-lede {
+    font-size: 17px;
+    font-weight: 300;
+    color: rgba(244, 240, 230, 0.72);
+    max-width: 600px;
+    line-height: 1.55;
+    margin-bottom: 24px;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(244, 240, 230, 0.6);
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .tag.accent { background: rgba(15, 110, 86, 0.25); color: #6ABFA4; border-color: rgba(15,110,86,0.4); }
+
+  /* === MODE EXPLAINER === */
+  .mode-bar {
+    background: var(--ink-soft);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 0 32px;
+  }
+
+  .mode-bar-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+  }
+
+  .mode-tab {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(244, 240, 230, 0.4);
+    padding: 14px 20px 12px;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: default;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .mode-tab .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.5;
+  }
+
+  .mode-tab.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  .mode-tab.active .dot { opacity: 1; background: var(--teal); }
+
+  .mode-tab:not(.active):hover { color: rgba(244, 240, 230, 0.65); }
+
+  /* === MAIN LAYOUT === */
+  .main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+  }
+
+  /* === SECTION LABEL === */
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: var(--teal);
+    flex-shrink: 0;
+  }
+
+  /* === HOW TO USE === */
+  .how-to-use {
+    background: var(--paper-deep);
+    border-radius: 3px;
+    padding: 28px 32px;
+    margin-bottom: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+  }
+
+  .how-block h3 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 8px;
+  }
+
+  .how-block p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .how-block strong { font-weight: 600; color: var(--ink); }
+
+  /* === TASK FILTER === */
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+    align-items: center;
+  }
+
+  .filter-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 6px 13px;
+    border-radius: 2px;
+    border: 1px solid var(--paper-deep);
+    background: var(--paper-soft);
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+    background: var(--teal-light);
+  }
+
+  .filter-btn.active {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal);
+  }
+
+  /* === GUIDE GRID === */
+  .guide-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 56px;
+  }
+
+  .guide-card {
+    background: var(--paper-soft);
+    border-radius: 3px;
+    border: 1px solid var(--paper-deep);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.15s, transform 0.15s;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .guide-card:hover {
+    box-shadow: 0 4px 20px rgba(27, 33, 44, 0.12);
+    transform: translateY(-2px);
+  }
+
+  .guide-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--teal);
+  }
+
+  .guide-card.tier-flagship::before { background: var(--amber); }
+  .guide-card.tier-tactical::before { background: var(--ink-muted); }
+  .guide-card.coming-soon { opacity: 0.55; pointer-events: none; }
+
+  .guide-card-inner {
+    padding: 22px 24px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .guide-card.tier-flagship .card-eyebrow { color: var(--amber); }
+  .guide-card.tier-tactical .card-eyebrow { color: var(--ink-muted); }
+
+  .card-eyebrow .type-badge {
+    background: var(--teal-light);
+    color: var(--teal);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 9px;
+  }
+
+  .guide-card.tier-flagship .card-eyebrow .type-badge {
+    background: var(--amber-light);
+    color: var(--amber);
+  }
+
+  .guide-card.tier-tactical .card-eyebrow .type-badge {
+    background: var(--paper-deep);
+    color: var(--ink-muted);
+  }
+
+  .card-eyebrow .coming-badge {
+    background: var(--paper-deep);
+    color: var(--ink-muted);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 9px;
+  }
+
+  .guide-card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .guide-card .card-desc {
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    flex: 1;
+    margin-bottom: 18px;
+  }
+
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding-top: 16px;
+    border-top: 1px solid var(--paper-deep);
+  }
+
+  .meta-tag {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    background: var(--paper);
+    border: 1px solid var(--paper-deep);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  .card-cta {
+    margin-top: 18px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--teal);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .card-cta::after {
+    content: '→';
+    transition: transform 0.15s;
+  }
+
+  .guide-card:hover .card-cta::after { transform: translateX(3px); }
+
+  /* === FLAGSHIP FEATURE CARD === */
+  .flagship-card {
+    grid-column: 1 / -1;
+    background: var(--ink);
+    border: none;
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+
+  .flagship-card:hover {
+    box-shadow: 0 6px 28px rgba(27, 33, 44, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .flagship-card::before { display: none; }
+
+  .flagship-stripe {
+    height: 3px;
+    background: var(--amber);
+    width: 100%;
+  }
+
+  .flagship-inner {
+    padding: 28px 32px 28px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .flagship-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+
+  .flagship-card h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    color: #F4F0E6;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .flagship-desc {
+    font-size: 14px;
+    color: rgba(244, 240, 230, 0.6);
+    line-height: 1.55;
+    max-width: 560px;
+  }
+
+  .flagship-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 140px;
+    padding-top: 4px;
+  }
+
+  .flagship-stat {
+    text-align: right;
+  }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 24px;
+    color: #F4F0E6;
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: rgba(244, 240, 230, 0.4);
+    text-transform: uppercase;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .flagship-footer {
+    padding: 14px 32px 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .flagship-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .flagship-tags .meta-tag {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.1);
+    color: rgba(244, 240, 230, 0.45);
+  }
+
+  .flagship-cta {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--amber);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .flagship-cta::after {
+    content: '→';
+    transition: transform 0.15s;
+  }
+
+  .flagship-card:hover .flagship-cta::after { transform: translateX(3px); }
+
+  /* === DIVIDER SECTION === */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 44px 0 28px;
+  }
+
+  .section-divider .divider-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--paper-deep);
+  }
+
+  /* === STEP MODULES SECTION === */
+  .step-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .step-card {
+    background: var(--paper-soft);
+    border: 1px solid var(--paper-deep);
+    border-radius: 3px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: border-color 0.12s, box-shadow 0.12s;
+  }
+
+  .step-card:hover {
+    border-color: var(--teal);
+    box-shadow: 0 2px 10px rgba(15, 110, 86, 0.1);
+  }
+
+  .step-card.coming-soon {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .step-num {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--amber);
+    text-transform: uppercase;
+  }
+
+  .step-card h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .step-card .step-type {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* === DECISION TABLE === */
+  .decision-panel {
+    background: var(--paper-deep);
+    border-radius: 3px;
+    padding: 32px;
+    margin-bottom: 48px;
+  }
+
+  .decision-panel h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .decision-panel .panel-sub {
+    font-size: 13.5px;
+    color: var(--ink-muted);
+    margin-bottom: 24px;
+  }
+
+  .decision-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .decision-table th {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--paper);
+  }
+
+  .decision-table td {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    padding: 11px 12px;
+    border-bottom: 1px solid rgba(221, 212, 189, 0.5);
+    vertical-align: top;
+  }
+
+  .decision-table tr:last-child td { border-bottom: none; }
+
+  .decision-table .situation {
+    font-style: italic;
+    color: var(--ink-muted);
+    font-size: 13px;
+  }
+
+  .decision-table .guide-ref {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal);
+    font-style: normal;
+    letter-spacing: 0.04em;
+  }
+
+  .decision-table a {
+    color: var(--teal);
+    text-decoration: none;
+  }
+
+  .decision-table a:hover { text-decoration: underline; }
+
+  /* === FOOTER === */
+  .page-footer {
+    background: var(--ink);
+    padding: 28px 32px;
+    margin-top: 0;
+  }
+
+  .footer-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(244, 240, 230, 0.35);
+    letter-spacing: 0.04em;
+  }
+
+  .footer-right {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(244, 240, 230, 0.25);
+    letter-spacing: 0.04em;
+    text-align: right;
+  }
+
+  /* === FILTER LOGIC === */
+  .guide-card[data-tags] { transition: opacity 0.2s, transform 0.2s; }
+  .guide-card.hidden { display: none; }
+  .flagship-card.hidden { display: none; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 700px) {
+    .masthead, .mode-bar, .main, .page-footer { padding-left: 20px; padding-right: 20px; }
+    .guide-grid { grid-template-columns: 1fr; }
+    .flagship-inner { grid-template-columns: 1fr; }
+    .flagship-stats { flex-direction: row; gap: 20px; }
+    .flagship-stat { text-align: left; }
+    .how-to-use { grid-template-columns: 1fr; }
+    .step-modules-grid { grid-template-columns: 1fr 1fr; }
+    .mode-bar-inner { overflow-x: auto; white-space: nowrap; }
+    .footer-inner { flex-direction: column; gap: 8px; text-align: center; }
+    .footer-right { text-align: center; }
+  }
+
+  /* === DARK MODE === */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:      #14181F;
+      --paper-soft: #1F2530;
+      --paper-deep: #252D3A;
+      --ink-soft:   #C8D0DC;
+      --ink-muted:  #7A8698;
+    }
+    .guide-card { border-color: rgba(255,255,255,0.07); }
+    .decision-table th { border-bottom-color: rgba(255,255,255,0.1); }
+    .decision-table td { border-bottom-color: rgba(255,255,255,0.06); }
+    .meta-tag { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); }
+  }
+
+  /* === REDUCED MOTION === */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; animation: none !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <a href="talent-supply-snapshot-guide.html">TI Playbook</a>
+      <span>/</span>
+      Field Library
+    </div>
+    <h1>Pick your guide.<br>Do the work.</h1>
+    <p class="masthead-lede">
+      Seven operational guides for semiconductor and AI talent intelligence work.
+      Each one is built for a specific task — not a course to study, a tool to use.
+    </p>
+    <div class="tag-row">
+      <span class="tag accent">I'm doing mode</span>
+      <span class="tag">8 guides</span>
+      <span class="tag">Semi / AI examples throughout</span>
+      <span class="tag">Source-grounded</span>
+    </div>
+  </div>
+</header>
+
+<!-- MODE BAR -->
+<nav class="mode-bar" aria-label="Playbook modes">
+  <div class="mode-bar-inner">
+    <a href="talent-supply-snapshot-guide.html" class="mode-tab">
+      <span class="dot"></span>
+      I'm learning
+    </a>
+    <span class="mode-tab active">
+      <span class="dot"></span>
+      I'm doing
+    </span>
+    <span class="mode-tab">
+      <span class="dot"></span>
+      I'm selling
+      <span style="font-size:9px; opacity:0.5; margin-left:4px;">— see 3.x below</span>
+    </span>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HOW TO USE -->
+  <div class="how-to-use" role="note">
+    <div class="how-block">
+      <h3>Pick by task</h3>
+      <p>Each guide answers one question a recruiter or TI analyst actually asks. Don't read around — find the right guide and open it.</p>
+    </div>
+    <div class="how-block">
+      <h3>Work the steps</h3>
+      <p>Every guide has a <strong>7-step workflow</strong>, copyable templates, and guardrails for when AI output needs human review.</p>
+    </div>
+    <div class="how-block">
+      <h3>Cross-reference</h3>
+      <p>Guides link to each other where tasks overlap. Comp benchmarks live in Guide 01, Step 5 — and are reused everywhere else.</p>
+    </div>
+  </div>
+
+  <!-- FILTER ROW -->
+  <div class="filter-row" role="toolbar" aria-label="Filter guides by topic">
+    <span class="filter-label">Filter:</span>
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="supply">Supply</button>
+    <button class="filter-btn" data-filter="comp">Comp</button>
+    <button class="filter-btn" data-filter="competitor">Competitor</button>
+    <button class="filter-btn" data-filter="geo">Geo</button>
+    <button class="filter-btn" data-filter="skills">Skills</button>
+    <button class="filter-btn" data-filter="cadence">Cadence</button>
+    <button class="filter-btn" data-filter="stakeholder">Stakeholder</button>
+  </div>
+
+  <!-- GUIDE CARDS SECTION LABEL -->
+  <div class="section-label">Library guides</div>
+
+  <!-- GUIDE GRID -->
+  <div class="guide-grid" id="guide-grid">
+
+    <!-- FLAGSHIP -->
+    <a href="talent-supply-snapshot-guide.html" class="flagship-card" data-tags="supply comp geo skills cadence" id="flagship-card">
+      <div class="flagship-stripe"></div>
+      <div class="flagship-inner">
+        <div class="flagship-left">
+          <div class="flagship-eyebrow">Guide 01 — Flagship · Library Guide</div>
+          <h3>Pull a talent supply snapshot</h3>
+          <p class="flagship-desc">
+            The starting point for most TI requests. Sizes the real talent pool, maps geographic concentration, reads demand signal, benchmarks comp, and synthesizes a verdict a hiring manager can act on. Works for ASIC, chiplet, RF, MLops, and anything adjacent.
+          </p>
+        </div>
+        <div class="flagship-stats">
+          <div class="flagship-stat">
+            <span class="stat-num">18</span>
+            <span class="stat-label">sections</span>
+          </div>
+          <div class="flagship-stat">
+            <span class="stat-num">8</span>
+            <span class="stat-label">interactive tools</span>
+          </div>
+          <div class="flagship-stat">
+            <span class="stat-num">130KB</span>
+            <span class="stat-label">full guide</span>
+          </div>
+        </div>
+      </div>
+      <div class="flagship-footer">
+        <div class="flagship-tags">
+          <span class="meta-tag">supply sizing</span>
+          <span class="meta-tag">geo concentration</span>
+          <span class="meta-tag">demand signal</span>
+          <span class="meta-tag">comp benchmarks</span>
+          <span class="meta-tag">movability</span>
+          <span class="meta-tag">verdict synthesis</span>
+        </div>
+        <span class="flagship-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- GUIDE 03 -->
+    <a href="library-guide-03-competitor-analysis.html" class="guide-card" data-tags="competitor supply geo">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 03 <span class="type-badge">Library Guide</span></div>
+        <h3>Run a competitor talent analysis</h3>
+        <p class="card-desc">
+          Map where your direct, talent, and aspirational competitors are drawing from. Find the clusters, understand movement patterns, and identify whitespace before a search.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">competitor mapping</span>
+          <span class="meta-tag">talent competitors</span>
+          <span class="meta-tag">flow analysis</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- GUIDE 04 -->
+    <a href="library-guide-04-new-market-mapping.html" class="guide-card" data-tags="geo supply skills">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 04 <span class="type-badge">Library Guide</span></div>
+        <h3>Map a talent pool for a new market</h3>
+        <p class="card-desc">
+          Evaluate a new location for engineering hiring: capability density, policy friction, economic gravity, sovereign constraints. Uses the Five-Lens Framework for semiconductor and AI roles.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">location strategy</span>
+          <span class="meta-tag">five-lens framework</span>
+          <span class="meta-tag">geo expansion</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- GUIDE 05 -->
+    <a href="library-guide-05-skills-based-map.html" class="guide-card" data-tags="skills supply">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 05 <span class="type-badge">Library Guide</span></div>
+        <h3>Build a skills-based talent map</h3>
+        <p class="card-desc">
+          Decompose a role into its skill tree, identify adjacent pools, and find candidates who have the capability without the exact title. Built for chiplet, RF, MLops, and other thin-pool specializations.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">skill decomposition</span>
+          <span class="meta-tag">adjacency mapping</span>
+          <span class="meta-tag">thin pools</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- GUIDE 06 -->
+    <a href="library-guide-06-always-on-cadence.html" class="guide-card" data-tags="cadence competitor supply">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 06 <span class="type-badge">Library Guide</span></div>
+        <h3>Set up an always-on intelligence cadence</h3>
+        <p class="card-desc">
+          Move from reactive lookups to a living intelligence system. Weekly signal monitors, monthly market snapshots, quarterly competitor refreshes. Structured around Culshaw's living-document principle.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">cadence design</span>
+          <span class="meta-tag">signal monitoring</span>
+          <span class="meta-tag">living documents</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- TACTICAL 2.1 -->
+    <a href="tactical-brief-hiring-manager.html" class="guide-card tier-tactical" data-tags="stakeholder comp supply">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 2.1 <span class="type-badge">Tactical Playbook</span></div>
+        <h3>Brief a hiring manager with market data</h3>
+        <p class="card-desc">
+          Convert raw market data into a conversation a hiring manager can act on. Covers tension reframes, timeline anchoring, comp calibration scripts, and the written commit doc that closes the loop.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">stakeholder comms</span>
+          <span class="meta-tag">comp calibration</span>
+          <span class="meta-tag">reframe scripts</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- GUIDE 3.1 -->
+    <a href="library-guide-31-build-vs-buy.html" class="guide-card" data-tags="geo supply stakeholder">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 3.1 <span class="type-badge">Leadership Brief</span></div>
+        <h3>Build vs buy location strategy brief</h3>
+        <p class="card-desc">
+          Frame a location decision for leadership: build local capability, buy it via acqui-hire, partner through a GCC, or relocate. Four pathways, Five-Lens scoring, interactive recommender.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">location strategy</span>
+          <span class="meta-tag">build vs buy</span>
+          <span class="meta-tag">leadership brief</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+    <!-- GUIDE 3.2 -->
+    <a href="library-guide-32-pipeline-health-check.html" class="guide-card" data-tags="cadence supply skills stakeholder">
+      <div class="guide-card-inner">
+        <div class="card-eyebrow">Guide 3.2 <span class="type-badge">Dashboard</span></div>
+        <h3>Talent pipeline health check</h3>
+        <p class="card-desc">
+          A dashboard-format audit of pipeline quality: coverage by role, source concentration, aging, and stage flow. Toggle healthy vs at-risk. Built for quarterly reviews.
+        </p>
+        <div class="card-meta">
+          <span class="meta-tag">pipeline audit</span>
+          <span class="meta-tag">health metrics</span>
+          <span class="meta-tag">dashboard</span>
+        </div>
+        <span class="card-cta">Open guide</span>
+      </div>
+    </a>
+
+  </div><!-- /guide-grid -->
+
+  <!-- STEP MODULES DIVIDER -->
+  <div class="section-divider">
+    <span class="divider-label">Step modules — Guide 01 deep dives</span>
+  </div>
+
+  <div class="section-label">Embedded in Guide 01 · available standalone</div>
+
+  <div class="step-modules-grid">
+    <div class="step-card">
+      <span class="step-num">Step 1</span>
+      <h4>Define the real role</h4>
+      <span class="step-type">Light module</span>
+    </div>
+    <div class="step-card">
+      <span class="step-num">Step 2</span>
+      <h4>Size the pool</h4>
+      <span class="step-type">Shared module</span>
+    </div>
+    <a href="light-map-geo-concentration.html" class="step-card">
+      <span class="step-num">Step 3</span>
+      <h4>Map geo concentration</h4>
+      <span class="step-type">Light module — 26KB standalone</span>
+    </a>
+    <div class="step-card">
+      <span class="step-num">Step 4</span>
+      <h4>Read demand signal</h4>
+      <span class="step-type">Deep dive</span>
+    </div>
+    <div class="step-card">
+      <span class="step-num">Step 5</span>
+      <h4>Benchmark comp</h4>
+      <span class="step-type">Shared module</span>
+    </div>
+    <div class="step-card">
+      <span class="step-num">Step 6</span>
+      <h4>Assess movability</h4>
+      <span class="step-type">Deep dive</span>
+    </div>
+  </div>
+
+  <!-- DECISION TABLE -->
+  <div class="section-divider">
+    <span class="divider-label">Not sure which guide to use?</span>
+  </div>
+
+  <div class="decision-panel">
+    <h2>Pick by situation</h2>
+    <p class="panel-sub">Match your task to the right starting point.</p>
+
+    <table class="decision-table" role="table">
+      <thead>
+        <tr>
+          <th>Your situation</th>
+          <th>Start here</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="situation">"We're opening a req for a chiplet architect — how hard is this hire?"</td>
+          <td><a href="talent-supply-snapshot-guide.html" class="guide-ref">Guide 01 — Supply snapshot</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"Where is Broadcom hiring its RF engineers from and where are they losing them?"</td>
+          <td><a href="library-guide-03-competitor-analysis.html" class="guide-ref">Guide 03 — Competitor analysis</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"Should we hire MLops in Austin or set up a presence in Bangalore?"</td>
+          <td><a href="library-guide-04-new-market-mapping.html" class="guide-ref">Guide 04 — New market mapping</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"There's no one with the exact title — can we find people with the skills?"</td>
+          <td><a href="library-guide-05-skills-based-map.html" class="guide-ref">Guide 05 — Skills-based map</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"I'm spending 3 hours pulling data every time we have a req — how do I systematize this?"</td>
+          <td><a href="library-guide-06-always-on-cadence.html" class="guide-ref">Guide 06 — Always-on cadence</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"The hiring manager keeps rejecting candidates for salary — how do I turn this conversation around?"</td>
+          <td><a href="tactical-brief-hiring-manager.html" class="guide-ref">Guide 2.1 — Hiring manager brief</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"I want to look at geographic concentration for one specific role, fast."</td>
+          <td><a href="light-map-geo-concentration.html" class="guide-ref">Step 3 — Geo concentration map</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"Leadership wants to know: open an eng site in this location, or acquire a team instead?"</td>
+          <td><a href="library-guide-31-build-vs-buy.html" class="guide-ref">Guide 3.1 — Build vs buy</a></td>
+        </tr>
+        <tr>
+          <td class="situation">"It's quarterly review week and I need to show whether the pipeline is actually healthy."</td>
+          <td><a href="library-guide-32-pipeline-health-check.html" class="guide-ref">Guide 3.2 — Pipeline health check</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="footer-inner">
+    <span class="footer-left">Talent Intelligence Toolkit · Field Library · v2.0 · June 2026</span>
+    <span class="footer-right">Grounded in Culshaw (Kogan Page 2022) · Draup · TalentNeuron · Lightcast</span>
+  </div>
+</footer>
+
+<script>
+  // === FILTER LOGIC ===
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const guideCards = document.querySelectorAll('#guide-grid .guide-card[data-tags]');
+  const flagshipCard = document.getElementById('flagship-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      if (filter === 'all') {
+        guideCards.forEach(c => c.classList.remove('hidden'));
+        if (flagshipCard) flagshipCard.classList.remove('hidden');
+        return;
+      }
+
+      // Flagship card
+      if (flagshipCard) {
+        const ftags = flagshipCard.dataset.tags.split(' ');
+        flagshipCard.classList.toggle('hidden', !ftags.includes(filter));
+      }
+
+      guideCards.forEach(card => {
+        const tags = (card.dataset.tags || '').split(' ');
+        card.classList.toggle('hidden', !tags.includes(filter));
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

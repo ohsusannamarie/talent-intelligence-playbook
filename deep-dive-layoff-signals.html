@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive — Reading Layoff &amp; Movability Signals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F0E6;--paper-2:#ECE6D7;--ink:#1B212C;--ink-2:#272E3B;--ink-soft:#3A4250;
+    --teal:#0F6E56;--teal-bright:#1D9E75;--teal-pale:#E1F0E9;
+    --amber:#BA7517;--amber-deep:#854F0B;--amber-pale:#F6EAD4;
+    --rust:#A23A1D;--rust-pale:#F3E4DE;
+    --line:#D8D0BD;--line-soft:#E3DCCB;
+    --text:#23272F;--text-soft:#5C5848;--text-faint:#8A8472;
+    --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px 120px;}
+
+  a{color:var(--teal);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:rgba(15,110,86,0.35);transition:color .12s,text-decoration-color .12s;}
+  a:hover{color:var(--teal-bright);text-decoration-color:var(--teal-bright);}
+
+  .masthead{border-bottom:2px solid var(--ink);padding:48px 0 28px;margin-bottom:40px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-deep);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  .crumb{font-family:var(--mono);font-size:12px;color:var(--text-faint);margin-bottom:8px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.5vw,44px);line-height:1.06;letter-spacing:-0.01em;color:var(--ink);margin-bottom:16px;}
+  .standfirst{font-size:18px;color:var(--text-soft);line-height:1.55;}
+
+  section{margin-bottom:52px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--teal);letter-spacing:0.05em;}
+  .sec-title{font-family:var(--serif);font-weight:500;font-size:23px;color:var(--ink);letter-spacing:-0.01em;}
+  p{margin-bottom:14px;font-size:16px;}
+  p.lead{color:var(--text-soft);}
+
+  .sig-block{margin-bottom:24px;}
+  .sig-label{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .sig-label.hard{color:var(--teal);}
+  .sig-label.soft{color:var(--amber-deep);}
+  .sig-label .pip{width:8px;height:8px;border-radius:50%;}
+  .sig-label.hard .pip{background:var(--teal);}
+  .sig-label.soft .pip{background:var(--amber);}
+  table{width:100%;border-collapse:collapse;font-size:14px;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  thead th{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);text-align:left;padding:10px 14px;background:var(--paper-2);border-bottom:1px solid var(--line);font-weight:500;}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.45;color:var(--ink-soft);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody td:first-child{font-weight:600;color:var(--ink);width:30%;}
+  tbody td .src{font-family:var(--mono);font-size:12px;}
+  tbody td .src a{color:var(--teal);}
+
+  .semi-note{background:var(--ink);color:var(--paper);border-radius:6px;padding:18px 22px;margin-top:20px;}
+  .semi-note .sn-label{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:8px;}
+  .semi-note p{font-size:14px;color:#E8E4D8;margin:0;line-height:1.55;}
+  .semi-note b{color:var(--paper);}
+  .semi-note a{color:var(--teal-bright);text-decoration-color:rgba(29,158,117,0.5);}
+  .semi-note a:hover{color:#83DCBF;text-decoration-color:#83DCBF;}
+
+  .src-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .src-card{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
+  .src-name{font-size:15px;margin-bottom:2px;}
+  .src-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(15,110,86,0.4);}
+  .src-name a:hover{color:var(--teal);}
+  .src-name .ext{font-size:11px;color:var(--text-faint);margin-left:4px;text-decoration:none;}
+  .src-type{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+  .src-good{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .src-good b{color:var(--teal);font-weight:600;}
+
+  .router{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
+  .tool{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--paper-2);border-top:3px solid var(--amber);border-radius:0 0 6px 6px;}
+  .tool-name{font-size:15px;margin-bottom:4px;}
+  .tool-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(186,117,23,0.4);}
+  .tool-name a:hover{color:var(--amber-deep);}
+  .tool-job{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .tool-job b{color:var(--amber-deep);}
+
+  .prompt{background:var(--ink);border-radius:8px;margin-bottom:16px;overflow:hidden;}
+  .prompt-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft);}
+  .prompt-title{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-bright);}
+  .prompt-copy{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:1px solid var(--ink-soft);color:#C9C4B4;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+  .prompt-copy:hover{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .prompt pre{font-family:var(--mono);font-size:13px;line-height:1.6;color:#E2DECF;padding:16px;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+  .prompt pre .tok{color:var(--amber);}
+
+  .tier{display:grid;grid-template-columns:64px 1fr;gap:16px;padding:20px 0;border-bottom:1px solid var(--line-soft);}
+  .tier:last-child{border-bottom:none;}
+  .tier-badge{font-family:var(--mono);font-size:11px;text-align:center;}
+  .tier-badge .lvl{display:block;font-family:var(--serif);font-size:30px;font-weight:500;color:var(--teal);line-height:1;margin-bottom:4px;}
+  .tier-badge .eff{font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-faint);}
+  .tier-title{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .tier-sub{font-size:13px;color:var(--text-faint);font-family:var(--mono);margin-bottom:10px;}
+  .tier-steps{list-style:none;}
+  .tier-steps li{font-size:14px;color:var(--ink-soft);padding:4px 0 4px 18px;position:relative;line-height:1.5;}
+  .tier-steps li::before{content:"›";position:absolute;left:0;color:var(--amber);font-family:var(--mono);}
+  .tier-steps b{color:var(--ink);font-weight:600;}
+
+  .flow{display:flex;align-items:stretch;gap:0;margin:20px 0 8px;flex-wrap:wrap;border:1px solid var(--line);border-radius:6px;overflow:hidden;}
+  .flow-node{flex:1;min-width:120px;padding:14px 16px;border-right:1px solid var(--line);background:var(--paper-2);}
+  .flow-node:last-child{border-right:none;}
+  .flow-stage{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:5px;}
+  .flow-what{font-size:13px;color:var(--ink);font-weight:500;line-height:1.4;}
+
+  .guard{background:var(--rust-pale);border-left:3px solid var(--rust);border-radius:0 6px 6px 0;padding:18px 22px;}
+  .guard-label{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+  .guard-item{font-size:14px;color:var(--ink-soft);padding:6px 0;line-height:1.5;display:flex;gap:10px;}
+  .guard-item .gm{color:var(--rust);font-family:var(--mono);flex-shrink:0;}
+  .guard-item b{color:var(--ink);font-weight:600;}
+
+  @media(max-width:560px){
+    tbody td:first-child{width:auto;}
+    .tier{grid-template-columns:48px 1fr;gap:12px;}
+    .tier-badge .lvl{font-size:24px;}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Field Guide 01 · Deep Dive</div>
+    <div class="crumb">Step 06 — Assess movability › Execution detail</div>
+    <h1>Reading layoff &amp; movability signals</h1>
+    <p class="standfirst">A pool only counts if people will move. This is how you find out — the exact signals, where they live, how to read them with AI, and how to put the whole sweep on autopilot.</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">A</span><span class="sec-title">What a movability signal actually is</span></div>
+    <p class="lead">Two tiers. Hard signals are verifiable and public — they hold up in a leadership room. Soft signals are sentiment and chatter — earlier, noisier, and only trustworthy when they corroborate something hard.</p>
+
+    <div class="sig-block">
+      <div class="sig-label hard"><span class="pip"></span>Hard signals — verifiable, public</div>
+      <table>
+        <thead><tr><th>Signal</th><th>Where it lives</th><th>What it tells you</th></tr></thead>
+        <tbody>
+          <tr><td>WARN Act notices</td><td><span class="src"><a href="https://www.dol.gov/agencies/eta/layoffs/warn" target="_blank" rel="noopener">DOL / state WARN databases</a></span></td><td>US employers (100+ staff) must file 60-day notice for mass layoffs. The most underused signal there is — names the site and headcount.</td></tr>
+          <tr><td>Layoff tracker entries</td><td><span class="src"><a href="https://layoffs.fyi" target="_blank" rel="noopener">layoffs.fyi</a></span></td><td>Company, date, count, % of workforce for tech layoffs. Fast aggregation, good for trend.</td></tr>
+          <tr><td>SEC 8-K filings</td><td><span class="src"><a href="https://www.sec.gov/cgi-bin/srqsb" target="_blank" rel="noopener">SEC EDGAR</a></span></td><td>Public companies disclose material restructuring and RIFs. Dry but authoritative.</td></tr>
+          <tr><td>Earnings-call language</td><td><span class="src">transcripts, IR pages</span></td><td>"Cost discipline," hiring freeze, headcount guidance — leading indicators before formal cuts.</td></tr>
+          <tr><td>Posting-volume drop</td><td><span class="src"><a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast</a> / LinkedIn over time</span></td><td>A sudden fall in a company's active reqs signals a freeze before any announcement.</td></tr>
+          <tr><td>Funding distress</td><td><span class="src"><a href="https://www.crunchbase.com" target="_blank" rel="noopener">Crunchbase</a> / <a href="https://pitchbook.com" target="_blank" rel="noopener">PitchBook</a></span></td><td>Down rounds, bridge rounds, a missed raise — layoffs at startups usually follow within a quarter.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sig-block">
+      <div class="sig-label soft"><span class="pip"></span>Soft signals — sentiment &amp; social</div>
+      <table>
+        <thead><tr><th>Signal</th><th>Where it lives</th><th>What it tells you</th></tr></thead>
+        <tbody>
+          <tr><td>Anonymous employee chatter</td><td><span class="src"><a href="https://www.teamblind.com" target="_blank" rel="noopener">TeamBlind</a></span></td><td>Layoff rumors in tech and semi often surface here first, in company-specific channels. Early but unverified.</td></tr>
+          <tr><td>Community threads</td><td><span class="src"><a href="https://www.reddit.com/r/chipdesign/" target="_blank" rel="noopener">r/chipdesign</a>, <a href="https://www.reddit.com/r/ECE/" target="_blank" rel="noopener">r/ECE</a>, <a href="https://www.reddit.com/r/layoffs/" target="_blank" rel="noopener">r/layoffs</a></span></td><td>Affected-team detail, severance terms, timeline. Mixes real reports with speculation.</td></tr>
+          <tr><td>Review velocity + sentiment</td><td><span class="src"><a href="https://www.glassdoor.com" target="_blank" rel="noopener">Glassdoor</a></span></td><td>A spike in negative reviews, "layoffs" mentions, or falling CEO approval is a morale and movability tell.</td></tr>
+          <tr><td>Open-to-work surge</td><td><span class="src"><a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a></span></td><td>A cluster of #opentowork badges or "impacted" posts among one company's alumni = a wave just happened.</td></tr>
+          <tr><td>Company-specific forums</td><td><span class="src"><a href="https://www.thelayoff.com" target="_blank" rel="noopener">TheLayoff.com</a></span></td><td>Dedicated per-company layoff discussion. Noisy, but sometimes ahead of the news cycle.</td></tr>
+          <tr><td>Comp erosion</td><td><span class="src"><a href="https://www.levels.fyi" target="_blank" rel="noopener">Levels.fyi</a></span></td><td>RSU refresh cuts, downward comp drift, frozen bands — quiet signals that people are getting restless.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="semi-note">
+      <div class="sn-label">Semiconductor-specific layer</div>
+      <p>Semis are cyclical, so movability moves with the industry, not just the company. Watch <b>fab utilization rates</b> and <b>capex cuts</b> in earnings, <b>inventory-correction cycles</b> (<a href="https://www.semi.org" target="_blank" rel="noopener">SEMI</a>, <a href="https://www.digitimes.com" target="_blank" rel="noopener">DigiTimes</a>, <a href="https://www.eetimes.com" target="_blank" rel="noopener">EE Times</a>), and named restructurings (Intel, GlobalFoundries, the memory makers). A downturn can make a normally locked-in analog or process-integration pool suddenly movable across the whole sector at once.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">B</span><span class="sec-title">The source map — where to actually look</span></div>
+    <p class="lead">Free and public first. You can run a credible sweep without spending a dollar; paid tools just make it faster and broader.</p>
+    <div class="src-grid">
+      <div class="src-card"><div class="src-name"><a href="https://layoffs.fyi" target="_blank" rel="noopener">layoffs.fyi <span class="ext">↗</span></a></div><div class="src-type">Free · tracker</div><div class="src-good"><b>Best for:</b> fast trend and confirmation of tech cuts at a named company.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.dol.gov/agencies/eta/layoffs/warn" target="_blank" rel="noopener">WARN databases <span class="ext">↗</span></a></div><div class="src-type">Free · official</div><div class="src-good"><b>Best for:</b> hard, site-level proof of mass layoffs. Search "[state] WARN notices."</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.sec.gov/cgi-bin/srqsb" target="_blank" rel="noopener">SEC EDGAR <span class="ext">↗</span></a></div><div class="src-type">Free · official</div><div class="src-good"><b>Best for:</b> restructuring disclosures from public companies. Search 8-K filings.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.teamblind.com" target="_blank" rel="noopener">TeamBlind <span class="ext">↗</span></a></div><div class="src-type">Free · social</div><div class="src-good"><b>Best for:</b> earliest rumor signal. Treat as a lead, never as proof.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.reddit.com/r/layoffs/" target="_blank" rel="noopener">Reddit <span class="ext">↗</span></a></div><div class="src-type">Free · social</div><div class="src-good"><b>Best for:</b> affected-team and severance detail. Function-specific subs beat general ones.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.glassdoor.com" target="_blank" rel="noopener">Glassdoor <span class="ext">↗</span></a></div><div class="src-type">Free · review</div><div class="src-good"><b>Best for:</b> sentiment trend and morale shift over time.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast</a> / <a href="https://draup.com" target="_blank" rel="noopener">Draup <span class="ext">↗</span></a></div><div class="src-type">Paid · platform</div><div class="src-good"><b>Best for:</b> posting-volume trends and supply movement at scale.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.brandwatch.com" target="_blank" rel="noopener">Brandwatch</a> / <a href="https://www.talkwalker.com" target="_blank" rel="noopener">Talkwalker <span class="ext">↗</span></a></div><div class="src-type">Paid · listening</div><div class="src-good"><b>Best for:</b> social listening across forums at volume, for a real TI function.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">C</span><span class="sec-title">Using AI to read the signal</span></div>
+    <p class="lead">AI does three jobs here: real-time sentiment sweeping, multi-source hard-signal compiling, and synthesizing messy forum threads into clean intelligence. Different jobs want different tools.</p>
+
+    <div class="router">
+      <div class="tool"><div class="tool-name"><a href="https://grok.com" target="_blank" rel="noopener">Grok</a></div><div class="tool-job"><b>Real-time sweep.</b> Live X/Twitter access makes it strong for "what's being said right now" about a company's cuts.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://www.perplexity.ai" target="_blank" rel="noopener">Perplexity</a></div><div class="tool-job"><b>Sourced compile.</b> Aggregates recent news and filings with citations — good for the hard-signal pass.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> / <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a></div><div class="tool-job"><b>Synthesis.</b> Best at turning pasted forum threads into a credibility-rated read.</div></div>
+    </div>
+
+    <div class="prompt">
+      <div class="prompt-bar"><span class="prompt-title">Prompt 1 · Real-time sentiment sweep (Grok)</span><button class="prompt-copy" data-target="p1">Copy</button></div>
+      <pre id="p1">Search X for posts from the last 30 days about <span class="tok">[COMPANY]</span> related to:
+layoffs, restructuring, hiring freeze, RIF, reorg, or team cuts.
+
+Tell me:
+1. Volume of relevant chatter (rough count + trend vs. prior month)
+2. Overall sentiment and whether it's shifting
+3. Any specifics on which teams/functions are affected
+   (I care most about <span class="tok">[RF / analog / silicon design]</span> roles)
+4. Credibility flag: separate apparent-employee posts from
+   outside speculation or news amplification
+
+Be concise. Lead with whether there's a real signal here or just noise.</pre>
+    </div>
+
+    <div class="prompt">
+      <div class="prompt-bar"><span class="prompt-title">Prompt 2 · Hard-signal compile (Perplexity / web search)</span><button class="prompt-copy" data-target="p2">Copy</button></div>
+      <pre id="p2">Compile verifiable layoff and restructuring signals for <span class="tok">[COMPANY]</span>
+from the last 6 months. For each, give source, date, and a one-line summary:
+
+- WARN Act notices (check the relevant state databases)
+- layoffs.fyi entries
+- SEC 8-K filings mentioning restructuring or workforce reduction
+- Earnings-call language on cost reduction, hiring freezes, or headcount
+- Major news coverage of site or fab closures and reorgs
+
+End with: a net read on whether <span class="tok">[COMPANY]</span>'s <span class="tok">[target function]</span>
+talent is becoming more movable, and how confident the public record makes you.</pre>
+    </div>
+
+    <div class="prompt">
+      <div class="prompt-bar"><span class="prompt-title">Prompt 3 · Forum synthesis (paste threads in)</span><button class="prompt-copy" data-target="p3">Copy</button></div>
+      <pre id="p3">Below are forum threads about <span class="tok">[COMPANY]</span> from Blind / Reddit / TheLayoff.
+Analyze them and extract:
+
+1. Specific layoff signals (dates, teams, scale)
+2. Which functions and levels appear affected
+3. Timeline — is this rumor, announced, or already done?
+4. Credibility per claim — rate each on specificity and corroboration
+5. What I should verify against hard sources before acting
+
+Ignore generic venting. I only want signal.
+
+<span class="tok">[PASTE THREADS HERE]</span></pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">D</span><span class="sec-title">How to automate the sweep</span></div>
+    <p class="lead">Three tiers. Start at Tier 1 — it takes thirty minutes a week and covers most of the value. Move up only when monitoring more companies makes the manual version painful.</p>
+
+    <div class="tier">
+      <div class="tier-badge"><span class="lvl">1</span><span class="eff">~30 min / wk</span></div>
+      <div>
+        <div class="tier-title">Manual + AI assist</div>
+        <div class="tier-sub">start here</div>
+        <ul class="tier-steps">
+          <li><b><a href="https://www.google.com/alerts" target="_blank" rel="noopener">Google Alerts</a></b> on "[company] layoffs" and "[company] restructuring"</li>
+          <li>Weekly five-minute check of <a href="https://layoffs.fyi" target="_blank" rel="noopener">layoffs.fyi</a> and the company's <a href="https://www.thelayoff.com" target="_blank" rel="noopener">TheLayoff</a> page</li>
+          <li>A saved <b><a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a> search</b> for target-company alumni flagged #opentowork</li>
+          <li>Run <b>Prompt 2</b> weekly; paste any forum threads into <b>Prompt 3</b></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-badge"><span class="lvl">2</span><span class="eff">~1–2 hr setup</span></div>
+      <div>
+        <div class="tier-title">Semi-automated</div>
+        <div class="tier-sub">scales to ~10–20 companies</div>
+        <ul class="tier-steps">
+          <li>A <b><a href="https://zapier.com" target="_blank" rel="noopener">Zapier</a></b> or <b><a href="https://www.make.com" target="_blank" rel="noopener">Make</a></b> flow: Google Alert RSS → AI summarizer → Google Sheet or Slack</li>
+          <li>One RSS feed aggregating news + layoff trackers per watched company</li>
+          <li>A scheduled AI sweep — same prompt, run on a weekly cadence automatically</li>
+          <li>Output lands in a shared <b>movability watchlist</b> you skim, not rebuild</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-badge"><span class="lvl">3</span><span class="eff">eng support</span></div>
+      <div>
+        <div class="tier-title">Programmatic pipeline</div>
+        <div class="tier-sub">for a real TI function</div>
+        <ul class="tier-steps">
+          <li><b>Web-search / news APIs</b> (<a href="https://tavily.com" target="_blank" rel="noopener">Tavily</a>, <a href="https://exa.ai" target="_blank" rel="noopener">Exa</a>, <a href="https://www.gdeltproject.org" target="_blank" rel="noopener">GDELT</a>, <a href="https://newsapi.org" target="_blank" rel="noopener">NewsAPI</a>) pull on a schedule</li>
+          <li>An AI synthesis layer scores each signal and writes the digest</li>
+          <li>Licensed <b>social listening</b> (<a href="https://www.brandwatch.com" target="_blank" rel="noopener">Brandwatch</a>, <a href="https://www.talkwalker.com" target="_blank" rel="noopener">Talkwalker</a>, <a href="https://www.meltwater.com" target="_blank" rel="noopener">Meltwater</a>) for forum coverage at scale</li>
+          <li>A weekly scored digest auto-delivered to the team — zero manual collection</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="flow">
+      <div class="flow-node"><div class="flow-stage">Trigger</div><div class="flow-what">Alerts, trackers, saved searches</div></div>
+      <div class="flow-node"><div class="flow-stage">Collect</div><div class="flow-what">RSS / search APIs pull sources</div></div>
+      <div class="flow-node"><div class="flow-stage">Synthesize</div><div class="flow-what">AI scores + summarizes</div></div>
+      <div class="flow-node"><div class="flow-stage">Deliver</div><div class="flow-what">Digest to sheet or Slack</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">E</span><span class="sec-title">Guardrails</span></div>
+    <div class="guard">
+      <div class="guard-label">Read before you build the pipeline</div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Respect terms of service.</b> LinkedIn, Glassdoor, and Blind prohibit scraping. Use official APIs, manual review, or licensed listening tools — not rogue scrapers.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Triangulate before you act.</b> Never move on a single forum rumor. A soft signal only earns weight when a hard signal corroborates it.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Company-level, not surveillance.</b> This is about org movability and market conditions, not tracking named individuals. Keep it aggregate.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Date-stamp everything.</b> Movability signals decay fast. A six-week-old layoff read is already stale — note the date on every source.</span></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('.prompt-copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-target'));
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      var t=btn.textContent;btn.textContent='Copied ✓';
+      setTimeout(function(){btn.textContent=t;},1500);
+    });
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive — Building a Comp Benchmark</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F0E6;--paper-2:#ECE6D7;--ink:#1B212C;--ink-2:#272E3B;--ink-soft:#3A4250;
+    --teal:#0F6E56;--teal-bright:#1D9E75;--teal-pale:#E1F0E9;
+    --amber:#BA7517;--amber-deep:#854F0B;--amber-pale:#F6EAD4;
+    --rust:#A23A1D;--rust-pale:#F3E4DE;
+    --line:#D8D0BD;--line-soft:#E3DCCB;
+    --text:#23272F;--text-soft:#5C5848;--text-faint:#8A8472;
+    --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px 120px;}
+
+  a{color:var(--teal);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:rgba(15,110,86,0.35);transition:color .12s,text-decoration-color .12s;}
+  a:hover{color:var(--teal-bright);text-decoration-color:var(--teal-bright);}
+
+  .masthead{border-bottom:2px solid var(--ink);padding:48px 0 28px;margin-bottom:40px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-deep);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  .crumb{font-family:var(--mono);font-size:12px;color:var(--text-faint);margin-bottom:8px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.5vw,44px);line-height:1.06;letter-spacing:-0.01em;color:var(--ink);margin-bottom:16px;}
+  .standfirst{font-size:18px;color:var(--text-soft);line-height:1.55;}
+
+  section{margin-bottom:52px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--teal);letter-spacing:0.05em;}
+  .sec-title{font-family:var(--serif);font-weight:500;font-size:23px;color:var(--ink);letter-spacing:-0.01em;}
+  p{margin-bottom:14px;font-size:16px;}
+  p.lead{color:var(--text-soft);}
+
+  /* comp stack (A) */
+  .stack{display:flex;flex-direction:column;gap:8px;}
+  .layer{display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--paper-2);}
+  .layer-name{font-family:var(--mono);font-size:12px;letter-spacing:0.04em;text-transform:uppercase;font-weight:500;}
+  .layer.base .layer-name{color:var(--teal);}
+  .layer.bonus .layer-name{color:var(--amber-deep);}
+  .layer.equity .layer-name{color:var(--rust);}
+  .layer.signon .layer-name{color:var(--ink-soft);}
+  .layer p{font-size:13px;margin:0;color:var(--ink-soft);line-height:1.5;}
+  .layer p b{color:var(--ink);font-weight:600;}
+  .tc-note{margin-top:14px;background:var(--ink);color:var(--paper);border-radius:6px;padding:16px 20px;}
+  .tc-note .tcl{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:6px;}
+  .tc-note p{font-size:14px;color:#E8E4D8;margin:0;line-height:1.55;}
+  .tc-note b{color:var(--paper);}
+
+  /* sources (B) */
+  .src-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .src-card{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
+  .src-name{font-size:15px;margin-bottom:2px;}
+  .src-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(15,110,86,0.4);}
+  .src-name a:hover{color:var(--teal);}
+  .src-name .ext{font-size:11px;color:var(--text-faint);margin-left:4px;text-decoration:none;}
+  .src-type{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+  .src-good{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .src-good b{color:var(--teal);font-weight:600;}
+
+  /* normalize steps (C) */
+  .nstep{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--line-soft);}
+  .nstep:last-child{border-bottom:none;}
+  .nstep-n{font-family:var(--serif);font-size:28px;font-weight:500;color:var(--amber);line-height:1;}
+  .nstep-t{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:5px;}
+  .nstep-b{font-size:14px;color:var(--text-soft);line-height:1.55;margin-bottom:8px;}
+  .nstep-eg{font-size:13px;background:var(--teal-pale);border-radius:4px;padding:9px 12px;color:var(--teal);line-height:1.5;}
+  .nstep-eg b{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--teal);font-weight:500;}
+
+  /* AI */
+  .router{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
+  .tool{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--paper-2);border-top:3px solid var(--amber);border-radius:0 0 6px 6px;}
+  .tool-name{font-size:15px;margin-bottom:4px;}
+  .tool-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(186,117,23,0.4);}
+  .tool-name a:hover{color:var(--amber-deep);}
+  .tool-job{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .tool-job b{color:var(--amber-deep);}
+
+  .code{background:var(--ink);border-radius:8px;margin-bottom:14px;overflow:hidden;}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft);}
+  .code-title{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-bright);}
+  .code-copy{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:1px solid var(--ink-soft);color:#C9C4B4;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+  .code-copy:hover{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .code pre{font-family:var(--mono);font-size:13px;line-height:1.65;color:#E2DECF;padding:16px;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+  .code pre .tok{color:var(--amber);}
+
+  .guard{background:var(--rust-pale);border-left:3px solid var(--rust);border-radius:0 6px 6px 0;padding:18px 22px;}
+  .guard-label{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+  .guard-item{font-size:14px;color:var(--ink-soft);padding:6px 0;line-height:1.5;display:flex;gap:10px;}
+  .guard-item .gm{color:var(--rust);font-family:var(--mono);flex-shrink:0;}
+  .guard-item b{color:var(--ink);font-weight:600;}
+  .xref{font-size:13px;color:var(--text-faint);font-family:var(--mono);margin-top:8px;}
+
+  @media(max-width:560px){
+    .layer{grid-template-columns:1fr;gap:4px;}
+    .nstep{grid-template-columns:32px 1fr;gap:12px;}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Field Guide 01 · Deep Dive · Shared module</div>
+    <div class="crumb">Step 05 — Pull comp benchmarks › Execution detail · also Library Guide 02</div>
+    <h1>Building a comp benchmark</h1>
+    <p class="standfirst">A pool can be plentiful and still unwinnable if your offer sits two tiers below market. Comp is where feasibility quietly dies — so you read it honestly, in total-comp terms, before anyone makes a promise.</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">A</span><span class="sec-title">Read total comp, not base</span></div>
+    <p class="lead">The single most common comp mistake is comparing base salaries. In semiconductor and AI, the package is the number that matters — and equity is often the biggest piece.</p>
+    <div class="stack">
+      <div class="layer base">
+        <div class="layer-name">Base</div>
+        <p><b>The floor, and the least interesting part.</b> Easy to benchmark, but on its own it badly understates what top talent actually earns.</p>
+      </div>
+      <div class="layer bonus">
+        <div class="layer-name">Bonus</div>
+        <p><b>Target + actual differ.</b> A 15% target paid at 0.7x is a very different number. Always ask which you're looking at.</p>
+      </div>
+      <div class="layer equity">
+        <div class="layer-name">Equity</div>
+        <p><b>Often the largest component</b> for senior IC and AI roles. Public RSUs and private options are not comparable — value and risk differ enormously.</p>
+      </div>
+      <div class="layer signon">
+        <div class="layer-name">Sign-on</div>
+        <p><b>The hidden lever.</b> Used to buy out forfeited equity or close a gap. Frequently the difference-maker in a competitive offer.</p>
+      </div>
+    </div>
+    <div class="tc-note">
+      <div class="tcl">The rule</div>
+      <p>Benchmark in <b>total target compensation</b> — base + target bonus + annualized equity. Comparing anything less makes a competitive offer look generous and a weak one look fine.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">B</span><span class="sec-title">Where to pull comp data</span></div>
+    <p class="lead">No single source is gospel. Triangulate — crowd-sourced for reality, survey for rigor, postings for what's being offered right now.</p>
+    <div class="src-grid">
+      <div class="src-card"><div class="src-name"><a href="https://www.levels.fyi" target="_blank" rel="noopener">Levels.fyi <span class="ext">↗</span></a></div><div class="src-type">Free · crowd-sourced</div><div class="src-good"><b>Best for:</b> total-comp reality at big tech and semis, broken out by level. Strongest for engineering.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.pave.com" target="_blank" rel="noopener">Pave <span class="ext">↗</span></a></div><div class="src-type">Paid · live survey</div><div class="src-good"><b>Best for:</b> real-time benchmarks from participating companies. Strong for startups and growth-stage.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://radford.aon.com" target="_blank" rel="noopener">Radford <span class="ext">↗</span></a></div><div class="src-type">Paid · survey</div><div class="src-good"><b>Best for:</b> the rigorous, board-grade survey comp teams trust for structured banding.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.glassdoor.com" target="_blank" rel="noopener">Glassdoor <span class="ext">↗</span></a></div><div class="src-type">Free · crowd-sourced</div><div class="src-good"><b>Best for:</b> a quick read on companies Levels misses. Noisier — corroborate before trusting.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast <span class="ext">↗</span></a></div><div class="src-type">Paid · postings</div><div class="src-good"><b>Best for:</b> advertised salary ranges from live postings — what's being offered, not just earned.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.bls.gov/oes/" target="_blank" rel="noopener">BLS OEWS <span class="ext">↗</span></a></div><div class="src-type">Free · official</div><div class="src-good"><b>Best for:</b> a macro floor by occupation and metro. Lags the market but anchors the low end.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">C</span><span class="sec-title">Normalize before you compare</span></div>
+    <p class="lead">Raw numbers from three sources aren't comparable until you put them on the same footing. Four adjustments do it.</p>
+
+    <div class="nstep">
+      <div class="nstep-n">1</div>
+      <div>
+        <div class="nstep-t">Level the levels</div>
+        <div class="nstep-b">Map every source to one consistent ladder. A company's "Senior" may be another's "Staff." Anchor to a known scale before comparing anything.</div>
+        <div class="nstep-eg"><b>Example</b>Nvidia Senior (IC4-ish), Apple ICT4, and a startup "Staff Engineer" can all be the same market level — or three different ones. Pin it first.</div>
+      </div>
+    </div>
+
+    <div class="nstep">
+      <div class="nstep-n">2</div>
+      <div>
+        <div class="nstep-t">Adjust for geography</div>
+        <div class="nstep-b">Comp is metro-specific. Bay Area sets the ceiling; Austin, San Diego, and Phoenix run lower. Normalize to your target location, not a national average.</div>
+        <div class="nstep-eg"><b>Example</b>The same analog design level can swing 25-35% between the Bay and a lower-cost semi hub. A national figure misleads in both directions.</div>
+      </div>
+    </div>
+
+    <div class="nstep">
+      <div class="nstep-n">3</div>
+      <div>
+        <div class="nstep-t">Make equity comparable</div>
+        <div class="nstep-b">Annualize equity over the vest, and never equate public RSUs with private options. Note the assumptions — a private 409A is a guess, not a price.</div>
+        <div class="nstep-eg"><b>Example</b>A $400K RSU grant over 4 years = $100K/yr of liquid value. A private option grant of "equivalent" face value is worth far less in hand.</div>
+      </div>
+    </div>
+
+    <div class="nstep">
+      <div class="nstep-n">4</div>
+      <div>
+        <div class="nstep-t">Pick a percentile, on purpose</div>
+        <div class="nstep-b">Decide where you want to compete — median (P50) holds the line; P75 wins scarce talent. State it explicitly so the benchmark has a target, not just a range.</div>
+        <div class="nstep-eg"><b>Example</b>For a tight RF/analog pool, benchmarking to P50 quietly guarantees you lose. Name P75 as the target and price against it.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">D</span><span class="sec-title">Using AI to build the benchmark</span></div>
+    <p class="lead">AI triangulates sources, levels the ladders, and converts a messy pile of numbers into a clean total-comp range with a stated percentile.</p>
+
+    <div class="router">
+      <div class="tool"><div class="tool-name"><a href="https://www.perplexity.ai" target="_blank" rel="noopener">Perplexity</a></div><div class="tool-job"><b>Source gather.</b> Pull recent comp data points for a role and level across sources, with citations.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> / <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a></div><div class="tool-job"><b>Normalize + synthesize.</b> Level the ladders, annualize equity, and produce a clean range at your chosen percentile.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://www.levels.fyi" target="_blank" rel="noopener">Levels.fyi</a> / <a href="https://www.pave.com" target="_blank" rel="noopener">Pave</a></div><div class="tool-job"><b>The hard data.</b> Source the actual numbers here; let AI interpret and assemble, not invent.</div></div>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 1 · Total-comp range from sources</span><button class="code-copy" data-target="p1">Copy</button></div>
+      <pre id="p1">Build a total-comp benchmark for <span class="tok">[role]</span> at the <span class="tok">[level]</span> level
+in <span class="tok">[metro]</span>.
+
+- Pull recent data points from Levels.fyi, Glassdoor, and any live
+  posting ranges you can find; cite each
+- Express everything as total target comp: base + target bonus +
+  annualized equity
+- Give me P25 / P50 / P75
+- Flag where public-RSU vs. private-equity assumptions affect the number
+
+Note your confidence and where the data is thin.</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 2 · Level the ladders</span><button class="code-copy" data-target="p2">Copy</button></div>
+      <pre id="p2">I have comp data from different companies using different level names
+for <span class="tok">[role]</span>: <span class="tok">[paste the titles + numbers]</span>.
+
+Map them all to one consistent market level (junior / mid / senior /
+staff / principal), explain how you matched each, and flag any that are
+ambiguous so I can verify before trusting the comparison.</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 3 · Benchmark vs. the req</span><button class="code-copy" data-target="p3">Copy</button></div>
+      <pre id="p3">The req budgets <span class="tok">[band]</span> for <span class="tok">[role]</span> in <span class="tok">[metro]</span>.
+Market total comp at this level runs <span class="tok">[range]</span>.
+
+Tell me, in plain terms a hiring manager will get:
+1. Where the band sits vs. market (which percentile)
+2. What that means for who we can realistically attract
+3. The smallest change that would make this competitive
+   (lift base, add sign-on, flex location?)</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">E</span><span class="sec-title">Guardrails</span></div>
+    <div class="guard">
+      <div class="guard-label">Before you quote a number</div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Never compare base to base.</b> Total target comp or nothing. Base-only benchmarks have lost more competitive hires than bad sourcing ever has.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Crowd-sourced skews high and senior.</b> Self-reported data over-represents top earners and big tech. Anchor it against a survey source where stakes are high.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Private equity is an assumption, not a price.</b> A 409A valuation is a snapshot, not liquidity. Say so out loud when equity is in the mix.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>You are not giving comp advice.</b> You're reporting the market. Final banding belongs to the comp team — present the benchmark, not a recommendation to pay X.</span></div>
+    </div>
+    <div class="xref">Cross-reference → Step 02 (pool sizing) · Step 04 (demand) · Step 07 (verdict)</div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('.code-copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-target'));
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      var t=btn.textContent;btn.textContent='Copied ✓';
+      setTimeout(function(){btn.textContent=t;},1500);
+    });
+  });
+});
+</script>
+</body>
+</html>

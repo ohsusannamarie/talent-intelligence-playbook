@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 06 — Set Up an Always-On Intelligence Cadence | TI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F0E6;
+  --paper-soft: #EAE4D4;
+  --paper-deep: #DDD4BD;
+  --ink: #1B212C;
+  --ink-soft: #2A3140;
+  --ink-muted: #4A5260;
+  --teal: #0F6E56;
+  --teal-soft: #14876B;
+  --amber: #BA7517;
+  --amber-soft: #D08A28;
+  --rust: #A23A1D;
+  --line: rgba(27,33,44,0.12);
+  --line-strong: rgba(27,33,44,0.22);
+  --shadow: 0 2px 8px rgba(27,33,44,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.container { max-width: 920px; margin: 0 auto; padding: 0 32px; }
+
+/* MASTHEAD */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px 0 40px;
+  border-bottom: 3px solid var(--amber);
+}
+
+.masthead-inner { max-width: 920px; margin: 0 auto; padding: 0 32px; }
+
+.crumb {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 16px; flex-wrap: wrap;
+}
+
+.crumb-sep { opacity: 0.4; }
+.crumb-self { color: var(--paper); }
+
+.masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 44px; line-height: 1.1;
+  letter-spacing: -0.015em; margin-bottom: 16px;
+}
+
+.masthead .lede {
+  font-size: 18px; line-height: 1.55;
+  color: rgba(244,240,230,0.8); max-width: 720px;
+}
+
+.tag-row { margin-top: 22px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid rgba(244,240,230,0.25);
+  border-radius: 2px; color: rgba(244,240,230,0.8);
+}
+
+.tag.accent { background: var(--teal); border-color: var(--teal); color: var(--paper); }
+
+/* TENSION */
+.tension {
+  background: var(--ink); color: var(--paper);
+  padding: 28px 32px; border-radius: 4px;
+  margin: 48px 0 0; border-left: 4px solid var(--rust);
+}
+
+.tension-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--rust); margin-bottom: 10px;
+}
+
+.tension p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400; font-size: 17px; line-height: 1.55;
+  font-style: italic; color: var(--paper); margin: 0;
+}
+
+/* TOC */
+.toc {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 22px 26px;
+  margin: 32px 0 40px;
+}
+
+.toc-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+}
+
+.toc ol {
+  list-style: none; counter-reset: toc;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.toc li {
+  counter-increment: toc;
+  padding: 6px 0 6px 32px; position: relative; font-size: 14px;
+}
+
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute; left: 0; top: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--ink-muted); font-weight: 500;
+}
+
+.toc a {
+  color: var(--ink); text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+
+.toc a:hover { border-bottom-color: var(--teal); color: var(--teal); }
+
+/* MAIN */
+main { padding: 0 0 40px; }
+.section { margin-bottom: 64px; scroll-margin-top: 24px; }
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.section-label::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 1px; background: var(--teal);
+}
+
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 32px; line-height: 1.18;
+  margin-bottom: 22px; letter-spacing: -0.01em;
+}
+
+.section h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 22px; line-height: 1.25;
+  margin: 32px 0 14px;
+}
+
+.section p {
+  font-size: 16px; line-height: 1.7;
+  margin-bottom: 16px; color: var(--ink-soft);
+}
+
+.section p strong { color: var(--ink); font-weight: 600; }
+.section .preamble { font-size: 17px; margin-bottom: 28px; }
+
+/* SCENARIO + NEED LISTS */
+.scenario-list { list-style: none; }
+
+.scenario-list li {
+  padding: 14px 18px 14px 48px;
+  background: var(--paper-soft);
+  border-radius: 3px; margin-bottom: 10px;
+  position: relative; font-size: 15px; line-height: 1.55;
+  border-left: 2px solid var(--teal);
+}
+
+.scenario-list li::before {
+  content: '→'; position: absolute; left: 18px; top: 14px;
+  color: var(--teal); font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600; font-size: 14px;
+}
+
+.scenario-list strong { color: var(--ink); font-weight: 600; }
+
+.need-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px; margin-top: 8px;
+}
+
+.need-card {
+  background: var(--paper-soft);
+  padding: 16px 18px; border-radius: 3px;
+  border-top: 2px solid var(--amber);
+}
+
+.need-card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 6px; font-weight: 600;
+}
+
+.need-card p {
+  font-size: 14px; line-height: 1.55;
+  margin: 0; color: var(--ink-soft);
+}
+
+/* STEP CARDS */
+.step {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 26px 30px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.step-head {
+  display: flex; align-items: baseline; gap: 18px;
+  margin-bottom: 14px; padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; letter-spacing: 0.1em;
+  color: var(--teal); font-weight: 600; flex-shrink: 0;
+}
+
+.step h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 22px; line-height: 1.25;
+  margin: 0; flex: 1;
+}
+
+.step .step-what {
+  font-size: 15px; line-height: 1.65;
+  color: var(--ink-soft); margin-bottom: 14px;
+}
+
+.step .step-do {
+  background: rgba(27,33,44,0.04);
+  padding: 14px 18px; border-radius: 3px;
+  border-left: 2px solid var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.step .step-do-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 600; margin-bottom: 8px;
+}
+
+.step .step-do ul { list-style: none; margin: 0; }
+
+.step .step-do li {
+  padding: 4px 0 4px 18px; position: relative;
+  font-size: 14px; line-height: 1.55; color: var(--ink-soft);
+}
+
+.step .step-do li::before {
+  content: '·'; position: absolute; left: 4px; top: 4px;
+  color: var(--teal); font-weight: 700; font-size: 18px;
+}
+
+.step .step-example {
+  font-size: 13px; line-height: 1.6;
+  color: var(--ink-muted); font-style: italic; padding-top: 6px;
+}
+
+.step .step-example strong {
+  font-family: 'IBM Plex Mono', monospace; font-style: normal;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 600;
+  display: block; margin-bottom: 2px;
+}
+
+/* WATCH PANEL */
+.watch-panel {
+  background: var(--ink); color: var(--paper);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+
+.watch-head {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(244,240,230,0.18);
+}
+
+.watch-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 8px;
+}
+
+.watch-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 22px; line-height: 1.25;
+  color: var(--paper); margin-bottom: 8px;
+}
+
+.watch-sub {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: rgba(244,240,230,0.6);
+}
+
+.watch-stack {
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+
+.watch-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 18px;
+  background: rgba(244,240,230,0.06);
+  padding: 14px 18px;
+  border-radius: 3px;
+  border-left: 3px solid var(--amber);
+  align-items: start;
+}
+
+.watch-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--amber); font-weight: 600;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+
+.watch-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 17px; line-height: 1.3;
+  color: var(--paper); margin-bottom: 6px;
+}
+
+.watch-what {
+  font-size: 13.5px; line-height: 1.55;
+  color: rgba(244,240,230,0.78);
+  margin-bottom: 6px;
+}
+
+.watch-source {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px; color: rgba(244,240,230,0.55);
+  line-height: 1.5;
+}
+
+.watch-source strong {
+  color: var(--amber); font-weight: 600;
+  font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-block; margin-right: 6px;
+}
+
+.watch-source a {
+  color: var(--amber); text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.watch-source a:hover { border-bottom-style: solid; }
+
+/* CADENCE CALENDAR */
+.cadence {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 26px 28px;
+  margin: 18px 0;
+}
+
+.cadence-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.cadence-head-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 18px;
+}
+
+.cadence-head-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em; color: var(--ink-muted);
+}
+
+.cadence-row {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--line);
+  align-items: start;
+}
+
+.cadence-row:last-child { border-bottom: none; }
+
+.cadence-cycle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px; font-weight: 600;
+  color: var(--teal); letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cadence-content h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 17px; line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.cadence-content p {
+  font-size: 14px; line-height: 1.6;
+  color: var(--ink-soft); margin: 0 0 4px;
+}
+
+.cadence-content .cadence-audience {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--ink-muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+
+/* RACI TABLE */
+.raci-table {
+  background: var(--paper-soft);
+  border-radius: 4px; overflow: hidden;
+  border: 1px solid var(--line);
+  margin: 16px 0;
+}
+
+.raci-row {
+  display: grid;
+  grid-template-columns: 2.4fr 1fr 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.raci-row:last-child { border-bottom: none; }
+
+.raci-row.header {
+  background: var(--ink); color: var(--paper);
+}
+
+.raci-row.header > div {
+  padding: 10px 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; font-weight: 600;
+}
+
+.raci-row.header > div:first-child { color: var(--amber); }
+
+.raci-cell {
+  padding: 11px 12px;
+  border-right: 1px dashed var(--line);
+  line-height: 1.4;
+}
+
+.raci-cell:last-child { border-right: none; }
+
+.raci-cell.activity { font-weight: 500; color: var(--ink); }
+.raci-cell.role { text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; }
+
+.raci-r { color: var(--rust); }
+.raci-a { color: var(--amber); }
+.raci-c { color: var(--teal); }
+.raci-i { color: var(--ink-muted); }
+
+/* CULSHAW / QUOTE */
+.culshaw {
+  background: var(--ink); color: var(--paper);
+  padding: 28px 32px; border-radius: 4px;
+  margin: 32px 0;
+}
+
+.culshaw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 12px;
+}
+
+.culshaw p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400; font-size: 18px; line-height: 1.55;
+  font-style: italic; margin-bottom: 14px;
+  color: var(--paper);
+}
+
+.culshaw cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em;
+  font-style: normal; color: rgba(244,240,230,0.65);
+}
+
+.culshaw cite a {
+  color: var(--amber); text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.culshaw cite a:hover { border-bottom-style: solid; }
+
+/* GOOD */
+.good-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px; margin-top: 8px;
+}
+
+.good-card {
+  background: var(--paper-soft);
+  padding: 18px 20px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+}
+
+.good-card-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--teal); font-weight: 600; margin-bottom: 6px;
+}
+
+.good-card h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 16px; line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.good-card p {
+  font-size: 13px; line-height: 1.55;
+  margin: 0; color: var(--ink-soft);
+}
+
+/* MISTAKES */
+.mistakes {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px; padding: 24px 28px;
+}
+
+.mistakes ul { list-style: none; padding: 0; }
+
+.mistakes li {
+  padding: 12px 0 12px 32px; position: relative;
+  font-size: 15px; line-height: 1.6;
+  border-bottom: 1px dashed var(--line);
+}
+
+.mistakes li:last-child { border-bottom: none; }
+
+.mistakes li::before {
+  content: '✕'; position: absolute; left: 0; top: 12px;
+  width: 22px; height: 22px; background: var(--rust);
+  color: var(--paper); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+
+.mistakes strong { font-weight: 600; color: var(--ink); }
+
+/* TEMPLATE */
+.template-card {
+  background: var(--ink); color: var(--paper);
+  border-radius: 4px; overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27,33,44,0.15);
+}
+
+.template-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px;
+  background: rgba(244,240,230,0.06);
+  border-bottom: 1px solid rgba(244,240,230,0.12);
+}
+
+.template-head-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber);
+}
+
+.copy-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: var(--paper);
+  border: 1px solid rgba(244,240,230,0.3);
+  padding: 5px 12px; border-radius: 2px;
+  cursor: pointer; transition: all 0.15s ease;
+}
+
+.copy-btn:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+
+.copy-btn.copied { background: var(--teal); border-color: var(--teal); color: var(--paper); }
+
+.template-body {
+  padding: 24px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px; line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* XREF */
+.xref {
+  margin-top: 48px;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 32px;
+}
+
+.xref-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 16px;
+}
+
+.xref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.xref-card {
+  background: var(--paper-soft);
+  padding: 16px 18px; border-radius: 3px;
+  border-left: 2px solid var(--teal);
+  text-decoration: none; color: var(--ink);
+  transition: background 0.15s ease; display: block;
+}
+
+.xref-card:hover { background: var(--paper-deep); }
+
+.xref-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal); font-weight: 600; margin-bottom: 4px;
+}
+
+.xref-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px; font-weight: 500; line-height: 1.3;
+}
+
+/* LINKS */
+a.src {
+  color: var(--teal); text-decoration: none;
+  border-bottom: 1px solid rgba(15,110,86,0.3);
+}
+
+a.src:hover { border-bottom-color: var(--teal); }
+
+/* FOOTER */
+footer {
+  background: var(--ink); color: rgba(244,240,230,0.6);
+  padding: 28px 0; font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em; text-align: center;
+  margin-top: 60px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 700px) {
+  .container, .masthead-inner { padding: 0 22px; }
+  .masthead h1 { font-size: 30px; }
+  .masthead .lede { font-size: 16px; }
+  .section h2 { font-size: 24px; }
+  .step { padding: 20px 22px; }
+  .step-head { flex-wrap: wrap; gap: 10px; }
+  .step h3 { font-size: 18px; }
+  .culshaw, .watch-panel { padding: 22px; }
+  .culshaw p { font-size: 16px; }
+  .watch-row { grid-template-columns: 1fr; gap: 8px; }
+  .cadence-row { grid-template-columns: 1fr; gap: 6px; }
+  .raci-row { grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr; }
+  .raci-row.header > div, .raci-cell { padding: 8px 6px; font-size: 11px; }
+  .template-body { font-size: 11.5px; padding: 18px; }
+  .xref-grid, .toc ol { grid-template-columns: 1fr; }
+}
+
+/* A11Y */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #14181F; color: #E8E2D2; }
+  .step, .scenario-list li, .need-card, .good-card, .xref-card, .toc, .raci-table, .cadence { background: #1F2530; }
+  .step p, .step-what, .good-card p, .need-card p, .cadence-content p { color: rgba(232,226,210,0.75); }
+  .mistakes { background: #1A1F28; border-color: rgba(232,226,210,0.15); }
+  .mistakes strong { color: #E8E2D2; }
+  .xref-card { color: #E8E2D2; }
+  .xref-card:hover { background: #252C38; }
+  .step .step-do { background: rgba(232,226,210,0.04); }
+  .toc { border-color: rgba(232,226,210,0.15); }
+  .toc a { color: #E8E2D2; }
+  .raci-cell.activity { color: #E8E2D2; }
+}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <span>TI Playbook</span>
+      <span class="crumb-sep">/</span>
+      <span>Library</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-self">Guide 06 of Tier 2 · Operational Playbook</span>
+    </div>
+    <h1>Set up an always-on intelligence cadence</h1>
+    <p class="lede">An operating model for running talent intelligence as a programmatic capability — not a series of heroic projects. Standing watches, living artifacts, briefing rhythms, ownership, and the event triggers that break the cadence when they should. Built for the semi/AI context, where the market shifts in weeks and annual planning misses most of what matters.</p>
+    <div class="tag-row">
+      <span class="tag accent">Tier 2 Operational Playbook</span>
+      <span class="tag">Full Guide</span>
+      <span class="tag">7 Steps</span>
+      <span class="tag">~16 min read</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container">
+
+<!-- TENSION -->
+<div class="tension">
+  <div class="tension-label">The honest problem</div>
+  <p>Most TI functions live in project mode — someone asks, you investigate, you deliver, you move on. The data is fresh on Tuesday and stale by Friday. The questions repeat. The artifacts don't accumulate. By the time you notice the market has shifted, the hire you needed to make six months ago is now an emergency. The cadence is the fix.</p>
+</div>
+
+<!-- TOC -->
+<nav class="toc">
+  <div class="toc-label">Inside this guide</div>
+  <ol>
+    <li><a href="#when">When to set up a cadence</a></li>
+    <li><a href="#need">What you need before starting</a></li>
+    <li><a href="#steps">The 7 steps</a></li>
+    <li><a href="#good">What good looks like</a></li>
+    <li><a href="#mistakes">Common mistakes</a></li>
+    <li><a href="#template">Starter operating-model template</a></li>
+  </ol>
+</nav>
+
+<!-- WHEN -->
+<section class="section" id="when">
+  <div class="section-label">01 &nbsp;·&nbsp; When to Use</div>
+  <h2>When to set up a cadence</h2>
+  <p class="preamble">Cadence work pays off when the same questions keep coming up, when stakeholders complain TI is reactive, or when the market is moving faster than your planning cycle. Run this guide when one of these is true:</p>
+
+  <ul class="scenario-list">
+    <li><strong>You're standing up a new TI function or sub-function.</strong> Build the operating model alongside the first projects — not after. Cadence retrofitted onto a 12-month project history is harder than cadence designed in from the start.</li>
+    <li><strong>Your TI work is all project-based and stakeholders say you're "always reactive."</strong> That's the signal that ad-hoc isn't scaling. Standing watches and standing briefings are the structural answer.</li>
+    <li><strong>A major event surprised you.</strong> A competitor mass layoff, M&A move, big leadership exit, or regulatory shift that should have been on your radar but wasn't. Use the event as the forcing function for the cadence.</li>
+    <li><strong>The same questions keep coming up in projects.</strong> If you've been asked "what are Anthropic and OpenAI paying senior research engineers" three times in a quarter, that's a standing artifact, not a project. Recognize the pattern.</li>
+    <li><strong>You're transitioning from annual to continuous planning.</strong> Workforce planning increasingly operates on monthly or quarterly rhythms (especially in semi/AI). If Finance has moved to continuous visibility, TI lagging on annual cycles is the bottleneck.</li>
+    <li><strong>You just hired a TI lead or analyst.</strong> The first 90 days are the window to install the cadence. Past that, project work absorbs the bandwidth and the operating model never gets built.</li>
+  </ul>
+</section>
+
+<!-- NEED -->
+<section class="section" id="need">
+  <div class="section-label">02 &nbsp;·&nbsp; Inputs</div>
+  <h2>What you need before starting</h2>
+  <p class="preamble">A meaningful cadence is not free. It takes structural commitment from a sponsor, dedicated FTE time, and tooling. Lower than these thresholds and the cadence collapses inside 60 days.</p>
+
+  <div class="need-grid">
+    <div class="need-card">
+      <div class="need-card-label">Executive sponsor</div>
+      <p>Named decision authority — usually a VP of Talent Acquisition, CHRO, or head of People Analytics. The sponsor commits to the briefing rhythm and uses the outputs. Without one, the cadence has no consumer.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Dedicated FTE time</div>
+      <p>0.5 FTE minimum to sustain a meaningful cadence for one function. 1.0 FTE for cross-functional. Less than 0.5 FTE produces a newsletter, not intelligence.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Stakeholder map</div>
+      <p>5–15 named consumers of TI output, with their decision contexts and rhythms. If you can't name them, you can't size the cadence correctly.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Tool stack</div>
+      <p>At minimum: one TI platform (<a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a>, <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a>, <a href="https://draup.com/" target="_blank" rel="noopener" class="src">Draup</a>, <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a>) + alerting + a shared workspace. Spreadsheets-and-email cadences collapse around month 4.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Shared workspace</div>
+      <p>Confluence, Notion, SharePoint — somewhere durable, searchable, and refreshable. Living documents need a living home.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">90-day commitment</div>
+      <p>From sponsor and team. Cadences look fragile in month 1, awkward in month 2, and become routine by month 3. Kill it before 90 days and you'll learn nothing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section class="section" id="steps">
+  <div class="section-label">03 &nbsp;·&nbsp; The Method</div>
+  <h2>The seven steps</h2>
+  <p class="preamble">The order matters. Steps 1–3 design the cadence. Steps 4–5 operationalize it. Steps 6–7 make it durable. The most-skipped step is Step 7 (event triggers) — without it, your cadence is brittle the moment something unexpected happens.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 01</div>
+      <h3>Frame the function around decisions, not deliverables</h3>
+    </div>
+    <p class="step-what">Most TI operating models fail at this step. They start with "what reports should we produce?" The right question is "what decisions does our organization make on what rhythm, and which can TI inform?" Decisions first, deliverables backwards from there.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each stakeholder, capture</div>
+      <ul>
+        <li><strong>What decisions they own</strong> — hiring location, comp band setting, build-vs-buy on a function, role design, workforce plan submission, etc.</li>
+        <li><strong>On what rhythm</strong> — weekly (active reqs), monthly (program-level), quarterly (function-level), annually (workforce plan).</li>
+        <li><strong>What TI input would move the decision</strong> — be specific. "Market context" is not an input. "Comp distribution at L5 for AI inference engineers in Bay Area" is.</li>
+        <li><strong>The decision-maker's tolerance for uncertainty</strong> — some want a recommendation, some want data, some want both. Match the format to the consumer.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> A typical TI function in a mid-size semi company serves: VP TA (weekly hiring health), Director of Eng (monthly function comp/pool briefs), CHRO (quarterly market read), CFO (semi-annual location cost input), CEO (annual workforce plan input). Five stakeholders, five rhythms, five different output formats. The cadence is built backwards from this map.</p>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 02</div>
+      <h3>Pick your standing watches — what you monitor continuously</h3>
+    </div>
+    <p class="step-what">Standing watches are the always-on layer. They run in the background regardless of project load. Pick 4-6 watches that map to your function's decision exposure. Less than 4 and you're not monitoring enough. More than 6 and the signal becomes noise.</p>
+
+    <div class="watch-panel">
+      <div class="watch-head">
+        <div class="watch-label">The standard watch set</div>
+        <div class="watch-title">Five standing watches for semi/AI TI</div>
+        <div class="watch-sub">Adapt to your function · alert thresholds defined per watch · each watch has a named owner</div>
+      </div>
+
+      <div class="watch-stack">
+        <div class="watch-row">
+          <div class="watch-num">Watch 01</div>
+          <div>
+            <div class="watch-name">Layoff and headcount signal</div>
+            <p class="watch-what">Layoffs and major headcount actions at your direct, talent, and aspirational competitors. The signal that opens hiring windows — usually a 4-12 week reactive sourcing opportunity.</p>
+            <div class="watch-source"><strong>Sources</strong> <a href="https://layoffs.fyi/" target="_blank" rel="noopener">Layoffs.fyi</a> · <a href="https://www.warntracker.com/" target="_blank" rel="noopener">WARN notices</a> · earnings call transcripts · LinkedIn employee count tracking</div>
+          </div>
+        </div>
+
+        <div class="watch-row">
+          <div class="watch-num">Watch 02</div>
+          <div>
+            <div class="watch-name">Hiring posting velocity</div>
+            <p class="watch-what">Where competitors are posting, in what volume, for which skill profiles. Leading indicator of where capability is being built and where windows are closing.</p>
+            <div class="watch-source"><strong>Sources</strong> <a href="https://lightcast.io/" target="_blank" rel="noopener">Lightcast</a> · <a href="https://www.talentneuron.com/" target="_blank" rel="noopener">TalentNeuron</a> · <a href="https://draup.com/" target="_blank" rel="noopener">Draup</a> · <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener">LinkedIn Talent Insights</a></div>
+          </div>
+        </div>
+
+        <div class="watch-row">
+          <div class="watch-num">Watch 03</div>
+          <div>
+            <div class="watch-name">Compensation shifts</div>
+            <p class="watch-what">Comp movement at peer companies — especially at the differentiated levels (L5/L6 in the AI engineering market). Catching a peer's $50K equity increase 6 weeks late costs offers.</p>
+            <div class="watch-source"><strong>Sources</strong> <a href="https://www.levels.fyi/" target="_blank" rel="noopener">Levels.fyi</a> · <a href="https://h1bdata.info/" target="_blank" rel="noopener">H1B Data</a> · pay-transparency postings · internal comp survey participation</div>
+          </div>
+        </div>
+
+        <div class="watch-row">
+          <div class="watch-num">Watch 04</div>
+          <div>
+            <div class="watch-name">Leadership and key-engineer movement</div>
+            <p class="watch-what">Distinguished engineers, technical fellows, and senior leadership moves at peer companies. Major moves often precede team-level migration windows of 3-9 months.</p>
+            <div class="watch-source"><strong>Sources</strong> LinkedIn job-change notifications · semi/AI industry press (SemiAnalysis, The Information) · conference speaker rosters · GitHub org activity</div>
+          </div>
+        </div>
+
+        <div class="watch-row">
+          <div class="watch-num">Watch 05</div>
+          <div>
+            <div class="watch-name">Regulatory, policy, and structural shifts</div>
+            <p class="watch-what">Export controls, immigration policy, CHIPS Act allocation changes, EU AI Act updates, state-level pay transparency rollouts. The semi/AI labor market is unusually policy-sensitive.</p>
+            <div class="watch-source"><strong>Sources</strong> US BIS · MPI · EU AI Office · industry policy trackers (SIA, ITI) · law firm policy memos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="step-example"><strong>For each watch, define</strong> the source set, the alert threshold (what events trigger a human review), the owner, and the routing path (who gets notified, in what format, within what window).</p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 03</div>
+      <h3>Define the living-document portfolio</h3>
+    </div>
+    <p class="step-what">Living documents are the continuously refreshed artifacts of the function — battlecards, market maps, skills maps, comp benchmarks. Each has a named owner and a refresh cadence. Without explicit refresh discipline, living documents become misleading documents within 6 months.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each living document, define</div>
+      <ul>
+        <li><strong>The artifact</strong> — battlecard, market map, skills map, comp benchmark, pipeline health dashboard.</li>
+        <li><strong>The owner</strong> — single named person accountable for refresh.</li>
+        <li><strong>The refresh cadence</strong> — monthly, quarterly, semi-annual. Anchored to a calendar date, not "as needed."</li>
+        <li><strong>The refresh triggers</strong> — events that force an out-of-cycle refresh (covered in Step 7).</li>
+        <li><strong>The consumers</strong> — who uses this artifact and when.</li>
+        <li><strong>The decay risk</strong> — how quickly the data goes stale in this domain. Comp at AI labs decays in 90 days. National pool sizing decays in 12 months.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example portfolio</strong> Competitor battlecards (Anthropic, OpenAI, Meta AI, Nvidia Research) — quarterly refresh, monthly event-triggered updates. South Bay analog IC market map — semi-annual refresh. CUDA kernel engineer skills map — semi-annual refresh. Senior AI research engineer comp benchmark — quarterly refresh. Pipeline health dashboard for top 8 reqs — weekly refresh. Five artifacts, five cadences, five owners.</p>
+  </div>
+
+  <!-- CULSHAW QUOTE -->
+  <div class="culshaw">
+    <div class="culshaw-label">Field note · The canonical framing</div>
+    <p>"Always on Intelligence (AoI) is a programmatic approach to talent intelligence where you run permanent campaigns of work (always on) against specific competitor groups. This finds a natural ally with Competitor Intelligence and Market and Marketing Intelligence in particular."</p>
+    <cite>Toby Culshaw, <a href="https://www.koganpage.com/product/talent-intelligence-9781398607422" target="_blank" rel="noopener">Talent Intelligence: Use Business and People Data to Drive Organizational Performance</a> (Kogan Page, 2022), Chapter 5</cite>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 04</div>
+      <h3>Set the briefing rhythm — what gets delivered when</h3>
+    </div>
+    <p class="step-what">The briefing rhythm is the visible cadence — what stakeholders see arrive on their calendar. Done right, it creates predictability. Done wrong, it becomes a newsletter no one reads. The discipline: every briefing has a named decision it supports.</p>
+
+    <div class="cadence">
+      <div class="cadence-head">
+        <div class="cadence-head-title">Default cadence — adapt to your stakeholder map</div>
+        <div class="cadence-head-meta">5 rhythms · 1 owner per</div>
+      </div>
+
+      <div class="cadence-row">
+        <div class="cadence-cycle">Weekly</div>
+        <div class="cadence-content">
+          <h4>Signal scan — events, alerts, and shifts</h4>
+          <p>15-min standup or async note. What moved on the 5 watches. What's worth attention. What's noise. Goes to the TA leadership team plus active req-owning recruiters.</p>
+          <div class="cadence-audience">Audience · TA leadership + active recruiters</div>
+        </div>
+      </div>
+
+      <div class="cadence-row">
+        <div class="cadence-cycle">Monthly</div>
+        <div class="cadence-content">
+          <h4>Function brief — pipeline health + market read</h4>
+          <p>30-min meeting or 1-page doc per function (eg. AI research, ML infra, analog IC). Open reqs, conversion trends, market context that's changed, recommendations.</p>
+          <div class="cadence-audience">Audience · Eng directors + TA leadership</div>
+        </div>
+      </div>
+
+      <div class="cadence-row">
+        <div class="cadence-cycle">Quarterly</div>
+        <div class="cadence-content">
+          <h4>Strategic review — refresh + recommendations</h4>
+          <p>60-min meeting with CHRO and key eng VPs. Living-document portfolio refresh. Top 3 strategic recommendations for next quarter. Battlecard refreshes shipped.</p>
+          <div class="cadence-audience">Audience · CHRO + eng VPs</div>
+        </div>
+      </div>
+
+      <div class="cadence-row">
+        <div class="cadence-cycle">Semi-annual</div>
+        <div class="cadence-content">
+          <h4>Location and workforce input</h4>
+          <p>Strategic input into mid-year workforce planning and location decisions. Five-Lens evaluation of any active or proposed market expansion. Feeds Finance and Strategy.</p>
+          <div class="cadence-audience">Audience · CHRO + CFO + Strategy</div>
+        </div>
+      </div>
+
+      <div class="cadence-row">
+        <div class="cadence-cycle">Annual</div>
+        <div class="cadence-content">
+          <h4>Workforce plan + capability roadmap</h4>
+          <p>Q4 input into the next year's workforce plan. Capability roadmap by function (build / buy / borrow per critical skill). Multi-year talent supply forecast for priority skills.</p>
+          <div class="cadence-audience">Audience · Exec leadership team</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 05</div>
+      <h3>Assign ownership — the RACI for the operating model</h3>
+    </div>
+    <p class="step-what">Without explicit RACI, the cadence collapses around the TI lead. Define who's Responsible (does the work), Accountable (signs off), Consulted (input), Informed (notified) for each major activity. Distribute the load — TI lead as single point of failure is the most common cadence killer.</p>
+
+    <div class="raci-table">
+      <div class="raci-row header">
+        <div>Activity</div>
+        <div>TI Lead</div>
+        <div>Analysts</div>
+        <div>Recruiting Lead</div>
+        <div>Exec Sponsor</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Run standing watches</div>
+        <div class="raci-cell role raci-a">A</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-i">I</div>
+        <div class="raci-cell role raci-i">I</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Weekly signal scan</div>
+        <div class="raci-cell role raci-a">A</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-i">I</div>
+        <div class="raci-cell role raci-i">I</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Monthly function brief</div>
+        <div class="raci-cell role raci-a">A,R</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-i">I</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Refresh living documents</div>
+        <div class="raci-cell role raci-a">A</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-i">I</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Quarterly strategic review</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-a">A</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Event-trigger response</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-a">A</div>
+      </div>
+      <div class="raci-row">
+        <div class="raci-cell activity">Workforce plan input</div>
+        <div class="raci-cell role raci-r">R</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-c">C</div>
+        <div class="raci-cell role raci-a">A</div>
+      </div>
+    </div>
+
+    <p class="step-example"><strong>Key</strong> <span style="color:var(--rust);font-weight:600;">R</span> = Responsible (does it) · <span style="color:var(--amber);font-weight:600;">A</span> = Accountable (owns it) · <span style="color:var(--teal);font-weight:600;">C</span> = Consulted · <span style="color:var(--ink-muted);font-weight:600;">I</span> = Informed. The discipline: every cell has someone in it, and Responsible doesn't always equal Accountable.</p>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 06</div>
+      <h3>Build the tooling stack and automation layer</h3>
+    </div>
+    <p class="step-what">A cadence sustained purely by human effort collapses inside 6 months. Tooling carries the routine — alerts, dashboards, scheduled refreshes, AI-assisted summaries — so humans focus on interpretation and recommendations. Stack the layers deliberately.</p>
+    <div class="step-do">
+      <div class="step-do-label">The minimum viable stack</div>
+      <ul>
+        <li><strong>One TI platform</strong> as the data spine — Lightcast, TalentNeuron, Draup, or LinkedIn Talent Insights. Pick one as primary; supplement with others for specific use cases.</li>
+        <li><strong>Alert layer</strong> — Google Alerts and platform-native alerts for the watches. LinkedIn Sales Navigator or Recruiter for movement signals. Layoffs.fyi RSS for the layoff watch.</li>
+        <li><strong>Shared workspace</strong> — Confluence, Notion, or SharePoint. One canonical home for living documents. Version control, named owner per page, last-refreshed visible.</li>
+        <li><strong>Dashboard layer</strong> — for the standing metrics (pipeline health, posting velocity, comp distribution). Tableau, Looker, Power BI, or the TI platform's native dashboards.</li>
+        <li><strong>AI-assisted summary</strong> — LLM-assisted weekly signal summary, briefing draft, refresh notes. Saves 30-50% of the routine analyst time. Always human-reviewed before publishing.</li>
+        <li><strong>Calendar discipline</strong> — recurring meetings and recurring refresh tasks set in shared calendar. The cadence lives in the calendar, not in someone's head.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>The discipline</strong> Tooling that handles the routine, humans that handle the interpretation. If the cadence requires a hero working weekends to sustain it, the stack is wrong — not the team.</p>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 07</div>
+      <h3>Define event triggers and the escalation path</h3>
+    </div>
+    <p class="step-what">A standing cadence is structured for the predictable. The events that matter most are the ones that break it — and a cadence without defined event triggers becomes brittle the first time the market does something unexpected. Define the triggers up front.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each event type, define the response path</div>
+      <ul>
+        <li><strong>Mass layoff at a key competitor</strong> — sourcing window opens. Trigger: 5%+ of competitor headcount or 100+ affected. Response: 48-hour briefing to TA leadership + sourcing strategy memo within 5 days.</li>
+        <li><strong>M&A announcement involving talent of interest</strong> — integration risk window. Trigger: M&A involving any direct/talent competitor or any company with target skill base. Response: integration-risk briefing within 5 business days + targeted outreach plan.</li>
+        <li><strong>Major leadership exit at peer company</strong> — team migration window. Trigger: technical fellow, distinguished engineer, or function head exit. Response: signal note within 48 hours + ongoing monitoring of team-level moves.</li>
+        <li><strong>Significant comp move</strong> — comp-band review trigger. Trigger: 10%+ comp move at a peer company at a level we hire at. Response: comp brief within 7 days + recommendation on band adjustment.</li>
+        <li><strong>Regulatory shift</strong> — capability or location implication. Trigger: change in export controls, immigration policy, or pay transparency in our footprint. Response: impact analysis within 10 business days.</li>
+        <li><strong>Internal trigger — req sitting open 60+ days</strong> — TI intervention. Trigger: any priority req open 60+ days without offer pipeline. Response: skills decomposition (Guide 5) + market check + recommendation memo within 10 days.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>The discipline</strong> Triggers are pre-committed responses, not pre-committed urgency. The standing cadence doesn't pause for events — it absorbs them. If every event triggers a panic, the structure is wrong.</p>
+  </div>
+</section>
+
+<!-- GOOD -->
+<section class="section" id="good">
+  <div class="section-label">04 &nbsp;·&nbsp; The Standard</div>
+  <h2>What good looks like</h2>
+  <p class="preamble">An always-on cadence that's actually working has six observable features. Miss any and the cadence is either fragile (will collapse) or theatrical (looks busy, doesn't drive decisions).</p>
+
+  <div class="good-grid">
+    <div class="good-card">
+      <div class="good-card-num">01</div>
+      <h4>Predictable rhythm</h4>
+      <p>Stakeholders know what to expect when. The weekly signal scan arrives Monday morning. The monthly brief lands the first Tuesday. The quarterly review is on the calendar a quarter out.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">02</div>
+      <h4>Standing watches that surface real signals</h4>
+      <p>The watches detect events that matter. Layoff signal triggered. Comp shift caught. Leadership exit noted. Signal-to-noise is high enough that consumers actually read the output.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">03</div>
+      <h4>Living documents with last-refreshed visible</h4>
+      <p>Every battlecard, map, and benchmark has a refresh date stamped on it. Stakeholders can see at a glance whether the data is current. Stale docs are flagged or hidden, not silently misleading.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">04</div>
+      <h4>Survives a 2-week vacation</h4>
+      <p>The cadence runs without the TI lead present. Watches are tooled. Refreshes are scheduled. Briefings have backup owners. Single-point-of-failure is the most common cause of cadence collapse.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">05</div>
+      <h4>Event triggers fire when they should</h4>
+      <p>When a major event happens, the response path activates. The 48-hour briefing arrives. The trigger isn't an emergency — it's pre-defined work that gets done on schedule.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">06</div>
+      <h4>Decisions tie back to TI input</h4>
+      <p>The sponsor can name 3-5 decisions in the past quarter where TI cadence shaped the outcome. If they can't, the cadence is producing output but not creating value.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MISTAKES -->
+<section class="section" id="mistakes">
+  <div class="section-label">05 &nbsp;·&nbsp; Pitfalls</div>
+  <h2>Common mistakes</h2>
+
+  <div class="mistakes">
+    <ul>
+      <li><strong>Building the cadence around deliverables, not decisions.</strong> "Let's send a monthly TI newsletter" produces a newsletter no one reads. "Eng directors need a monthly pool/comp read for their staffing decisions" produces a brief they show up for.</li>
+
+      <li><strong>Too many briefings, too many consumers.</strong> A weekly brief to 40 people becomes noise inside two months. Better: a weekly note to 8 active stakeholders and a quarterly broad share to a larger group.</li>
+
+      <li><strong>No refresh discipline on living documents.</strong> Culshaw's living-document principle is non-negotiable in TI. Battlecards without quarterly refresh are misleading by month 5. Always commit the refresh cadence at the time of artifact creation.</li>
+
+      <li><strong>All push, no pull.</strong> If the cadence is only scheduled output, stakeholders can't reach you when they need an on-demand answer. Hold 2-4 hours/week of office hours or async query response time.</li>
+
+      <li><strong>No event triggers.</strong> A cadence that doesn't bend for events ends up being bypassed during the moments that matter most. Pre-define the response paths so they activate without ad-hoc panic.</li>
+
+      <li><strong>TI lead = single point of failure.</strong> If the cadence depends on one person's notebook and one person's relationships, it collapses the first week they're out. Distribute ownership early — even before the team is big enough to make distribution comfortable.</li>
+
+      <li><strong>Tooling bloat without process discipline.</strong> Three TI platforms and four dashboards don't make a cadence. Process discipline does. Pick fewer tools, instrument them well, automate ruthlessly.</li>
+
+      <li><strong>Annual-cycle thinking in a monthly market.</strong> The semi/AI labor market shifts in 6-12 week cycles. If your refresh cadence is annual on the artifacts that matter, you're providing last year's intelligence for this year's decisions.</li>
+
+      <li><strong>Killing the cadence before 90 days.</strong> Cadences look fragile in month 1, awkward in month 2, and only become routine in month 3. Sponsors who pull the plug at week 6 because "it's not landing yet" never see the function mature.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- TEMPLATE -->
+<section class="section" id="template">
+  <div class="section-label">06 &nbsp;·&nbsp; The Deliverable</div>
+  <h2>Starter operating-model template</h2>
+  <p class="preamble">One-page operating model that captures the cadence end-to-end — function statement, stakeholder map, watches, living documents, briefing rhythm, RACI, tool stack, event triggers. Fill it in collaboratively with sponsor in week 1. Refresh it semi-annually.</p>
+
+  <div class="template-card">
+    <div class="template-head">
+      <span class="template-head-label">Template · TI operating model (one-page)</span>
+      <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+    </div>
+    <div class="template-body" id="template-text">═════════════════════════════════════════════════════════════
+TALENT INTELLIGENCE OPERATING MODEL
+═════════════════════════════════════════════════════════════
+Owner:           [TI Lead name]
+Sponsor:         [Exec sponsor name and role]
+Last updated:    [YYYY-MM-DD]
+Refresh cycle:   Semi-annual (next: [YYYY-MM-DD])
+
+─────────────────────────────────────────────────────────────
+01 · FUNCTION STATEMENT
+[2 sentences: what this function does and who it serves]
+
+Primary decisions served:
+  · [Decision 1] — [Owner] — [Cadence]
+  · [Decision 2] — [Owner] — [Cadence]
+  · [Decision 3] — [Owner] — [Cadence]
+
+─────────────────────────────────────────────────────────────
+02 · STAKEHOLDER MAP
+[Name]              [Role]                [Rhythm]      [Format]
+─────────────────────────────────────────────────────────────
+[5-15 named stakeholders with their decision rhythms]
+
+─────────────────────────────────────────────────────────────
+03 · STANDING WATCHES (4-6 watches)
+
+Watch 01: Layoff and headcount signal
+  Sources:           [Named sources]
+  Alert threshold:   [What triggers human review]
+  Owner:             [Named person]
+  Routing path:      [Who gets notified, in what format, when]
+
+Watch 02: Hiring posting velocity
+  [Same structure]
+
+Watch 03: Compensation shifts
+  [Same structure]
+
+Watch 04: Leadership and key-engineer movement
+  [Same structure]
+
+Watch 05: Regulatory and structural shifts
+  [Same structure]
+
+─────────────────────────────────────────────────────────────
+04 · LIVING DOCUMENT PORTFOLIO
+
+Artifact                  Owner       Refresh    Decay risk
+─────────────────────────────────────────────────────────────
+[Battlecard A]            [Name]      Quarterly  Medium
+[Battlecard B]            [Name]      Quarterly  Medium
+[Market map: location 1]  [Name]      Semi-ann   Low
+[Skills map: role 1]      [Name]      Semi-ann   Medium
+[Comp benchmark: role 1]  [Name]      Quarterly  High
+[Pipeline dashboard]      [Name]      Weekly     High
+
+─────────────────────────────────────────────────────────────
+05 · BRIEFING RHYTHM
+
+Cadence       Format         Owner       Audience
+─────────────────────────────────────────────────────────────
+Weekly        Signal scan    [Name]      [TA leadership]
+Monthly       Function brief [Name]      [Eng + TA]
+Quarterly     Strategic rev  [Name]      [CHRO + VPs]
+Semi-annual   Location input [Name]      [CHRO + CFO]
+Annual        WFP input      [Name]      [Exec team]
+
+─────────────────────────────────────────────────────────────
+06 · RACI
+
+Activity                       TI Lead  Analyst  TA Lead  Sponsor
+─────────────────────────────────────────────────────────────
+Run standing watches            A        R        I        I
+Weekly signal scan              A        R        I        I
+Monthly function brief         A,R       C        C        I
+Refresh living documents        A        R        C        I
+Quarterly strategic review      R        C        C        A
+Event-trigger response          R        R        C        A
+Workforce plan input            R        C        C        A
+
+Key: R=Responsible · A=Accountable · C=Consulted · I=Informed
+
+─────────────────────────────────────────────────────────────
+07 · TOOL STACK
+
+Layer              Tool                         Owner
+─────────────────────────────────────────────────────────────
+TI platform        [Lightcast / TN / Draup]     [Name]
+Alerts             [Sources and config]         [Name]
+Workspace          [Confluence / Notion / SP]   [Name]
+Dashboards         [Tableau / Looker / native]  [Name]
+AI summary         [LLM workflow]               [Name]
+Calendar           [Shared recurring slots]     [Name]
+
+─────────────────────────────────────────────────────────────
+08 · EVENT TRIGGERS
+
+Event                            Threshold       Response (window)
+─────────────────────────────────────────────────────────────
+Mass layoff at competitor        5%+ or 100+     Briefing (48h)
+                                                 Sourcing memo (5d)
+M&A involving target company     Any             Integration brief (5d)
+Major leadership exit            Tech fellow+    Signal note (48h)
+Significant comp move            10%+ at level   Comp brief (7d)
+Regulatory shift in footprint    Any material    Impact analysis (10d)
+Req open 60+ days, no offers     60-day mark     Decomposition (10d)
+
+─────────────────────────────────────────────────────────────
+09 · HEALTH METRICS
+
+Metric                           Target          Current
+─────────────────────────────────────────────────────────────
+Briefings shipped on cadence     100%            [%]
+Living docs refreshed on cycle   100%            [%]
+Event-triggered responses on SLA 100%            [%]
+Sponsor-named TI-shaped decisions/Q  ≥ 3         [#]
+Active stakeholder pull requests/Q  ≥ 8         [#]
+
+═════════════════════════════════════════════════════════════
+NEXT REFRESH: [YYYY-MM-DD]
+═════════════════════════════════════════════════════════════</div>
+  </div>
+</section>
+
+<!-- XREF -->
+<section class="xref">
+  <div class="xref-label">↗ Cross-references · feeds the cadence</div>
+  <div class="xref-grid">
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 01</div>
+      <div class="xref-title">Pull a talent supply snapshot</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 02</div>
+      <div class="xref-title">Build a comp benchmark brief</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 03</div>
+      <div class="xref-title">Run a competitor talent analysis</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 04</div>
+      <div class="xref-title">Map a talent pool for a new market</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 05</div>
+      <div class="xref-title">Build a skills-based talent map</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Tactical · Tier 2.1</div>
+      <div class="xref-title">Brief a hiring manager with market data</div>
+    </a>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div>Talent Intelligence Playbook · Library Guide 06 · Set Up an Always-On Intelligence Cadence · v1.0</div>
+</footer>
+
+<script>
+function copyTemplate(btn) {
+  const text = document.getElementById('template-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+  });
+}
+</script>
+
+</body>
+</html>

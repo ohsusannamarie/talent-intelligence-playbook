@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 03 — Map Geo Concentration | TI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F0E6;
+  --paper-soft: #EAE4D4;
+  --paper-deep: #DDD4BD;
+  --ink: #1B212C;
+  --ink-soft: #2A3140;
+  --ink-muted: #4A5260;
+  --teal: #0F6E56;
+  --teal-soft: #14876B;
+  --amber: #BA7517;
+  --amber-soft: #D08A28;
+  --rust: #A23A1D;
+  --line: rgba(27,33,44,0.12);
+  --line-strong: rgba(27,33,44,0.22);
+  --shadow: 0 2px 8px rgba(27,33,44,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ============ MASTHEAD ============ */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 28px 0 32px;
+  border-bottom: 3px solid var(--amber);
+}
+
+.masthead-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 14px;
+}
+
+.crumb-sep { opacity: 0.4; }
+.crumb-self { color: var(--paper); }
+
+.masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 38px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+}
+
+.masthead .lede {
+  font-size: 17px;
+  line-height: 1.55;
+  color: rgba(244,240,230,0.78);
+  max-width: 720px;
+}
+
+.tag-row {
+  margin-top: 18px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(244,240,230,0.25);
+  border-radius: 2px;
+  color: rgba(244,240,230,0.8);
+}
+
+.tag.accent {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+/* ============ MAIN CONTENT ============ */
+main { padding: 56px 0 40px; }
+
+.section {
+  margin-bottom: 56px;
+}
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--teal);
+}
+
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.section .preamble {
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 28px;
+  color: var(--ink-soft);
+}
+
+/* ============ TRAP CARDS ============ */
+.trap {
+  background: var(--paper-soft);
+  border-left: 3px solid var(--rust);
+  border-radius: 0 4px 4px 0;
+  padding: 22px 26px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.trap-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 6px;
+}
+
+.trap h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.trap p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
+}
+
+.trap p:last-child { margin-bottom: 0; }
+
+.trap .example {
+  font-size: 14px;
+  background: rgba(27,33,44,0.04);
+  padding: 12px 16px;
+  border-radius: 3px;
+  margin-top: 12px;
+  border-left: 2px solid var(--ink-muted);
+}
+
+.trap .example strong {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+/* ============ CULSHAW CALLOUT ============ */
+.culshaw {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 28px 32px;
+  border-radius: 4px;
+  margin: 32px 0;
+  position: relative;
+}
+
+.culshaw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+
+.culshaw p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+.culshaw cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  color: rgba(244,240,230,0.65);
+}
+
+.culshaw cite a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.culshaw cite a:hover { border-bottom-style: solid; }
+
+/* ============ QUESTIONS ============ */
+.q-list {
+  list-style: none;
+  counter-reset: q;
+}
+
+.q-list li {
+  counter-increment: q;
+  padding: 18px 22px 18px 64px;
+  background: var(--paper-soft);
+  border-radius: 3px;
+  margin-bottom: 12px;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.q-list li::before {
+  content: counter(q, decimal-leading-zero);
+  position: absolute;
+  left: 22px;
+  top: 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+  letter-spacing: 0.05em;
+}
+
+.q-list .q-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.35;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.q-list .q-why {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+/* ============ PROMPT CARD ============ */
+.prompt-card {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27,33,44,0.15);
+}
+
+.prompt-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: rgba(244,240,230,0.06);
+  border-bottom: 1px solid rgba(244,240,230,0.12);
+}
+
+.prompt-head-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.copy-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(244,240,230,0.3);
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+.copy-btn.copied {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+.prompt-body {
+  padding: 22px 24px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.prompt-tip {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-style: italic;
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+/* ============ GUARDRAILS ============ */
+.guardrails {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 24px 28px;
+}
+
+.guardrails ul {
+  list-style: none;
+  padding: 0;
+}
+
+.guardrails li {
+  padding: 10px 0 10px 30px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.6;
+  border-bottom: 1px dashed var(--line);
+}
+
+.guardrails li:last-child { border-bottom: none; }
+
+.guardrails li::before {
+  content: '!';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 20px;
+  height: 20px;
+  background: var(--rust);
+  color: var(--paper);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.guardrails strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ============ XREF FOOTER ============ */
+.xref {
+  margin-top: 48px;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 32px;
+}
+
+.xref-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+}
+
+.xref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.xref-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s ease;
+}
+
+.xref-card:hover { background: var(--paper-deep); }
+
+.xref-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.xref-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ============ LINKS ============ */
+a.src {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(15,110,86,0.3);
+  transition: border-color 0.15s ease;
+}
+
+a.src:hover { border-bottom-color: var(--teal); }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--ink);
+  color: rgba(244,240,230,0.6);
+  padding: 28px 0;
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 700px) {
+  .container, .masthead-inner { padding: 0 22px; }
+  .masthead h1 { font-size: 28px; }
+  .masthead .lede { font-size: 15px; }
+  .section h2 { font-size: 22px; }
+  .culshaw { padding: 22px; }
+  .culshaw p { font-size: 16px; }
+  .prompt-body { font-size: 12px; padding: 18px; }
+  .xref-grid { grid-template-columns: 1fr; }
+}
+
+/* ============ A11Y ============ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #14181F; color: #E8E2D2; }
+  .trap, .q-list li, .xref-card { background: #1F2530; }
+  .trap p, .q-list .q-why { color: rgba(232,226,210,0.75); }
+  .guardrails { background: #1A1F28; border-color: rgba(232,226,210,0.15); }
+  .guardrails strong { color: #E8E2D2; }
+  .xref-card { color: #E8E2D2; }
+  .xref-card:hover { background: #252C38; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <span>TI Playbook</span>
+      <span class="crumb-sep">/</span>
+      <span>Guide 01 — Talent Supply Snapshot</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-self">Step 03 of 07</span>
+    </div>
+    <h1>Map geo concentration</h1>
+    <p class="lede">A metro's headline talent count is the easy data to pull and the easy data to misread. The recruiter's job is to translate raw density into <em>accessible</em> density — the slice of that pool you can actually reach given your work model, your physical site, your comp position, and the competitor gravity around you.</p>
+    <div class="tag-row">
+      <span class="tag accent">Light Module</span>
+      <span class="tag">A–D Pattern</span>
+      <span class="tag">Step 03 / 07</span>
+      <span class="tag">~6 min read</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container">
+
+<!-- ========== SECTION A: CONCEPT TRAPS ========== -->
+<section class="section" id="concept">
+  <div class="section-label">A &nbsp;·&nbsp; The Concept Traps</div>
+  <h2>Four ways geo data lies to you</h2>
+  <p class="preamble">Every geo concentration question starts the same way: pull a metro count, see a big number, feel good. The four traps below are the most common reasons that big number turns out to be the wrong number — and they're the difference between a snapshot leadership trusts and one that falls apart in the first hiring manager review.</p>
+
+  <div class="trap">
+    <div class="trap-num">Trap 01</div>
+    <h3>Raw headcount ≠ accessible pool</h3>
+    <p>A metro can have thousands of qualified engineers and still be functionally closed. Concentration at one or two large employers, sticky equity grants, recent retention RSU refreshes, or a non-compete-heavy state all shrink the addressable pool well below what platform data reports.</p>
+    <div class="example">
+      <strong>Semi/AI example</strong>
+      San Jose metro shows ~8,000 senior analog IC engineers in <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a>. Backing out concentration at Apple, Qualcomm, Nvidia, and Broadcom — most on multi-year equity vesting cliffs — the actually-movable pool in a typical 12-month window is closer to 800–1,200.
+    </div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-num">Trap 02</div>
+    <h3>Commutable radius is more fragile than it looks</h3>
+    <p>A 30-mile radius from your office looks generous on a map. In practice, a toll road, a tunnel choke point, a missing transit line, or being on the "wrong side" of a metro for the talent you want can cut the real commute pool in half. Site location matters as much as metro selection.</p>
+    <div class="example">
+      <strong>Semi/AI example</strong>
+      RF/mmWave engineers cluster heavily in the South Bay (Sunnyvale, Santa Clara, San Jose). A site in Fremont reads as "Bay Area" on a heat map but loses to every competitor that's 15 minutes closer to where the talent already lives — especially for hybrid roles with 3+ days on-site.
+    </div>
+  </div>
+
+  <div class="culshaw">
+    <div class="culshaw-label">Field note · TI canon</div>
+    <p>"Within a target commutable radius, the total talent demand, supply, cost and market penetration all look good… But what you cannot see is that there is a toll road within that target commutable radius. This radically drops the total addressable candidate market and makes the site non-scalable without considerable efforts."</p>
+    <cite>Toby Culshaw, <a href="https://www.koganpage.com/product/talent-intelligence-9781398607422" target="_blank" rel="noopener">Talent Intelligence</a> (Kogan Page, 2022) — TI Maturity Model</cite>
+  </div>
+
+  <div class="trap">
+    <div class="trap-num">Trap 03</div>
+    <h3>Cluster magnetism cuts both ways</h3>
+    <p>Yes, the cluster has the talent. It also has the comp floor that cluster employers have set, the strongest employer brands, the most aggressive counter-offer playbooks, and the densest competitor poaching networks. Hiring from a deep cluster usually means paying cluster comp and accepting cluster attrition risk.</p>
+    <div class="example">
+      <strong>Semi/AI example</strong>
+      Hiring CUDA / GPU systems engineers from the SF Bay Area means competing against Nvidia, Anthropic, OpenAI, Meta, and Google for the same ~3,000 senior practitioners. Counter-offer rates above 40% are routine; offer-to-accept ratios sit well below the org's national baseline.
+    </div>
+  </div>
+
+  <div class="trap">
+    <div class="trap-num">Trap 04</div>
+    <h3>Mega-hub bias underweights specialized micro-hubs</h3>
+    <p>The default geo answer for semi/AI is Bay Area + Austin + Phoenix. But the most resilient pools often sit in specialized, networked hubs that no one else is fishing in — and where your offer can be the best one on the table rather than the third-best.</p>
+    <div class="example">
+      <strong>Semi/AI example</strong>
+      RF/mmWave has real density in Boulder (Northrop, Anokiwave alumni), Lowell MA (Analog Devices, MACOM), and Raleigh-Durham. Foundry process talent extends well beyond Phoenix into Hillsboro OR, Albuquerque, and Malta NY. AI infra has growing pockets in Pittsburgh (CMU outflow) and Toronto (visa-friendly). The <a href="https://draup.com/" target="_blank" rel="noopener" class="src">Draup</a> and <a href="https://www.weforum.org/" target="_blank" rel="noopener" class="src">WEF</a> 2026 micro-hub thesis is real for these roles.
+    </div>
+  </div>
+</section>
+
+<!-- ========== SECTION B: QUESTIONS ========== -->
+<section class="section" id="questions">
+  <div class="section-label">B &nbsp;·&nbsp; Intake Questions</div>
+  <h2>Four questions before you pull a single map</h2>
+  <p class="preamble">The geo question doesn't start with the geo. It starts with constraints that determine whether geography matters at all — and if so, which slice of it counts. Ask these of the hiring manager and the comp/mobility partner before you open <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a> or <a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a>.</p>
+
+  <ol class="q-list">
+    <li>
+      <span class="q-title">What is the actual work model — and what's the in-office cadence?</span>
+      <span class="q-why">On-site, hybrid (with how many days), or fully remote? This is the master switch. Fully remote turns the geo question into a national or global one. Hybrid 4+ days locks you to a commutable radius. Hybrid 2 days lets you stretch into secondary markets within reasonable flight distance.</span>
+    </li>
+    <li>
+      <span class="q-title">Where exactly is the site — the building, not the metro?</span>
+      <span class="q-why">"Bay Area" and "Austin" are not addresses. The same metro can have a 20-mile difference in accessible talent depending on building location, transit access, parking, school districts, and competitor proximity. Map the site against where the talent actually lives, not where the metro centroid sits.</span>
+    </li>
+    <li>
+      <span class="q-title">Will you fund relocation? Domestic, international, family?</span>
+      <span class="q-why">Relocation budget changes the geo equation more than any other lever. No relo = local pool only. Domestic relo = national pool with friction. International relo + visa support = global pool. Get the policy and budget in writing before sizing anywhere out of region.</span>
+    </li>
+    <li>
+      <span class="q-title">Are we entering an existing cluster, building outside one, or both?</span>
+      <span class="q-why">Cluster entry buys you depth and pays for it in comp pressure and attrition. Building outside a cluster buys you employer-brand leverage and pays for it in pipeline depth. Both have a real strategy behind them. "We don't know" is a tell that the snapshot will need to inform the call, not just answer it.</span>
+    </li>
+  </ol>
+</section>
+
+<!-- ========== SECTION C: AI PROMPT ========== -->
+<section class="section" id="prompt">
+  <div class="section-label">C &nbsp;·&nbsp; The AI Prompt</div>
+  <h2>One prompt to stress-test a geo read</h2>
+  <p class="preamble">Paste this into <a href="https://claude.ai" target="_blank" rel="noopener" class="src">Claude</a>, <a href="https://chatgpt.com" target="_blank" rel="noopener" class="src">ChatGPT</a>, or <a href="https://www.perplexity.ai" target="_blank" rel="noopener" class="src">Perplexity</a>. The point is not to replace your platform data — it's to force a structured second opinion before you walk a map into a hiring manager meeting.</p>
+
+  <div class="prompt-card">
+    <div class="prompt-head">
+      <span class="prompt-head-label">Prompt · geo concentration stress test</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">Copy</button>
+    </div>
+    <div class="prompt-body" id="prompt-text">You are a talent intelligence analyst. I'm sizing the geographic concentration of [ROLE: e.g., senior analog IC design engineer, 8+ yrs] talent in [PRIMARY MARKET: e.g., Phoenix metro], with a [WORK MODEL: e.g., 3-day hybrid] site at [SITE LOCATION: e.g., Chandler AZ]. Relo budget: [LOW / DOMESTIC / GLOBAL].
+
+Give me a structured analysis with five sections:
+
+1. ACCESSIBLE DENSITY READ
+   - Rough order-of-magnitude pool size in the primary market
+   - What % is likely "locked up" at concentrated employers (name them)
+   - What the realistic movable pool looks like in a 12-month window
+   - Flag any obvious commute/site issues for the address given
+
+2. EMPLOYER CONCENTRATION
+   - Top 5–7 employers of this role in the market with rough share
+   - Which ones are on retention cycles, layoffs, or recent equity refreshes
+   - Counter-offer pressure expectations
+
+3. UNIVERSITY + ALUMNI FEEDERS
+   - Top 3–5 universities producing this role within commutable reach
+   - Notable corporate alumni networks worth tapping
+
+4. SECONDARY / TIER-2 MARKETS WITHIN REACH
+   - 3 lower-density markets where this role exists with less competition
+   - Why each one is worth a look (e.g., specific employer pipeline, university, cost-of-living)
+   - What the realistic relo conversion rate would look like
+
+5. CALLOUTS
+   - The single biggest risk in treating this market as "the" answer
+   - One contrarian read I should pressure-test before I brief the hiring manager
+
+Use specific company and place names. Where you're estimating vs. citing, say so. Do not produce filler — if a section has nothing useful, say "insufficient signal" and move on.</div>
+  </div>
+
+  <p class="prompt-tip">Run this twice. First with the LLM cold. Second time after you've pulled actual numbers from <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a>, <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a>, or <a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a>, paste them in, and ask it to revise its read. The delta between the two answers is usually where the most useful conversation is.</p>
+</section>
+
+<!-- ========== SECTION D: GUARDRAILS ========== -->
+<section class="section" id="guardrails">
+  <div class="section-label">D &nbsp;·&nbsp; Guardrails</div>
+  <h2>What can go wrong with this analysis</h2>
+
+  <div class="guardrails">
+    <ul>
+      <li><strong>Metro boundaries vary by source.</strong> <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn</a> uses self-reported regions. <a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a> and the <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener" class="src">BLS OES</a> use MSAs. <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a> blends. Numbers don't reconcile across platforms — anchor on one source per snapshot and footnote the rest.</li>
+
+      <li><strong>Self-reported location is dirty data.</strong> A noticeable share of profiles list a metro the person no longer lives in, especially post-remote. Triangulate against recent job-change locations or skills posts before assuming density.</li>
+
+      <li><strong>Concentration risk is often invisible at the metro level.</strong> A market with 5,000 engineers and 60% at one employer is not a 5,000-engineer market. Always pair the headline number with a top-5 employer share read.</li>
+
+      <li><strong>Visa and mobility friction matter more in 2026.</strong> US visa tightening, UK skilled worker route changes, and growing AI sovereignty rules all change what "accessible" means at the geo level. Check the <a href="https://draup.com/" target="_blank" rel="noopener" class="src">Draup</a> or <a href="https://www.weforum.org/" target="_blank" rel="noopener" class="src">WEF</a> mobility trackers before sizing international relo as a real option.</li>
+
+      <li><strong>The cluster vs. micro-hub call is strategic, not analytical.</strong> Don't try to "solve" it with data. Bring the trade-offs to the hiring manager and the comp/mobility partner as a decision, with the geo data as evidence on both sides.</li>
+
+      <li><strong>Recency.</strong> Layoff activity, M&A, and new-fab announcements shift geo concentration on a 6–12 month cycle. A snapshot older than two quarters is informative, not actionable. Date the file.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== XREF FOOTER ========== -->
+<section class="xref">
+  <div class="xref-label">↗ Cross-references · related modules</div>
+  <div class="xref-grid">
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 02 · Shared module</div>
+      <div class="xref-title">Size the qualified pool</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 04 · Deep dive</div>
+      <div class="xref-title">Check demand signal</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 06 · Deep dive</div>
+      <div class="xref-title">Assess movability</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 04</div>
+      <div class="xref-title">Map a talent pool for a new market</div>
+    </a>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div>Talent Intelligence Playbook · Step 03 of 07 · Map Geo Concentration · v1.0</div>
+</footer>
+
+<script>
+function copyPrompt(btn) {
+  const text = document.getElementById('prompt-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+  });
+}
+</script>
+
+</body>
+</html>

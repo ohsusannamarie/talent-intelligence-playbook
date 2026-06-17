@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive — Sizing the Qualified Pool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F0E6;--paper-2:#ECE6D7;--ink:#1B212C;--ink-2:#272E3B;--ink-soft:#3A4250;
+    --teal:#0F6E56;--teal-bright:#1D9E75;--teal-pale:#E1F0E9;
+    --amber:#BA7517;--amber-deep:#854F0B;--amber-pale:#F6EAD4;
+    --rust:#A23A1D;--rust-pale:#F3E4DE;
+    --purple:#534AB7;--purple-pale:#EEEDFE;
+    --line:#D8D0BD;--line-soft:#E3DCCB;
+    --text:#23272F;--text-soft:#5C5848;--text-faint:#8A8472;
+    --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px 120px;}
+
+  a{color:var(--teal);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:rgba(15,110,86,0.35);transition:color .12s,text-decoration-color .12s;}
+  a:hover{color:var(--teal-bright);text-decoration-color:var(--teal-bright);}
+
+  .masthead{border-bottom:2px solid var(--ink);padding:48px 0 28px;margin-bottom:40px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-deep);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  .crumb{font-family:var(--mono);font-size:12px;color:var(--text-faint);margin-bottom:8px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.5vw,44px);line-height:1.06;letter-spacing:-0.01em;color:var(--ink);margin-bottom:16px;}
+  .standfirst{font-size:18px;color:var(--text-soft);line-height:1.55;}
+
+  section{margin-bottom:52px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--teal);letter-spacing:0.05em;}
+  .sec-title{font-family:var(--serif);font-weight:500;font-size:23px;color:var(--ink);letter-spacing:-0.01em;}
+  p{margin-bottom:14px;font-size:16px;}
+  p.lead{color:var(--text-soft);}
+
+  /* trap cards (A) */
+  .traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;}
+  .trap{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--rust);border-radius:0 6px 6px 0;padding:14px 16px;}
+  .trap-name{font-weight:600;color:var(--ink);font-size:14px;margin-bottom:5px;}
+  .trap p{font-size:13px;margin:0;color:var(--ink-soft);line-height:1.5;}
+  .trap p b{color:var(--rust);font-weight:600;}
+
+  /* compare cards (B) */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+  .cc{border:1px solid var(--line);border-radius:6px;padding:16px 18px;background:var(--paper-2);}
+  .cc.title-based{border-top:3px solid var(--amber);border-radius:0 0 6px 6px;}
+  .cc.skills-based{border-top:3px solid var(--teal);border-radius:0 0 6px 6px;}
+  .cc-name{font-weight:600;color:var(--ink);font-size:15px;margin-bottom:8px;}
+  .cc-line{font-size:13px;color:var(--ink-soft);padding:4px 0;line-height:1.45;display:flex;gap:8px;}
+  .cc-line .pm{font-family:var(--mono);flex-shrink:0;}
+  .cc-line.plus .pm{color:var(--teal);}
+  .cc-line.minus .pm{color:var(--rust);}
+  .hybrid{background:var(--ink);color:var(--paper);border-radius:6px;padding:18px 22px;}
+  .hybrid .h-label{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:8px;}
+  .hybrid p{font-size:14px;color:#E8E4D8;margin:0;line-height:1.55;}
+  .hybrid b{color:var(--paper);}
+  .hybrid a{color:var(--teal-bright);text-decoration-color:rgba(29,158,117,0.5);}
+  .hybrid a:hover{color:#83DCBF;text-decoration-color:#83DCBF;}
+
+  /* boolean anatomy (C) */
+  .anatomy{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 20px;padding:16px;background:var(--paper-2);border:1px solid var(--line);border-radius:6px;font-family:var(--mono);font-size:13px;}
+  .seg{padding:6px 12px;border-radius:4px;font-weight:500;}
+  .seg-title{background:var(--amber-pale);color:var(--amber-deep);}
+  .seg-skill{background:var(--teal-pale);color:var(--teal);}
+  .seg-not{background:var(--rust-pale);color:var(--rust);}
+  .op{color:var(--text-faint);font-weight:500;font-size:12px;}
+  .anatomy-key{font-size:12px;color:var(--text-faint);margin-bottom:20px;line-height:1.5;}
+
+  /* copyable code cards */
+  .code{background:var(--ink);border-radius:8px;margin-bottom:14px;overflow:hidden;}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft);}
+  .code-title{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-bright);}
+  .code-copy{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:1px solid var(--ink-soft);color:#C9C4B4;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+  .code-copy:hover{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .code pre{font-family:var(--mono);font-size:13px;line-height:1.65;color:#E2DECF;padding:16px;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+  .code pre .tok{color:var(--amber);}
+
+  /* AI router */
+  .router{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
+  .tool{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--paper-2);border-top:3px solid var(--amber);border-radius:0 0 6px 6px;}
+  .tool-name{font-size:15px;margin-bottom:4px;}
+  .tool-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(186,117,23,0.4);}
+  .tool-name a:hover{color:var(--amber-deep);}
+  .tool-job{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .tool-job b{color:var(--amber-deep);}
+
+  /* guardrails */
+  .guard{background:var(--rust-pale);border-left:3px solid var(--rust);border-radius:0 6px 6px 0;padding:18px 22px;}
+  .guard-label{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+  .guard-item{font-size:14px;color:var(--ink-soft);padding:6px 0;line-height:1.5;display:flex;gap:10px;}
+  .guard-item .gm{color:var(--rust);font-family:var(--mono);flex-shrink:0;}
+  .guard-item b{color:var(--ink);font-weight:600;}
+
+  /* cross-ref */
+  .xref{font-size:13px;color:var(--text-faint);font-family:var(--mono);margin-top:8px;}
+
+  @media(max-width:560px){
+    .compare{grid-template-columns:1fr;}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Field Guide 01 · Deep Dive · Shared module</div>
+    <div class="crumb">Step 02 — Size the qualified pool › Execution detail</div>
+    <h1>Sizing the qualified pool</h1>
+    <p class="standfirst">Every snapshot starts with a number: how many people actually match. Get the search wrong and you either drown in false positives or shrink a real pool to zero. This is the craft of counting right.</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">A</span><span class="sec-title">Why raw counts lie</span></div>
+    <p class="lead">A pool number is only as good as the search behind it. Four things quietly corrupt the count before you even read it.</p>
+    <div class="traps">
+      <div class="trap">
+        <div class="trap-name">Title sprawl</div>
+        <p>One job hides behind a dozen titles. An <b>analog designer</b> is also "mixed-signal," "AMS," or a company's "Member of Technical Staff." Search one title and you miss most of the pool.</p>
+      </div>
+      <div class="trap">
+        <div class="trap-name">Skills hide</div>
+        <p>The real signal lives in the experience section, not the headline. Someone who designs in Cadence Virtuoso may never put "analog" in their title. <b>Title search alone undercounts.</b></p>
+      </div>
+      <div class="trap">
+        <div class="trap-name">The over-filter</div>
+        <p>ANDing every nice-to-have collapses the pool to a handful. <b>Each extra must-have cuts the count</b> — only AND the 3 to 5 that genuinely gate the job.</p>
+      </div>
+      <div class="trap">
+        <div class="trap-name">The false positive</div>
+        <p>Search too broad and you sweep in students, professors, technicians, and sales engineers. <b>A count without exclusions is inflated</b> and won't survive scrutiny.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">B</span><span class="sec-title">Title-based vs. skills-based</span></div>
+    <p class="lead">Two ways to count. Title-based is fast and wrong at the edges; skills-based is accurate and slower. The pros use both.</p>
+    <div class="compare">
+      <div class="cc title-based">
+        <div class="cc-name">Title-based</div>
+        <div class="cc-line plus"><span class="pm">+</span>Fast, works on any platform</div>
+        <div class="cc-line plus"><span class="pm">+</span>Good enough for a first pass</div>
+        <div class="cc-line minus"><span class="pm">–</span>Misses people whose title hides the skill</div>
+        <div class="cc-line minus"><span class="pm">–</span>Defeated by company-specific titles</div>
+      </div>
+      <div class="cc skills-based">
+        <div class="cc-name">Skills-based</div>
+        <div class="cc-line plus"><span class="pm">+</span>Catches people regardless of title</div>
+        <div class="cc-line plus"><span class="pm">+</span>Far more accurate addressable count</div>
+        <div class="cc-line minus"><span class="pm">–</span>Needs a real skills + synonym taxonomy</div>
+        <div class="cc-line minus"><span class="pm">–</span>Harder to build, slower to run</div>
+      </div>
+    </div>
+    <div class="hybrid">
+      <div class="h-label">The hybrid the pros use</div>
+      <p><b>Anchor on skills, validate with titles.</b> Build the search around the must-have tools and capabilities, then sanity-check the result against expected titles. Labor-market platforms like <a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast</a> and <a href="https://draup.com" target="_blank" rel="noopener">Draup</a> solve title sprawl for you with normalized occupation taxonomies — you search the concept, not the raw text — which is why they often beat a hand-built <a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn</a> string for pure sizing.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">C</span><span class="sec-title">Boolean craft</span></div>
+    <p class="lead">A good string has four blocks. Get the structure right and the rest is just filling in synonyms.</p>
+    <div class="anatomy">
+      <span class="op">(</span><span class="seg seg-title">title OR variants</span><span class="op">)</span>
+      <span class="op">AND</span>
+      <span class="op">(</span><span class="seg seg-skill">must-have OR synonyms</span><span class="op">)</span>
+      <span class="op">AND</span>
+      <span class="op">(</span><span class="seg seg-skill">must-have OR synonyms</span><span class="op">)</span>
+      <span class="op">NOT</span>
+      <span class="op">(</span><span class="seg seg-not">false positives</span><span class="op">)</span>
+    </div>
+    <p class="anatomy-key">OR <em>within</em> a block to widen (catch every variant). AND <em>between</em> blocks to narrow (require each must-have). NOT to clear the noise. Each AND block should be one of your 3 to 5 true must-haves — no more.</p>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Analog / mixed-signal IC designer</span><button class="code-copy" data-target="b1">Copy</button></div>
+      <pre id="b1">("analog design" OR "analog IC" OR "mixed-signal" OR "analog/mixed-signal" OR "AMS design" OR "Member of Technical Staff")
+AND ("Cadence Virtuoso" OR Spectre OR SPICE OR "Verilog-A")
+AND (CMOS OR "circuit design" OR schematic OR layout)
+NOT (intern OR student OR professor OR "teaching assistant" OR sales)</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">GPU / CUDA kernel engineer</span><button class="code-copy" data-target="b2">Copy</button></div>
+      <pre id="b2">("CUDA" OR "GPU kernel" OR GPGPU OR "parallel computing" OR "compute kernel" OR "ML systems")
+AND ("C++" OR Triton OR cuDNN OR ROCm OR "kernel optimization")
+AND ("high performance computing" OR HPC OR "low-level" OR performance)
+NOT (intern OR student OR recruiter OR "game developer")</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">RFIC / mmWave designer</span><button class="code-copy" data-target="b3">Copy</button></div>
+      <pre id="b3">("RFIC" OR "RF IC" OR "RF design" OR mmWave OR "millimeter wave" OR "RF integrated circuit")
+AND (ADS OR HFSS OR "Cadence AWR" OR Spectre OR "Smith chart")
+AND ("5G" OR transceiver OR "power amplifier" OR LNA OR PLL)
+NOT (intern OR student OR "RF technician" OR sales)</pre>
+    </div>
+
+    <p class="anatomy-key"><b style="color:var(--ink)">Platform note.</b> In <a href="https://www.linkedin.com" target="_blank" rel="noopener">LinkedIn Recruiter</a>, push titles and companies into the dedicated filters and keep Boolean for skills — cramming everything into one string fights the native filters. For free searching, a <a href="https://www.google.com" target="_blank" rel="noopener">Google</a> X-ray (<span style="font-family:var(--mono);font-size:12px">site:linkedin.com/in</span> + Boolean) works but has coverage gaps. On <a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast</a> or <a href="https://draup.com" target="_blank" rel="noopener">Draup</a>, search the normalized occupation, not raw titles.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">D</span><span class="sec-title">Using AI to build the search</span></div>
+    <p class="lead">AI is fastest at the tedious parts: turning a job description into a string, expanding every synonym and acronym, and reconciling counts that disagree across platforms.</p>
+
+    <div class="router">
+      <div class="tool"><div class="tool-name"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> / <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a></div><div class="tool-job"><b>Build + expand.</b> Generate the Boolean from a JD, expand title variants and skill synonyms, reconcile counts.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://www.perplexity.ai" target="_blank" rel="noopener">Perplexity</a></div><div class="tool-job"><b>Research conventions.</b> Find company-specific titles and how a niche role is labeled across the industry, with sources.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast</a> / <a href="https://draup.com" target="_blank" rel="noopener">Draup</a></div><div class="tool-job"><b>Native sizing.</b> Built-in taxonomies do skills-based counting for you — let the platform fight title sprawl.</div></div>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 1 · Boolean from a job description</span><button class="code-copy" data-target="p1">Copy</button></div>
+      <pre id="p1">Here's a job description. Build me a LinkedIn Recruiter Boolean string.
+
+Rules:
+- OR together all realistic title variants, including company-specific
+  titles like "Member of Technical Staff" where relevant
+- AND only the true must-have skills (3-5 max); OR their synonyms,
+  acronyms, and spelling variants within each block
+- Add a NOT block for likely false positives: students, professors,
+  technicians, sales engineers
+
+Don't include the wishlist — just what genuinely gates the job.
+
+<span class="tok">[PASTE JOB DESCRIPTION]</span></pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 2 · Expand titles + skill synonyms</span><button class="code-copy" data-target="p2">Copy</button></div>
+      <pre id="p2">For the role of <span class="tok">[analog IC designer]</span>, give me:
+
+1. Every job-title variant used across industry, grouped by seniority
+2. Company-specific titles (e.g. Member of Technical Staff, Principal
+   Engineer) and which companies use them
+3. The canonical must-have tools/skills, each with all common synonyms,
+   acronyms, and spelling variants
+
+Format it so I can paste the groups straight into a Boolean search.</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 3 · Reconcile counts across platforms</span><button class="code-copy" data-target="p3">Copy</button></div>
+      <pre id="p3">I sized the same role on three platforms and got different counts:
+- <span class="tok">[Platform A]</span>: <span class="tok">[n]</span>
+- <span class="tok">[Platform B]</span>: <span class="tok">[n]</span>
+- <span class="tok">[Platform C]</span>: <span class="tok">[n]</span>
+
+Help me reconcile. Which gaps are coverage bias vs. real differences,
+and what's my best single estimate of the addressable pool for
+<span class="tok">[role]</span> in <span class="tok">[geo]</span>? Flag anything I should NOT do (e.g. summing across platforms).</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">E</span><span class="sec-title">Guardrails</span></div>
+    <div class="guard">
+      <div class="guard-label">Before you report the number</div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Never sum across platforms.</b> The same person appears on LinkedIn, Lightcast, and your ATS. Pick one as primary; use the others to validate, not to add.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Know each platform's bias.</b> LinkedIn over-indexes certain geographies and seniorities; some semiconductor engineers, especially in Asia, are underrepresented. The count reflects coverage as much as reality.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>State the geography every time.</b> "2,400 analog designers" is meaningless without the where — the same search global vs. one metro can differ by 10x.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>A pool size alone says nothing.</b> Pair it with demand and movability before drawing any conclusion — supply without context is just a big number.</span></div>
+    </div>
+    <div class="xref">Cross-reference → Step 04 (demand signal) · Step 06 (movability signals)</div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('.code-copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-target'));
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      var t=btn.textContent;btn.textContent='Copied ✓';
+      setTimeout(function(){btn.textContent=t;},1500);
+    });
+  });
+});
+</script>
+</body>
+</html>

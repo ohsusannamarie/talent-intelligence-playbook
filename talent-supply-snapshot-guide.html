@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Field Guide 01 — Pull a Talent Supply Snapshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F0E6;
+    --paper-2:#ECE6D7;
+    --ink:#1B212C;
+    --ink-2:#272E3B;
+    --ink-soft:#3A4250;
+    --teal:#0F6E56;
+    --teal-bright:#1D9E75;
+    --teal-pale:#E1F0E9;
+    --amber:#BA7517;
+    --amber-deep:#854F0B;
+    --amber-pale:#F6EAD4;
+    --line:#D8D0BD;
+    --line-soft:#E3DCCB;
+    --text:#23272F;
+    --text-soft:#5C5848;
+    --text-faint:#8A8472;
+    --serif:'Fraunces',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    padding:0;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px 120px;}
+
+  /* ---- header ---- */
+  .masthead{
+    border-bottom:2px solid var(--ink);
+    padding:48px 0 28px;
+    margin-bottom:40px;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--teal);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .eyebrow::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  h1{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:clamp(32px,6vw,48px);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    color:var(--ink);
+    margin-bottom:16px;
+  }
+  .standfirst{
+    font-size:18px;
+    color:var(--text-soft);
+    max-width:90%;
+    line-height:1.55;
+    margin-bottom:28px;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    border:1px solid var(--line);
+    border-radius:4px;
+    overflow:hidden;
+    background:var(--paper-2);
+  }
+  .meta{
+    flex:1;
+    min-width:150px;
+    padding:12px 16px;
+    border-right:1px solid var(--line);
+  }
+  .meta:last-child{border-right:none;}
+  .meta-label{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin-bottom:4px;
+  }
+  .meta-val{
+    font-size:14px;
+    font-weight:500;
+    color:var(--ink);
+  }
+
+  /* ---- section ---- */
+  section{margin-bottom:48px;}
+  .sec-head{
+    display:flex;
+    align-items:baseline;
+    gap:14px;
+    margin-bottom:20px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .sec-num{
+    font-family:var(--mono);
+    font-size:13px;
+    font-weight:500;
+    color:var(--amber-deep);
+    letter-spacing:0.05em;
+  }
+  .sec-title{
+    font-family:var(--serif);
+    font-weight:500;
+    font-size:24px;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  p{margin-bottom:14px;color:var(--text);font-size:16px;}
+  p.lead{font-size:16px;color:var(--text-soft);}
+
+  /* ---- scenario cards (01) ---- */
+  .scenarios{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:12px;
+  }
+  .scenario{
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-left:3px solid var(--teal);
+    border-radius:0 4px 4px 0;
+    padding:14px 16px;
+  }
+  .scenario-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--teal);
+    margin-bottom:6px;
+  }
+  .scenario p{font-size:14px;margin:0;color:var(--ink-soft);line-height:1.5;}
+
+  /* ---- needs checklist (02) ---- */
+  .needs{
+    background:var(--ink);
+    border-radius:6px;
+    padding:24px 28px;
+    color:var(--paper);
+  }
+  .needs-group{margin-bottom:20px;}
+  .needs-group:last-child{margin-bottom:0;}
+  .needs-group-label{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--teal-bright);
+    margin-bottom:10px;
+  }
+  .need-item{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding:5px 0;
+    font-size:14px;
+    color:#E8E4D8;
+    line-height:1.5;
+  }
+  .need-item .mk{
+    color:var(--amber);
+    font-family:var(--mono);
+    flex-shrink:0;
+    font-size:13px;
+    margin-top:1px;
+  }
+  .need-item b{color:var(--paper);font-weight:600;}
+
+  /* ---- steps (03) ---- */
+  .step{
+    display:grid;
+    grid-template-columns:48px 1fr;
+    gap:18px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .step:last-child{border-bottom:none;}
+  .step-num{
+    font-family:var(--serif);
+    font-size:34px;
+    font-weight:500;
+    color:var(--amber);
+    line-height:1;
+  }
+  .step-title{
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  .step-body{font-size:15px;color:var(--text-soft);line-height:1.6;margin-bottom:10px;}
+  .step-eg{
+    font-size:13px;
+    background:var(--teal-pale);
+    border-radius:4px;
+    padding:10px 12px;
+    color:var(--teal);
+    line-height:1.5;
+  }
+  .step-eg b{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;display:block;margin-bottom:3px;color:var(--teal);font-weight:500;}
+
+  /* ---- what good looks like (04) ---- */
+  .good-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:20px;}
+  .good-item{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:12px 16px;
+    background:var(--paper-2);
+    border-radius:4px;
+  }
+  .good-check{color:var(--teal);font-size:18px;flex-shrink:0;line-height:1.3;}
+  .good-item p{margin:0;font-size:14px;color:var(--ink-soft);}
+  .good-item b{color:var(--ink);}
+  .specimen{
+    border:1px dashed var(--amber);
+    border-radius:6px;
+    padding:20px 22px;
+    background:var(--amber-pale);
+  }
+  .specimen-label{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber-deep);
+    margin-bottom:12px;
+  }
+  .specimen .verdict{
+    font-family:var(--serif);
+    font-size:20px;
+    color:var(--ink);
+    font-weight:500;
+    margin-bottom:8px;
+  }
+  .specimen .headline-num{
+    font-size:14px;
+    color:var(--amber-deep);
+    line-height:1.5;
+  }
+
+  /* ---- mistakes (05) ---- */
+  .mistake{
+    display:grid;
+    grid-template-columns:1fr;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+    margin-bottom:12px;
+  }
+  .mistake-bad,.mistake-fix{padding:14px 18px;}
+  .mistake-bad{background:#F3E4DE;}
+  .mistake-fix{background:var(--teal-pale);border-top:1px solid var(--line-soft);}
+  .mistake-tag{
+    font-family:var(--mono);
+    font-size:10px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    margin-bottom:5px;
+  }
+  .mistake-bad .mistake-tag{color:#A23A1D;}
+  .mistake-fix .mistake-tag{color:var(--teal);}
+  .mistake p{margin:0;font-size:14px;line-height:1.5;color:var(--ink-soft);}
+
+  /* ---- template (06) ---- */
+  .template{
+    background:var(--ink);
+    border-radius:6px;
+    padding:8px;
+  }
+  .tmpl-row{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    border-bottom:1px solid var(--ink-soft);
+  }
+  .tmpl-row:last-child{border-bottom:none;}
+  .tmpl-field{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.04em;
+    color:var(--teal-bright);
+    padding:14px 16px;
+    text-transform:uppercase;
+    border-right:1px solid var(--ink-soft);
+  }
+  .tmpl-fill{
+    padding:14px 16px;
+    color:var(--text-faint);
+    font-size:14px;
+    font-style:italic;
+  }
+  .tmpl-verdict{background:var(--ink-2);}
+  .tmpl-verdict .tmpl-field{color:var(--amber);}
+
+  .copy-btn{
+    margin-top:14px;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    background:transparent;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    padding:10px 18px;
+    border-radius:4px;
+    cursor:pointer;
+    transition:all 0.15s ease;
+  }
+  .copy-btn:hover{background:var(--ink);color:var(--paper);}
+
+  /* ---- footer nav ---- */
+  .footer-nav{
+    margin-top:40px;
+    padding-top:24px;
+    border-top:2px solid var(--ink);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .footer-nav .fn-label{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-faint);}
+  .footer-nav .fn-next{font-family:var(--serif);font-size:18px;color:var(--ink);font-weight:500;}
+
+  @media(max-width:560px){
+    .step{grid-template-columns:36px 1fr;gap:12px;}
+    .step-num{font-size:26px;}
+    .tmpl-row{grid-template-columns:1fr;}
+    .tmpl-field{border-right:none;border-bottom:1px solid var(--ink-soft);}
+    .standfirst{max-width:100%;}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Field Guide 01 · How-To Library</div>
+    <h1>Pull a talent supply snapshot for a role</h1>
+    <p class="standfirst">Before anyone opens a req, answer the only question that matters: can we actually find this person, and at what cost? A supply snapshot turns "let's try" into a defensible yes, stretch, or no.</p>
+    <div class="meta-row">
+      <div class="meta">
+        <div class="meta-label">Difficulty</div>
+        <div class="meta-val">Foundational</div>
+      </div>
+      <div class="meta">
+        <div class="meta-label">Time</div>
+        <div class="meta-val">2–3 hours</div>
+      </div>
+      <div class="meta">
+        <div class="meta-label">Output</div>
+        <div class="meta-val">One-page verdict</div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">When to use this</span></div>
+    <p class="lead">Reach for a supply snapshot whenever a hiring decision hinges on whether the talent even exists. It is feasibility analysis, not sourcing.</p>
+    <div class="scenarios">
+      <div class="scenario">
+        <div class="scenario-tag">Pre-req scoping</div>
+        <p>A hiring manager wants to open a role and you need to know if it is realistically fillable before committing.</p>
+      </div>
+      <div class="scenario">
+        <div class="scenario-tag">Reality check</div>
+        <p>The req has a comp band, location, and skills combo that may not exist together in the market. You need leverage to push back.</p>
+      </div>
+      <div class="scenario">
+        <div class="scenario-tag">Location decision</div>
+        <p>Leadership is weighing a new site or team build-out and wants to know if a metro can actually support it.</p>
+      </div>
+      <div class="scenario">
+        <div class="scenario-tag">Prioritization</div>
+        <p>You have ten open reqs and limited time. The snapshot tells you which ones are hard and deserve a head start.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">What you need</span></div>
+    <div class="needs">
+      <div class="needs-group">
+        <div class="needs-group-label">Tools</div>
+        <div class="need-item"><span class="mk">›</span><span><b>A labor market platform</b> — Lightcast, Draup, or TalentNeuron for supply sizing and demand signal</span></div>
+        <div class="need-item"><span class="mk">›</span><span><b>LinkedIn Recruiter or Talent Insights</b> — for live profile counts and geographic distribution</span></div>
+        <div class="need-item"><span class="mk">›</span><span><b>A comp source</b> — Levels.fyi, Pave, Radford, or your own offer data</span></div>
+      </div>
+      <div class="needs-group">
+        <div class="needs-group-label">Inputs</div>
+        <div class="need-item"><span class="mk">›</span><span><b>The real must-have skills</b> — the true 3 to 5, not the job description wishlist</span></div>
+        <div class="need-item"><span class="mk">›</span><span><b>Seniority band</b> — years and level, since pool size swings wildly by seniority</span></div>
+        <div class="need-item"><span class="mk">›</span><span><b>Target locations + flex</b> — onsite, hybrid, remote, and which metros are in play</span></div>
+        <div class="need-item"><span class="mk">›</span><span><b>Internal ATS data (optional)</b> — to compare market supply against your own pipeline history</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">Step by step</span></div>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Define the real role, not the job description</div>
+        <p class="step-body">Strip the wishlist down to the 3 to 5 skills a person genuinely cannot do the job without. The job description's "nice to haves" artificially shrink the pool and make every role look impossible.</p>
+        <div class="step-eg"><b>Semiconductor example</b>Req says "RF engineer with 5G, mmWave, GaN, Verilog, Python, and PhD." The real must-haves are RF circuit design + mmWave. Everything else is filtering you can relax.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Size the total qualified pool</div>
+        <p class="step-body">Count how many people match the core profile in your target geography. This is your raw supply number. Pull it from your labor market platform and sanity-check against LinkedIn.</p>
+        <div class="step-eg"><b>AI example</b>"CUDA / GPU kernel engineers, senior, US" returns roughly 3,000 to 4,000 profiles. That is your starting universe before demand and movability cut it down.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Map the geographic concentration</div>
+        <p class="step-body">Find where the pool clusters. Scarce skills concentrate in a handful of hubs, which changes everything about location strategy and relocation expectations.</p>
+        <div class="step-eg"><b>Semiconductor example</b>Analog IC designers cluster hard in a few metros — Bay Area, Austin, San Diego, Boston. A "remote anywhere" assumption collapses the moment you see the map.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Check the demand signal</div>
+        <p class="step-body">A pool of 2,000 means nothing if 80 companies are hiring the same profile. Pull active posting volume and the named competitors going after this talent. Demand intensity is the difference between "available" and "winnable."</p>
+        <div class="step-eg"><b>AI example</b>For CUDA engineers, the competitor set is Nvidia, OpenAI, the hyperscalers, and every well-funded AI lab. High demand, deep pockets — a snapshot has to flag this directly.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div>
+        <div class="step-title">Pull comp benchmarks</div>
+        <p class="step-body">What does the market actually pay for this profile in these metros? Compare against the req's band. A pool can be plentiful and still unwinnable if your comp is two tiers below market.</p>
+        <div class="step-eg"><b>Reality check</b>If the role budgets $180K but senior analog designers in the Bay clear $260K+ in total comp, the supply number is irrelevant. Comp is the real constraint.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div>
+        <div class="step-title">Assess movability</div>
+        <p class="step-body">A big pool of happy, long-tenured people is not a real pool. Look at tenure patterns, recent layoff signals, and how often this profile changes jobs. Movability turns raw supply into addressable supply.</p>
+        <div class="step-eg"><b>Signal to watch</b>A recent fab closure or a competitor's restructuring suddenly makes a normally locked-in pool movable. Timing is intelligence.</div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">7</div>
+      <div>
+        <div class="step-title">Synthesize into a verdict</div>
+        <p class="step-body">Collapse everything into one call — feasible, stretch, or unrealistic — backed by a single headline number and the levers that change the math. The hiring manager should not have to interpret a spreadsheet.</p>
+        <div class="step-eg"><b>The output is a decision</b>Not "here is the data." Rather: "This is a stretch. Here is why, and here are the two things you can change to make it feasible."</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">What good looks like</span></div>
+    <p class="lead">A strong snapshot is one page, leads with a verdict, and earns trust by sourcing every number. If the reader has to scroll, you over-built it.</p>
+    <div class="good-grid">
+      <div class="good-item"><span class="good-check">✓</span><p><b>Leads with the verdict</b> — feasible, stretch, or unrealistic in the first line, before any data.</p></div>
+      <div class="good-item"><span class="good-check">✓</span><p><b>One headline number</b> — the single stat that frames the whole picture.</p></div>
+      <div class="good-item"><span class="good-check">✓</span><p><b>Shows the levers</b> — if you flex location the pool grows by X; if you flex comp the competition drops by Y.</p></div>
+      <div class="good-item"><span class="good-check">✓</span><p><b>Every number is sourced</b> — platform and date noted, so it survives scrutiny in a leadership room.</p></div>
+    </div>
+    <div class="specimen">
+      <div class="specimen-label">Specimen output</div>
+      <div class="verdict">Verdict: Stretch, not impossible</div>
+      <p class="headline-num">~2,400 senior RF/mmWave engineers in the US · 60% concentrated in 3 metros · 14 companies actively hiring the profile · market comp runs 25% above the current band. <b>Levers:</b> open the role to hybrid in San Diego (+40% pool) or lift the band to market (drops you from 6th to 2nd most competitive offer).</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">Common mistakes</span></div>
+
+    <div class="mistake">
+      <div class="mistake-bad">
+        <div class="mistake-tag">The trap</div>
+        <p>Using the job description's full wishlist as your search criteria, which makes nearly every role look unfillable.</p>
+      </div>
+      <div class="mistake-fix">
+        <div class="mistake-tag">The fix</div>
+        <p>Always size against the true must-haves first. Layer the nice-to-haves on only to show how much they cost you in pool size.</p>
+      </div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-bad">
+        <div class="mistake-tag">The trap</div>
+        <p>Reporting a raw supply count with no demand context — "there are 2,000 candidates" — as if availability equals winnability.</p>
+      </div>
+      <div class="mistake-fix">
+        <div class="mistake-tag">The fix</div>
+        <p>Always pair supply with demand intensity. The ratio of available talent to competing employers is the real story.</p>
+      </div>
+    </div>
+
+    <div class="mistake">
+      <div class="mistake-bad">
+        <div class="mistake-tag">The trap</div>
+        <p>Dumping data and leaving the hiring manager to interpret it. No verdict, no recommendation, no levers.</p>
+      </div>
+      <div class="mistake-fix">
+        <div class="mistake-tag">The fix</div>
+        <p>Lead with a call. Your credibility comes from the judgment, not the data pull. The data backs the verdict; it is not the deliverable.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">06</span><span class="sec-title">Starter template</span></div>
+    <p class="lead">Fill this in as you work the seven steps. By the time the last row is done, your snapshot is written.</p>
+    <div class="template" id="tmpl">
+      <div class="tmpl-row"><div class="tmpl-field">Role + must-haves</div><div class="tmpl-fill">The 3–5 real requirements, seniority band</div></div>
+      <div class="tmpl-row"><div class="tmpl-field">Target geography</div><div class="tmpl-fill">Metros in play + location flex</div></div>
+      <div class="tmpl-row"><div class="tmpl-field">Qualified pool size</div><div class="tmpl-fill">Raw supply number + source</div></div>
+      <div class="tmpl-row"><div class="tmpl-field">Geo concentration</div><div class="tmpl-fill">Where the pool clusters, % in top metros</div></div>
+      <div class="tmpl-row"><div class="tmpl-field">Demand intensity</div><div class="tmpl-fill"># companies hiring + named competitors</div></div>
+      <div class="tmpl-row"><div class="tmpl-field">Comp range</div><div class="tmpl-fill">Market total comp vs. req band</div></div>
+      <div class="tmpl-row"><div class="tmpl-field">Movability</div><div class="tmpl-fill">Tenure signals, recent disruption events</div></div>
+      <div class="tmpl-row tmpl-verdict"><div class="tmpl-field">Verdict + levers</div><div class="tmpl-fill">Feasible / stretch / unrealistic + what changes the math</div></div>
+    </div>
+    <button class="copy-btn" id="copyBtn">Copy template as text</button>
+  </section>
+
+  <div class="footer-nav">
+    <div>
+      <div class="fn-label">Next in the how-to library</div>
+      <div class="fn-next">02 · Build a salary &amp; comp benchmark brief</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('copyBtn').addEventListener('click',function(){
+  var rows=[
+    'TALENT SUPPLY SNAPSHOT — TEMPLATE','',
+    'Role + must-haves: ',
+    'Target geography: ',
+    'Qualified pool size: ',
+    'Geo concentration: ',
+    'Demand intensity: ',
+    'Comp range: ',
+    'Movability: ',
+    '','VERDICT (feasible / stretch / unrealistic): ',
+    'Levers that change the math: '
+  ].join('\n');
+  navigator.clipboard.writeText(rows).then(function(){
+    var b=document.getElementById('copyBtn');
+    var t=b.textContent;b.textContent='Copied ✓';
+    setTimeout(function(){b.textContent=t;},1600);
+  });
+});
+</script>
+</body>
+</html>

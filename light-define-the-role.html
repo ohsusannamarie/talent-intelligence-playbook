@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Light Module — Define the Real Role</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F0E6;--paper-2:#ECE6D7;--ink:#1B212C;--ink-2:#272E3B;--ink-soft:#3A4250;
+    --teal:#0F6E56;--teal-bright:#1D9E75;--teal-pale:#E1F0E9;
+    --amber:#BA7517;--amber-deep:#854F0B;--amber-pale:#F6EAD4;
+    --rust:#A23A1D;--rust-pale:#F3E4DE;
+    --line:#D8D0BD;--line-soft:#E3DCCB;
+    --text:#23272F;--text-soft:#5C5848;--text-faint:#8A8472;
+    --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px 120px;}
+
+  a{color:var(--teal);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:rgba(15,110,86,0.35);transition:color .12s,text-decoration-color .12s;}
+  a:hover{color:var(--teal-bright);text-decoration-color:var(--teal-bright);}
+
+  .masthead{border-bottom:2px solid var(--ink);padding:48px 0 28px;margin-bottom:40px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-deep);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  .crumb{font-family:var(--mono);font-size:12px;color:var(--text-faint);margin-bottom:8px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.5vw,44px);line-height:1.06;letter-spacing:-0.01em;color:var(--ink);margin-bottom:16px;}
+  .standfirst{font-size:18px;color:var(--text-soft);line-height:1.55;}
+  .lighttag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);background:var(--teal-pale);border-radius:3px;padding:3px 9px;margin-top:14px;}
+
+  section{margin-bottom:48px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--teal);letter-spacing:0.05em;}
+  .sec-title{font-family:var(--serif);font-weight:500;font-size:23px;color:var(--ink);letter-spacing:-0.01em;}
+  p{margin-bottom:14px;font-size:16px;}
+  p.lead{color:var(--text-soft);}
+
+  /* the trap (A) */
+  .trap{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:8px;}
+  .trap-side{padding:18px 20px;}
+  .trap-side.bad{background:var(--rust-pale);}
+  .trap-side.good{background:var(--teal-pale);border-left:1px solid var(--line);}
+  .trap-h{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;font-weight:500;}
+  .trap-side.bad .trap-h{color:var(--rust);}
+  .trap-side.good .trap-h{color:var(--teal);}
+  .trap-side p{font-size:14px;margin:0 0 8px;line-height:1.5;color:var(--ink-soft);}
+  .trap-side p:last-child{margin-bottom:0;}
+  .trap-side b{color:var(--ink);font-weight:600;}
+
+  /* questions (B) */
+  .q{display:grid;grid-template-columns:34px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft);}
+  .q:last-child{border-bottom:none;}
+  .q-n{font-family:var(--serif);font-size:24px;font-weight:500;color:var(--amber);line-height:1;}
+  .q-t{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .q-b{font-size:14px;color:var(--text-soft);line-height:1.55;}
+  .q-b b{color:var(--teal);font-weight:600;}
+
+  /* AI */
+  .code{background:var(--ink);border-radius:8px;margin-bottom:14px;overflow:hidden;}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft);}
+  .code-title{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-bright);}
+  .code-copy{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:1px solid var(--ink-soft);color:#C9C4B4;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+  .code-copy:hover{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .code pre{font-family:var(--mono);font-size:13px;line-height:1.65;color:#E2DECF;padding:16px;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+  .code pre .tok{color:var(--amber);}
+  .tool-line{font-size:14px;color:var(--text-soft);margin-bottom:16px;}
+  .tool-line a{font-weight:600;}
+
+  .guard{background:var(--rust-pale);border-left:3px solid var(--rust);border-radius:0 6px 6px 0;padding:18px 22px;}
+  .guard-label{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+  .guard-item{font-size:14px;color:var(--ink-soft);padding:6px 0;line-height:1.5;display:flex;gap:10px;}
+  .guard-item .gm{color:var(--rust);font-family:var(--mono);flex-shrink:0;}
+  .guard-item b{color:var(--ink);font-weight:600;}
+  .xref{font-size:13px;color:var(--text-faint);font-family:var(--mono);margin-top:8px;}
+
+  @media(max-width:560px){.trap{grid-template-columns:1fr;}.trap-side.good{border-left:none;border-top:1px solid var(--line);}}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Field Guide 01 · Light Module</div>
+    <div class="crumb">Step 01 — Define the real role › Execution detail</div>
+    <h1>Define the real role</h1>
+    <p class="standfirst">Every wrong number downstream traces back to here. Size the wrong role and the pool, the ratio, and the comp benchmark are all confidently, precisely wrong. Get this right and the rest of the snapshot has a chance.</p>
+    <span class="lighttag">Light module · the fast version</span>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">A</span><span class="sec-title">The title is not the role</span></div>
+    <p class="lead">A req title is a label chosen for posting and leveling. It rarely describes the actual person you need to find — and in semis especially, the same title hides wildly different jobs.</p>
+    <div class="trap">
+      <div class="trap-side bad">
+        <div class="trap-h">What the req says</div>
+        <p><b>"Senior Hardware Engineer"</b></p>
+        <p>Sized against this, you'd scope a pool of tens of thousands — and brief the hiring manager on a market that has nothing to do with the actual hire.</p>
+      </div>
+      <div class="trap-side good">
+        <div class="trap-h">What they actually need</div>
+        <p><b>RFIC designer, 28GHz+ mmWave, tape-out experience</b></p>
+        <p>The real pool is a few hundred people, concentrated in a handful of metros, and contested by three named rivals. A different snapshot entirely.</p>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--text-faint);margin-top:14px;">The gap between those two is the whole game. Closing it is what Step 1 is for.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">B</span><span class="sec-title">The questions that surface it</span></div>
+    <p class="lead">You don't need a long intake. Four questions collapse a vague title into a definition you can actually search against.</p>
+
+    <div class="q">
+      <div class="q-n">1</div>
+      <div>
+        <div class="q-t">What will they build in the first 6 months?</div>
+        <div class="q-b">Cuts through the title to the concrete work. <b>"Lead the 3nm PLL block"</b> tells you the skill, the seniority, and the search far better than any level label.</div>
+      </div>
+    </div>
+    <div class="q">
+      <div class="q-n">2</div>
+      <div>
+        <div class="q-t">Which 2-3 skills are non-negotiable?</div>
+        <div class="q-b">Separates the must-haves from the wish list. <b>The non-negotiables define the pool</b> — everything else just ranks within it.</div>
+      </div>
+    </div>
+    <div class="q">
+      <div class="q-n">3</div>
+      <div>
+        <div class="q-t">Who does this person look like today?</div>
+        <div class="q-b">Ask for 1-2 real example profiles, current company and title. <b>A named exemplar is worth a page of requirements</b> — you reverse-engineer the search from it.</div>
+      </div>
+    </div>
+    <div class="q">
+      <div class="q-n">4</div>
+      <div>
+        <div class="q-t">What's genuinely flexible?</div>
+        <div class="q-b">Title, level, exact domain, location. <b>Knowing what can flex tells you how wide the real pool is</b> — and where to expand if the first scope comes back thin.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">C</span><span class="sec-title">Using AI to pin it down</span></div>
+    <p class="lead">Drop in the JD and let AI strip it to a searchable definition — separating the real signal from boilerplate before you size anything.</p>
+    <p class="tool-line">Best tools: <a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> or <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a> for the parse — they're strong at pulling structure out of a messy req.</p>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt · JD to searchable definition</span><button class="code-copy" data-target="p1">Copy</button></div>
+      <pre id="p1">Here is a job description: <span class="tok">[paste JD]</span>.
+
+Strip it to what I actually need to source against:
+1. The 2-3 non-negotiable skills (ignore the wish list)
+2. The real seniority, based on the work described — not the title
+3. The specific domain / technology focus
+4. 2-3 example current titles + companies a person like this works at today
+5. What looks flexible vs. genuinely required
+
+Flag anything in the JD that's boilerplate and should be ignored
+when sizing the pool.</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">D</span><span class="sec-title">Guardrails</span></div>
+    <div class="guard">
+      <div class="guard-label">Before you size anything</div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Confirm the definition with the hiring manager.</b> One message: "Sizing for an RFIC designer with mmWave tape-out — right?" Thirty seconds now saves a wrong snapshot later.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Don't let the wish list define the pool.</b> If you size against every "nice to have," you'll scope a pool of zero. Non-negotiables only.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>The exemplar profile is the fastest unlock.</b> When the definition stays fuzzy, one real example LinkedIn profile resolves it faster than another round of questions.</span></div>
+    </div>
+    <div class="xref">Feeds → Step 02 (pool sizing) · the definition here sets every number downstream</div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('.code-copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-target'));
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      var t=btn.textContent;btn.textContent='Copied ✓';
+      setTimeout(function(){btn.textContent=t;},1500);
+    });
+  });
+});
+</script>
+</body>
+</html>

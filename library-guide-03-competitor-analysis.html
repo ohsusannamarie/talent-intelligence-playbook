@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 03 — Run a Competitor Talent Analysis | TI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F0E6;
+  --paper-soft: #EAE4D4;
+  --paper-deep: #DDD4BD;
+  --ink: #1B212C;
+  --ink-soft: #2A3140;
+  --ink-muted: #4A5260;
+  --teal: #0F6E56;
+  --teal-soft: #14876B;
+  --amber: #BA7517;
+  --amber-soft: #D08A28;
+  --rust: #A23A1D;
+  --line: rgba(27,33,44,0.12);
+  --line-strong: rgba(27,33,44,0.22);
+  --shadow: 0 2px 8px rgba(27,33,44,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ============ MASTHEAD ============ */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px 0 40px;
+  border-bottom: 3px solid var(--amber);
+}
+
+.masthead-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.crumb-sep { opacity: 0.4; }
+.crumb-self { color: var(--paper); }
+
+.masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+.masthead .lede {
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(244,240,230,0.8);
+  max-width: 720px;
+}
+
+.tag-row {
+  margin-top: 22px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(244,240,230,0.25);
+  border-radius: 2px;
+  color: rgba(244,240,230,0.8);
+}
+
+.tag.accent {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+/* ============ TOC ============ */
+.toc {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 22px 26px;
+  margin: 48px 0 40px;
+}
+
+.toc-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.toc li {
+  counter-increment: toc;
+  padding: 6px 0 6px 32px;
+  position: relative;
+  font-size: 14px;
+}
+
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+
+.toc a:hover {
+  border-bottom-color: var(--teal);
+  color: var(--teal);
+}
+
+/* ============ MAIN ============ */
+main { padding: 0 0 40px; }
+
+.section {
+  margin-bottom: 64px;
+  scroll-margin-top: 24px;
+}
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--teal);
+}
+
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.18;
+  margin-bottom: 22px;
+  letter-spacing: -0.01em;
+}
+
+.section h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 32px 0 14px;
+  letter-spacing: -0.005em;
+}
+
+.section p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  color: var(--ink-soft);
+}
+
+.section p strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.section .preamble {
+  font-size: 17px;
+  margin-bottom: 28px;
+}
+
+/* ============ WHEN TO USE / NEED LISTS ============ */
+.scenario-list {
+  list-style: none;
+}
+
+.scenario-list li {
+  padding: 14px 18px 14px 48px;
+  background: var(--paper-soft);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.55;
+  border-left: 2px solid var(--teal);
+}
+
+.scenario-list li::before {
+  content: '→';
+  position: absolute;
+  left: 18px;
+  top: 14px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.scenario-list strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.need-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.need-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-top: 2px solid var(--amber);
+}
+
+.need-card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.need-card p {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* ============ STEP CARDS ============ */
+.step {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 26px 30px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--teal);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 0;
+  flex: 1;
+}
+
+.step-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  text-decoration: none;
+  border: 1px solid var(--amber);
+  padding: 3px 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.step-link:hover { background: var(--amber); color: var(--ink); }
+
+.step .step-what {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+
+.step .step-do {
+  background: rgba(27,33,44,0.04);
+  padding: 14px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.step .step-do-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.step .step-do ul {
+  list-style: none;
+  margin: 0;
+}
+
+.step .step-do li {
+  padding: 4px 0 4px 18px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.step .step-do li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.step .step-example {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  font-style: italic;
+  padding-top: 6px;
+}
+
+.step .step-example strong {
+  font-family: 'IBM Plex Mono', monospace;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ============ CULSHAW QUOTE ============ */
+.culshaw {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 28px 32px;
+  border-radius: 4px;
+  margin: 32px 0;
+}
+
+.culshaw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+
+.culshaw p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+  font-style: italic;
+  margin-bottom: 14px;
+  color: var(--paper);
+}
+
+.culshaw cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  color: rgba(244,240,230,0.65);
+}
+
+.culshaw cite a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.culshaw cite a:hover { border-bottom-style: solid; }
+
+/* ============ GOOD LOOKS LIKE ============ */
+.good-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.good-card {
+  background: var(--paper-soft);
+  padding: 18px 20px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+}
+
+.good-card-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.good-card h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.good-card p {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* ============ MISTAKES ============ */
+.mistakes {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 24px 28px;
+}
+
+.mistakes ul {
+  list-style: none;
+  padding: 0;
+}
+
+.mistakes li {
+  padding: 12px 0 12px 32px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.6;
+  border-bottom: 1px dashed var(--line);
+}
+
+.mistakes li:last-child { border-bottom: none; }
+
+.mistakes li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 22px;
+  height: 22px;
+  background: var(--rust);
+  color: var(--paper);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mistakes strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ============ STARTER TEMPLATE ============ */
+.template-card {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27,33,44,0.15);
+}
+
+.template-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(244,240,230,0.06);
+  border-bottom: 1px solid rgba(244,240,230,0.12);
+}
+
+.template-head-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.copy-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(244,240,230,0.3);
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+.copy-btn.copied {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+.template-body {
+  padding: 24px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ============ XREF FOOTER ============ */
+.xref {
+  margin-top: 48px;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 32px;
+}
+
+.xref-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+}
+
+.xref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.xref-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s ease;
+  display: block;
+}
+
+.xref-card:hover { background: var(--paper-deep); }
+
+.xref-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.xref-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ============ LINKS ============ */
+a.src {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(15,110,86,0.3);
+  transition: border-color 0.15s ease;
+}
+
+a.src:hover { border-bottom-color: var(--teal); }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--ink);
+  color: rgba(244,240,230,0.6);
+  padding: 28px 0;
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 700px) {
+  .container, .masthead-inner { padding: 0 22px; }
+  .masthead h1 { font-size: 30px; }
+  .masthead .lede { font-size: 16px; }
+  .section h2 { font-size: 24px; }
+  .step { padding: 20px 22px; }
+  .step-head { flex-wrap: wrap; gap: 10px; }
+  .step h3 { font-size: 18px; }
+  .culshaw { padding: 22px; }
+  .culshaw p { font-size: 16px; }
+  .template-body { font-size: 11.5px; padding: 18px; }
+  .xref-grid, .toc ol { grid-template-columns: 1fr; }
+}
+
+/* ============ A11Y ============ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #14181F; color: #E8E2D2; }
+  .step, .scenario-list li, .need-card, .good-card, .xref-card, .toc { background: #1F2530; }
+  .step p, .step-what, .good-card p { color: rgba(232,226,210,0.75); }
+  .mistakes { background: #1A1F28; border-color: rgba(232,226,210,0.15); }
+  .mistakes strong { color: #E8E2D2; }
+  .xref-card { color: #E8E2D2; }
+  .xref-card:hover { background: #252C38; }
+  .step .step-do { background: rgba(232,226,210,0.04); }
+  .toc { border-color: rgba(232,226,210,0.15); }
+  .toc a { color: #E8E2D2; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <span>TI Playbook</span>
+      <span class="crumb-sep">/</span>
+      <span>Library</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-self">Guide 03 of Tier 1</span>
+    </div>
+    <h1>Run a competitor talent analysis</h1>
+    <p class="lede">A working method for turning fragmented public-domain data on a competitor — sites, hires, postings, layoffs, comp signals — into a one-page battlecard a recruiter or hiring manager can actually use. Built for the semi/AI context where the talent competitor is often <em>not</em> the business competitor.</p>
+    <div class="tag-row">
+      <span class="tag accent">Tier 1 Library Guide</span>
+      <span class="tag">Full Guide</span>
+      <span class="tag">7 Steps</span>
+      <span class="tag">~15 min read</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container">
+
+<!-- ========== TOC ========== -->
+<nav class="toc">
+  <div class="toc-label">Inside this guide</div>
+  <ol>
+    <li><a href="#when">When to use this guide</a></li>
+    <li><a href="#need">What you need before starting</a></li>
+    <li><a href="#steps">The 7 steps</a></li>
+    <li><a href="#good">What good looks like</a></li>
+    <li><a href="#mistakes">Common mistakes</a></li>
+    <li><a href="#template">Starter battlecard template</a></li>
+  </ol>
+</nav>
+
+<!-- ========== WHEN TO USE ========== -->
+<section class="section" id="when">
+  <div class="section-label">01 &nbsp;·&nbsp; When to Use</div>
+  <h2>When to run this analysis</h2>
+  <p class="preamble">A competitor talent analysis is not an always-on exercise. It's a focused workstream triggered by a specific event or decision. Running it without a trigger usually produces a report no one reads. The five most common triggers:</p>
+
+  <ul class="scenario-list">
+    <li><strong>A competitor announced a major expansion in your hiring market.</strong> New fab, new R&D site, new AI lab, recent acqui-hire. You need a read on what they're going to pull from your pool and how fast.</li>
+    <li><strong>You're losing too many candidates to one competitor.</strong> Offer decline rate is up, exit interviews keep naming the same name, or your sourcers are burning out chasing the same passive candidates the competitor already locked in.</li>
+    <li><strong>You're entering a new role family, geo, or skill area.</strong> You don't yet know who the players are or what good looks like — the battlecard is also a learning exercise for the team.</li>
+    <li><strong>M&A or layoff activity has reshuffled the landscape.</strong> A competitor was acquired, ran a layoff, lost a key technical leader, or pivoted strategy. The old read is stale.</li>
+    <li><strong>Quarterly or semi-annual refresh.</strong> If battlecards exist, they need refresh on a cadence. Six months is the upper bound before they start misleading.</li>
+  </ul>
+</section>
+
+<!-- ========== WHAT YOU NEED ========== -->
+<section class="section" id="need">
+  <div class="section-label">02 &nbsp;·&nbsp; Inputs</div>
+  <h2>What you need before starting</h2>
+  <p class="preamble">A competitor talent analysis runs faster when these are decided up front. Trying to assemble them mid-analysis is where most projects stall.</p>
+
+  <div class="need-grid">
+    <div class="need-card">
+      <div class="need-card-label">Scope · roles</div>
+      <p>The specific role family or skill set you're analyzing competitors against. "Engineering" is not a scope. "Senior CUDA kernel engineers" is.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Scope · market</div>
+      <p>Geo boundary — single metro, region, country, or global. Anchors all downstream data pulls.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Competitor seed list</div>
+      <p>2–8 named companies as a starting point. The list will get refined in Step 1 — but don't start from zero.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Data access</div>
+      <p><a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a> or equivalent; a job-posting aggregator (<a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a>, <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a>, or scraped <a href="https://www.linkedin.com/jobs/" target="_blank" rel="noopener" class="src">LinkedIn Jobs</a>); a news monitor (<a href="https://layoffs.fyi" target="_blank" rel="noopener" class="src">Layoffs.fyi</a>, Google Alerts, <a href="https://www.theinformation.com/" target="_blank" rel="noopener" class="src">The Information</a>).</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Comp signal source</div>
+      <p><a href="https://www.levels.fyi" target="_blank" rel="noopener" class="src">Levels.fyi</a> for tech total comp benchmarks; <a href="https://www.h1bdata.info/" target="_blank" rel="noopener" class="src">H1B Data</a> for US base salaries; internal comp survey access if you have it.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Time budget</div>
+      <p>~6–12 hours for a first-time competitor; ~2–4 hours for refreshes once a battlecard exists. Plan accordingly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== THE 7 STEPS ========== -->
+<section class="section" id="steps">
+  <div class="section-label">03 &nbsp;·&nbsp; The Method</div>
+  <h2>The seven steps</h2>
+  <p class="preamble">Each step builds on the prior one. Most existing competitor analyses skip Step 1 and jump straight to Step 4 (hiring signals) — which produces a hiring report, not a talent battlecard. Resist that shortcut. The order matters.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 01</div>
+      <h3>Define your competitor set — three lists, not one</h3>
+    </div>
+    <p class="step-what">The single biggest failure mode in competitor talent analysis is treating your business competitor list as your talent competitor list. They often overlap. They are almost never the same.</p>
+    <div class="step-do">
+      <div class="step-do-label">Build three distinct lists</div>
+      <ul>
+        <li><strong>Direct competitors</strong> — companies who sell against you in the market. Easiest list. Often not the most useful for talent.</li>
+        <li><strong>Talent competitors</strong> — companies you actually lose candidates to or fish in the same pool with. May include companies you've never sold against (e.g., a chip designer competing with a hyperscaler for the same ML engineers).</li>
+        <li><strong>Aspirational competitors</strong> — companies whose talent posture, employer brand, or comp model you want to learn from. Often outside your industry.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> A pre-IPO AI chip startup hiring senior CUDA engineers might list Cerebras and Groq as direct competitors. Their actual talent competitors are Nvidia, Anthropic, OpenAI, Meta, and (recently) Stripe Infra — none of whom sell competing chips. The aspirational set might include Apple Silicon and Tesla AI for retention practices.</p>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 02</div>
+      <h3>Map their org and team structure</h3>
+    </div>
+    <p class="step-what">Before you can read hiring signals, you need to know what teams exist. The same role title can sit in radically different team structures with very different comp, scope, and movability profiles.</p>
+    <div class="step-do">
+      <div class="step-do-label">Pull from public domain</div>
+      <ul>
+        <li><strong>10-K filings, investor decks, earnings transcripts</strong> — find where they say they're investing. "We grew our AI org 40% in 2025" is a hiring signal.</li>
+        <li><strong>Engineering blog and conference talks</strong> — reveals team structure, leadership names, technical priorities.</li>
+        <li><strong>LinkedIn org navigation</strong> — search "[Company] AI Research" or "[Company] Silicon Engineering" to find team clusters and reporting structures.</li>
+        <li><strong>Patent filings and academic publications</strong> — tell you where the R&D investment is, often before the press release does.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Mapping Nvidia's CUDA org reveals a 3-layer structure (CUDA core, libraries/cuDNN, application frameworks) that hires very different profiles. Treating them as one team produces a battlecard that misreads movability — Application Frameworks engineers are far more movable than CUDA core engineers on retention cliffs.</p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 03</div>
+      <h3>Profile their talent base</h3>
+      <a href="#" class="step-link">↗ Uses Step 02 module</a>
+    </div>
+    <p class="step-what">Now you size the people. This is where shared module pool sizing comes in — apply it per competitor to get a comparable view across the set.</p>
+    <div class="step-do">
+      <div class="step-do-label">What to capture per competitor</div>
+      <ul>
+        <li><strong>Headcount in scope</strong> — both totals and the role family you're analyzing. <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a> gives company + function + geo cross-tabs.</li>
+        <li><strong>Skills distribution</strong> — top skills present, top skills growing. <a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a> and <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a> have this; LinkedIn approximates via skills inventories.</li>
+        <li><strong>Tenure curve</strong> — median tenure, % under 2 years (proxy for instability), % over 5 years (proxy for stickiness).</li>
+        <li><strong>University feeders</strong> — top 5–10 schools sending recent grads; top 5–10 alumni companies (where people came from before).</li>
+        <li><strong>Geographic distribution</strong> — site footprint and which roles sit at which sites.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Profiling AMD's Austin GPU silicon org reveals 60% came from Intel or Apple in their previous role. That's not just trivia — it tells you which alumni networks to mine, and that your offer needs to compete against the Intel/Apple equity-grant memory profile.</p>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 04</div>
+      <h3>Track their hiring signal</h3>
+      <a href="#" class="step-link">↗ See Step 04 deep dive</a>
+    </div>
+    <p class="step-what">Open job postings reveal demand. Volume tells you intensity; geo tells you strategy; titles tell you what teams are growing; descriptions tell you what skills they're prioritizing now versus six months ago.</p>
+    <div class="step-do">
+      <div class="step-do-label">What to pull from postings</div>
+      <ul>
+        <li><strong>Total open reqs in your role family</strong> — and the rolling 90-day trend.</li>
+        <li><strong>Geographic distribution of those reqs</strong> — where are they expanding versus holding steady?</li>
+        <li><strong>New titles or skill requirements appearing in the last quarter</strong> — leading indicator of strategy shifts.</li>
+        <li><strong>Posting age and re-posting frequency</strong> — same req posted three times in six months means they're struggling to fill it.</li>
+        <li><strong>Compensation disclosure where laws require it</strong> — CA, CO, NY, WA, IL, MN all force ranges. Read them.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> A 4x jump in open "MLIR compiler engineer" reqs at a competitor over one quarter, concentrated in Toronto, signals (a) they're building a compiler stack you should expect to see in their next product, and (b) Toronto is now actively a talent battleground for your team too.</p>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 05</div>
+      <h3>Read their movement signal</h3>
+      <a href="#" class="step-link">↗ See Step 06 deep dive</a>
+    </div>
+    <p class="step-what">Postings tell you who's hiring. Movement signals tell you who's available — and who's about to be. This is the highest-leverage step for sourcing and the one most often skipped.</p>
+    <div class="step-do">
+      <div class="step-do-label">The four movement categories</div>
+      <ul>
+        <li><strong>Hard signals</strong> — announced layoffs (<a href="https://layoffs.fyi" target="_blank" rel="noopener" class="src">Layoffs.fyi</a>, WARN filings), facility closures, M&A divestments.</li>
+        <li><strong>Soft signals</strong> — leadership departures, glassdoor sentiment drops, missed earnings, RTO mandates that don't match the market.</li>
+        <li><strong>Semi-cyclical signals</strong> — equity vesting cliffs, RSU refresh windows, post-bonus departure season (Feb/Mar in much of tech).</li>
+        <li><strong>Cluster signals</strong> — when one major employer in a market sneezes, the rest of the market catches it within 90 days. Track the cluster, not just the company.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> When Intel announced its 2024 workforce reduction, the movement window for senior process engineers opened wider than the formal layoff count suggested — adjacent workforce of contractors and freshly-cliffed equity-vested engineers also became movable. Tracking the cluster captures that secondary movement.</p>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 06</div>
+      <h3>Benchmark comp and EVP — not just numbers</h3>
+      <a href="#" class="step-link">↗ Uses Step 05 module</a>
+    </div>
+    <p class="step-what">Most comp benchmarks read salary bands and stop. The competitor analysis needs comp <em>philosophy</em>, not just numbers — because that's what tells you how to position against the offer when you get into a counter.</p>
+    <div class="step-do">
+      <div class="step-do-label">What to capture beyond ranges</div>
+      <ul>
+        <li><strong>Total comp stack</strong> — base, bonus target, equity (initial + refresh), sign-on, retention bonuses. <a href="https://www.levels.fyi" target="_blank" rel="noopener" class="src">Levels.fyi</a> is the unofficial standard.</li>
+        <li><strong>Vesting schedule</strong> — 4-year cliff vs back-loaded vs trickle. Determines movability windows.</li>
+        <li><strong>Comp philosophy</strong> — base-heavy, equity-heavy, or balanced? Do they target P50, P75, P90?</li>
+        <li><strong>Benefits where they actually differentiate</strong> — relo support, visa sponsorship rates, family healthcare, parental leave, sabbatical.</li>
+        <li><strong>Counter-offer behavior</strong> — do they routinely counter? Aggressively? With equity refresh, base bump, or title?</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Nvidia's AI engineer total comp at L5/L6 is widely reported above $1M, but the comp <em>philosophy</em> is heavily equity-weighted with 4-year backloaded vesting. That tells you (a) the offer math is sensitive to NVDA stock movement, and (b) candidates 2.5–3 years in are in a tougher movability window than the 4-year cliff narrative suggests.</p>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 07</div>
+      <h3>Synthesize into a battlecard</h3>
+    </div>
+    <p class="step-what">The deliverable is not the analysis. The deliverable is a single page a recruiter can pull up before a candidate call. Everything before this step is raw material. This is where you compress it.</p>
+    <div class="step-do">
+      <div class="step-do-label">The battlecard answers six questions</div>
+      <ul>
+        <li><strong>What advantages do they have that candidates find compelling?</strong></li>
+        <li><strong>Where are their vulnerabilities we can position against?</strong></li>
+        <li><strong>What makes them unique in ways that matter to talent?</strong></li>
+        <li><strong>How do they typically compete for the same candidates we want?</strong></li>
+        <li><strong>What's the current movement window — and what closes it?</strong></li>
+        <li><strong>What are the three positioning plays we lead with?</strong></li>
+      </ul>
+    </div>
+    <p class="step-example">See the starter template at the end of this guide for a copyable structure. The discipline is keeping it to one page. If you cannot compress it, it is not yet a battlecard — it is still notes.</p>
+  </div>
+
+  <div class="culshaw">
+    <div class="culshaw-label">Field note · TI canon</div>
+    <p>"Battlecards… find a natural home in the recruitment community as the battle for talent has continued to intensify. They can be an efficient method of comparing strengths and weaknesses of your company, usually to a direct competitor but more recently — with the increase in transitional skills — a talent competitor. These interviews and primary data points are vital to ensure credibility of the battlecards and ensure they are kept as a living document."</p>
+    <cite>Toby Culshaw, <a href="https://www.koganpage.com/product/talent-intelligence-9781398607422" target="_blank" rel="noopener">Talent Intelligence</a> (Kogan Page, 2022) — Battlecards chapter</cite>
+  </div>
+</section>
+
+<!-- ========== WHAT GOOD LOOKS LIKE ========== -->
+<section class="section" id="good">
+  <div class="section-label">04 &nbsp;·&nbsp; The Standard</div>
+  <h2>What good looks like</h2>
+  <p class="preamble">A finished competitor talent analysis is not a 40-slide deck. It's a one-page battlecard backed by a structured working file. Six markers separate a battlecard that gets used from a document that sits in a shared folder unread.</p>
+
+  <div class="good-grid">
+    <div class="good-card">
+      <div class="good-card-num">01</div>
+      <h4>One-page deliverable</h4>
+      <p>If a recruiter cannot pull it up and scan it in 90 seconds before a candidate call, it has failed its job. Discipline the compression.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">02</div>
+      <h4>Three distinct lists honored</h4>
+      <p>The battlecard explicitly says whether this competitor is a direct, talent, or aspirational competitor. The plays differ by category.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">03</div>
+      <h4>Quantitative + qualitative paired</h4>
+      <p>Every number has a one-line interpretation. Every qualitative insight has a data point behind it. Neither alone is enough.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">04</div>
+      <h4>Movement window named</h4>
+      <p>The battlecard explicitly states when the competitor's talent is most movable and what closes that window. This is what makes it operational.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">05</div>
+      <h4>Three positioning plays</h4>
+      <p>Not five, not fifteen. Three concrete things a recruiter can say or do when competing for a candidate against this employer.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">06</div>
+      <h4>Dated and owned</h4>
+      <p>Last updated date is visible. Owner is named. Refresh cadence is committed. A battlecard with no date is misleading by week eight.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMMON MISTAKES ========== -->
+<section class="section" id="mistakes">
+  <div class="section-label">05 &nbsp;·&nbsp; Pitfalls</div>
+  <h2>Common mistakes</h2>
+
+  <div class="mistakes">
+    <ul>
+      <li><strong>Conflating direct and talent competitors.</strong> The single most common error. The companies you sell against are not always the companies you lose hires to. Build all three lists in Step 1 — separately.</li>
+
+      <li><strong>Building it once.</strong> A battlecard older than six months is misleading. If you cannot commit to refresh, do not build it — or build a smaller one you can actually maintain.</li>
+
+      <li><strong>Going public-domain only.</strong> Secondary data gets you 70% there. The last 30% — the actual EVP nuance, the real counter-offer behavior — comes from primary signal: recruiter conversations with candidates, structured alumni interviews, lost-candidate exit notes. Use them. Stay legally compliant.</li>
+
+      <li><strong>Producing analysis instead of decisions.</strong> A 30-page deck of competitor data is not a competitor analysis. A battlecard is. If your output does not name three positioning plays, you haven't finished.</li>
+
+      <li><strong>Comp numbers without comp philosophy.</strong> Saying "they pay $300K" is not actionable. Saying "they pay $300K total with 60% equity on a 4-year cliff, P75 base-heavy at IC4 and below" is.</li>
+
+      <li><strong>Treating every competitor identically.</strong> A direct competitor needs a deep cut. An aspirational competitor needs a focused read on the one thing you're learning from them. Different competitors deserve different depths.</li>
+
+      <li><strong>No movement window.</strong> A battlecard that doesn't tell you <em>when</em> a competitor's talent is movable is half a battlecard. Build the movement read into Step 5 and reflect it on the final page.</li>
+
+      <li><strong>Skipping the org map.</strong> Same job title, different team, completely different candidate profile. Step 2 (org structure) cannot be skipped just because it feels slower than scraping postings.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== STARTER TEMPLATE ========== -->
+<section class="section" id="template">
+  <div class="section-label">06 &nbsp;·&nbsp; The Deliverable</div>
+  <h2>Starter battlecard template</h2>
+  <p class="preamble">Copy this structure into a Google Doc, Notion page, or Confluence template. One competitor per page. Discipline the compression — if it spills, ask what gets cut.</p>
+
+  <div class="template-card">
+    <div class="template-head">
+      <span class="template-head-label">Template · one-page competitor battlecard</span>
+      <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+    </div>
+    <div class="template-body" id="template-text">═════════════════════════════════════════════════════════════
+COMPETITOR BATTLECARD — [COMPETITOR NAME]
+═════════════════════════════════════════════════════════════
+
+CLASSIFICATION
+  [ ] Direct (sells against us)
+  [ ] Talent (we lose candidates to them)
+  [ ] Aspirational (we learn from them)
+  Scope: [Role family / skill set]
+  Market: [Geo]
+  Last updated: [YYYY-MM-DD]    Owner: [Name]
+
+─────────────────────────────────────────────────────────────
+01 · WHO THEY ARE (1 LINE)
+[One-sentence business description. Who they sell to and why
+candidates have heard of them.]
+
+─────────────────────────────────────────────────────────────
+02 · TALENT FOOTPRINT
+- Total headcount in scope:      [number]
+- Top 3 sites (with team focus): [city — what they do here]
+- Median tenure:                  [years]
+- % under 2 yrs / over 5 yrs:    [proxy for stability]
+- Top 3 alumni companies:        [where their people came from]
+- Top 3 university feeders:      [grad pipeline]
+
+─────────────────────────────────────────────────────────────
+03 · COMP & EVP POSTURE
+- Total comp at target level:    [range with source]
+- Comp philosophy:                [base-heavy / equity-heavy / balanced]
+- Vesting:                        [4yr cliff / backloaded / etc.]
+- Counter-offer behavior:         [aggressive? typical lever?]
+- Differentiating benefits:       [the 2–3 they're known for]
+
+─────────────────────────────────────────────────────────────
+04 · RECENT MOVES (LAST 6 MONTHS)
+- Expansion / contraction:        [headline events]
+- Leadership changes:             [departures / arrivals that matter]
+- Hiring intensity trend:         [up / steady / down + signal]
+- Movement window:                [when is talent most accessible?
+                                   what closes the window?]
+
+─────────────────────────────────────────────────────────────
+05 · STRENGTHS CANDIDATES LOVE
+- [Strength 1 — with the why]
+- [Strength 2 — with the why]
+- [Strength 3 — with the why]
+
+─────────────────────────────────────────────────────────────
+06 · WEAKNESSES WE POSITION AGAINST
+- [Weakness 1 — with evidence]
+- [Weakness 2 — with evidence]
+- [Weakness 3 — with evidence]
+
+─────────────────────────────────────────────────────────────
+07 · OUR THREE POSITIONING PLAYS
+- Play 1: [Specific message + when to use it]
+- Play 2: [Specific message + when to use it]
+- Play 3: [Specific message + when to use it]
+
+─────────────────────────────────────────────────────────────
+SOURCES & METHODOLOGY NOTES
+- Quantitative: [LinkedIn TI / TalentNeuron / Lightcast / etc.]
+- Qualitative: [Recruiter conversations / alumni interviews / etc.]
+- Known gaps: [What we don't know yet and why]
+
+═════════════════════════════════════════════════════════════
+NEXT REFRESH: [YYYY-MM-DD]
+═════════════════════════════════════════════════════════════</div>
+  </div>
+</section>
+
+<!-- ========== XREF FOOTER ========== -->
+<section class="xref">
+  <div class="xref-label">↗ Cross-references · related modules</div>
+  <div class="xref-grid">
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 02 · Shared module</div>
+      <div class="xref-title">Size the qualified pool</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 03 · Light module</div>
+      <div class="xref-title">Map geo concentration</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 04 · Deep dive</div>
+      <div class="xref-title">Check demand signal</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 05 · Shared module</div>
+      <div class="xref-title">Pull comp benchmarks</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 06 · Deep dive</div>
+      <div class="xref-title">Assess movability</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Guide 01 · Flagship</div>
+      <div class="xref-title">Pull a talent supply snapshot</div>
+    </a>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div>Talent Intelligence Playbook · Library Guide 03 · Competitor Talent Analysis · v1.0</div>
+</footer>
+
+<script>
+function copyTemplate(btn) {
+  const text = document.getElementById('template-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+  });
+}
+</script>
+
+</body>
+</html>

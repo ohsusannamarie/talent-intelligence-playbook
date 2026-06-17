@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 05 — Build a Skills-Based Talent Map | TI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F0E6;
+  --paper-soft: #EAE4D4;
+  --paper-deep: #DDD4BD;
+  --ink: #1B212C;
+  --ink-soft: #2A3140;
+  --ink-muted: #4A5260;
+  --teal: #0F6E56;
+  --teal-soft: #14876B;
+  --amber: #BA7517;
+  --amber-soft: #D08A28;
+  --rust: #A23A1D;
+  --line: rgba(27,33,44,0.12);
+  --line-strong: rgba(27,33,44,0.22);
+  --shadow: 0 2px 8px rgba(27,33,44,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.container { max-width: 920px; margin: 0 auto; padding: 0 32px; }
+
+/* ============ MASTHEAD ============ */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px 0 40px;
+  border-bottom: 3px solid var(--amber);
+}
+
+.masthead-inner { max-width: 920px; margin: 0 auto; padding: 0 32px; }
+
+.crumb {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 16px; flex-wrap: wrap;
+}
+
+.crumb-sep { opacity: 0.4; }
+.crumb-self { color: var(--paper); }
+
+.masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 44px; line-height: 1.1;
+  letter-spacing: -0.015em; margin-bottom: 16px;
+}
+
+.masthead .lede {
+  font-size: 18px; line-height: 1.55;
+  color: rgba(244,240,230,0.8); max-width: 720px;
+}
+
+.tag-row { margin-top: 22px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 10px; border: 1px solid rgba(244,240,230,0.25);
+  border-radius: 2px; color: rgba(244,240,230,0.8);
+}
+
+.tag.accent { background: var(--teal); border-color: var(--teal); color: var(--paper); }
+
+/* ============ TOC ============ */
+.toc {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 22px 26px;
+  margin: 48px 0 40px;
+}
+
+.toc-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+}
+
+.toc ol {
+  list-style: none; counter-reset: toc;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.toc li {
+  counter-increment: toc;
+  padding: 6px 0 6px 32px; position: relative; font-size: 14px;
+}
+
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute; left: 0; top: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--ink-muted); font-weight: 500;
+}
+
+.toc a {
+  color: var(--ink); text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+
+.toc a:hover { border-bottom-color: var(--teal); color: var(--teal); }
+
+/* ============ MAIN ============ */
+main { padding: 0 0 40px; }
+.section { margin-bottom: 64px; scroll-margin-top: 24px; }
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 12px;
+}
+
+.section-label::before {
+  content: ''; display: inline-block;
+  width: 28px; height: 1px; background: var(--teal);
+}
+
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 32px; line-height: 1.18;
+  margin-bottom: 22px; letter-spacing: -0.01em;
+}
+
+.section h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 22px; line-height: 1.25;
+  margin: 32px 0 14px;
+}
+
+.section p {
+  font-size: 16px; line-height: 1.7;
+  margin-bottom: 16px; color: var(--ink-soft);
+}
+
+.section p strong { color: var(--ink); font-weight: 600; }
+.section .preamble { font-size: 17px; margin-bottom: 28px; }
+
+/* ============ SCENARIO + NEED LISTS ============ */
+.scenario-list { list-style: none; }
+
+.scenario-list li {
+  padding: 14px 18px 14px 48px;
+  background: var(--paper-soft);
+  border-radius: 3px; margin-bottom: 10px;
+  position: relative; font-size: 15px; line-height: 1.55;
+  border-left: 2px solid var(--teal);
+}
+
+.scenario-list li::before {
+  content: '→'; position: absolute; left: 18px; top: 14px;
+  color: var(--teal); font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600; font-size: 14px;
+}
+
+.scenario-list strong { color: var(--ink); font-weight: 600; }
+
+.need-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px; margin-top: 8px;
+}
+
+.need-card {
+  background: var(--paper-soft);
+  padding: 16px 18px; border-radius: 3px;
+  border-top: 2px solid var(--amber);
+}
+
+.need-card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 6px; font-weight: 600;
+}
+
+.need-card p {
+  font-size: 14px; line-height: 1.55;
+  margin: 0; color: var(--ink-soft);
+}
+
+/* ============ STEP CARDS ============ */
+.step {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 26px 30px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.step-head {
+  display: flex; align-items: baseline; gap: 18px;
+  margin-bottom: 14px; padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px; letter-spacing: 0.1em;
+  color: var(--teal); font-weight: 600; flex-shrink: 0;
+}
+
+.step h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 22px; line-height: 1.25;
+  margin: 0; flex: 1;
+}
+
+.step-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--amber); text-decoration: none;
+  border: 1px solid var(--amber);
+  padding: 3px 10px; border-radius: 2px;
+  flex-shrink: 0; white-space: nowrap;
+}
+
+.step-link:hover { background: var(--amber); color: var(--ink); }
+
+.step .step-what {
+  font-size: 15px; line-height: 1.65;
+  color: var(--ink-soft); margin-bottom: 14px;
+}
+
+.step .step-do {
+  background: rgba(27,33,44,0.04);
+  padding: 14px 18px; border-radius: 3px;
+  border-left: 2px solid var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.step .step-do-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 600; margin-bottom: 8px;
+}
+
+.step .step-do ul { list-style: none; margin: 0; }
+
+.step .step-do li {
+  padding: 4px 0 4px 18px; position: relative;
+  font-size: 14px; line-height: 1.55; color: var(--ink-soft);
+}
+
+.step .step-do li::before {
+  content: '·'; position: absolute; left: 4px; top: 4px;
+  color: var(--teal); font-weight: 700; font-size: 18px;
+}
+
+.step .step-example {
+  font-size: 13px; line-height: 1.6;
+  color: var(--ink-muted); font-style: italic; padding-top: 6px;
+}
+
+.step .step-example strong {
+  font-family: 'IBM Plex Mono', monospace; font-style: normal;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-muted); font-weight: 600;
+  display: block; margin-bottom: 2px;
+}
+
+/* ============ SKILLS HIERARCHY PANEL ============ */
+.hierarchy {
+  background: var(--ink); color: var(--paper);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+
+.hierarchy-head {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(244,240,230,0.18);
+}
+
+.hierarchy-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 8px;
+}
+
+.hierarchy-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 22px; line-height: 1.25;
+  color: var(--paper); margin-bottom: 8px;
+}
+
+.hierarchy-cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: rgba(244,240,230,0.6);
+}
+
+.hierarchy-cite a {
+  color: var(--amber); text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.hierarchy-cite a:hover { border-bottom-style: solid; }
+
+.layer-stack {
+  display: flex; flex-direction: column;
+  gap: 10px;
+}
+
+.layer-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 18px;
+  background: rgba(244,240,230,0.06);
+  padding: 14px 18px;
+  border-radius: 3px;
+  border-left: 3px solid var(--amber);
+  align-items: start;
+}
+
+.layer-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.12em;
+  color: var(--amber); font-weight: 600;
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+
+.layer-name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 17px; line-height: 1.3;
+  color: var(--paper); margin-bottom: 6px;
+}
+
+.layer-what {
+  font-size: 13.5px; line-height: 1.55;
+  color: rgba(244,240,230,0.78);
+  margin-bottom: 6px;
+}
+
+.layer-example {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px; color: rgba(244,240,230,0.55);
+  line-height: 1.5;
+}
+
+.layer-example strong {
+  color: var(--amber); font-weight: 600;
+  font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: inline-block; margin-right: 6px;
+}
+
+/* ============ CRITICALITY MATRIX ============ */
+.matrix {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.matrix-cell {
+  padding: 16px 18px;
+  border-radius: 3px;
+  background: var(--paper-soft);
+  border-top: 3px solid var(--teal);
+}
+
+.matrix-cell.foundational { border-top-color: var(--ink-muted); }
+.matrix-cell.differentiating { border-top-color: var(--amber); }
+.matrix-cell.emerging { border-top-color: var(--teal); }
+.matrix-cell.declining { border-top-color: var(--rust); }
+
+.matrix-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 6px;
+}
+
+.matrix-cell.foundational .matrix-label { color: var(--ink-muted); }
+.matrix-cell.differentiating .matrix-label { color: var(--amber); }
+.matrix-cell.emerging .matrix-label { color: var(--teal); }
+.matrix-cell.declining .matrix-label { color: var(--rust); }
+
+.matrix-cell h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 16px; line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.matrix-cell p {
+  font-size: 13px; line-height: 1.55;
+  margin: 0; color: var(--ink-soft);
+}
+
+/* ============ CULSHAW QUOTE ============ */
+.culshaw {
+  background: var(--ink); color: var(--paper);
+  padding: 28px 32px; border-radius: 4px;
+  margin: 32px 0;
+}
+
+.culshaw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber); margin-bottom: 12px;
+}
+
+.culshaw p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400; font-size: 18px; line-height: 1.55;
+  font-style: italic; margin-bottom: 14px;
+  color: var(--paper);
+}
+
+.culshaw cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.08em;
+  font-style: normal; color: rgba(244,240,230,0.65);
+}
+
+.culshaw cite a {
+  color: var(--amber); text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.culshaw cite a:hover { border-bottom-style: solid; }
+
+/* ============ GOOD ============ */
+.good-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px; margin-top: 8px;
+}
+
+.good-card {
+  background: var(--paper-soft);
+  padding: 18px 20px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+}
+
+.good-card-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--teal); font-weight: 600; margin-bottom: 6px;
+}
+
+.good-card h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500; font-size: 16px; line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.good-card p {
+  font-size: 13px; line-height: 1.55;
+  margin: 0; color: var(--ink-soft);
+}
+
+/* ============ MISTAKES ============ */
+.mistakes {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px; padding: 24px 28px;
+}
+
+.mistakes ul { list-style: none; padding: 0; }
+
+.mistakes li {
+  padding: 12px 0 12px 32px; position: relative;
+  font-size: 15px; line-height: 1.6;
+  border-bottom: 1px dashed var(--line);
+}
+
+.mistakes li:last-child { border-bottom: none; }
+
+.mistakes li::before {
+  content: '✕'; position: absolute; left: 0; top: 12px;
+  width: 22px; height: 22px; background: var(--rust);
+  color: var(--paper); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+
+.mistakes strong { font-weight: 600; color: var(--ink); }
+
+/* ============ TEMPLATE ============ */
+.template-card {
+  background: var(--ink); color: var(--paper);
+  border-radius: 4px; overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27,33,44,0.15);
+}
+
+.template-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px;
+  background: rgba(244,240,230,0.06);
+  border-bottom: 1px solid rgba(244,240,230,0.12);
+}
+
+.template-head-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--amber);
+}
+
+.copy-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  background: transparent; color: var(--paper);
+  border: 1px solid rgba(244,240,230,0.3);
+  padding: 5px 12px; border-radius: 2px;
+  cursor: pointer; transition: all 0.15s ease;
+}
+
+.copy-btn:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+
+.copy-btn.copied { background: var(--teal); border-color: var(--teal); color: var(--paper); }
+
+.template-body {
+  padding: 24px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px; line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ============ XREF ============ */
+.xref {
+  margin-top: 48px;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 32px;
+}
+
+.xref-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 16px;
+}
+
+.xref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.xref-card {
+  background: var(--paper-soft);
+  padding: 16px 18px; border-radius: 3px;
+  border-left: 2px solid var(--teal);
+  text-decoration: none; color: var(--ink);
+  transition: background 0.15s ease; display: block;
+}
+
+.xref-card:hover { background: var(--paper-deep); }
+
+.xref-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--teal); font-weight: 600; margin-bottom: 4px;
+}
+
+.xref-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px; font-weight: 500; line-height: 1.3;
+}
+
+/* ============ LINKS ============ */
+a.src {
+  color: var(--teal); text-decoration: none;
+  border-bottom: 1px solid rgba(15,110,86,0.3);
+}
+
+a.src:hover { border-bottom-color: var(--teal); }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--ink); color: rgba(244,240,230,0.6);
+  padding: 28px 0; font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em; text-align: center;
+  margin-top: 60px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 700px) {
+  .container, .masthead-inner { padding: 0 22px; }
+  .masthead h1 { font-size: 30px; }
+  .masthead .lede { font-size: 16px; }
+  .section h2 { font-size: 24px; }
+  .step { padding: 20px 22px; }
+  .step-head { flex-wrap: wrap; gap: 10px; }
+  .step h3 { font-size: 18px; }
+  .culshaw, .hierarchy { padding: 22px; }
+  .culshaw p { font-size: 16px; }
+  .layer-row { grid-template-columns: 1fr; gap: 8px; }
+  .template-body { font-size: 11.5px; padding: 18px; }
+  .xref-grid, .toc ol { grid-template-columns: 1fr; }
+}
+
+/* ============ A11Y ============ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #14181F; color: #E8E2D2; }
+  .step, .scenario-list li, .need-card, .good-card, .xref-card, .toc, .matrix-cell { background: #1F2530; }
+  .step p, .step-what, .good-card p, .need-card p, .matrix-cell p { color: rgba(232,226,210,0.75); }
+  .mistakes { background: #1A1F28; border-color: rgba(232,226,210,0.15); }
+  .mistakes strong { color: #E8E2D2; }
+  .xref-card { color: #E8E2D2; }
+  .xref-card:hover { background: #252C38; }
+  .step .step-do { background: rgba(232,226,210,0.04); }
+  .toc { border-color: rgba(232,226,210,0.15); }
+  .toc a { color: #E8E2D2; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <span>TI Playbook</span>
+      <span class="crumb-sep">/</span>
+      <span>Library</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-self">Guide 05 of Tier 2</span>
+    </div>
+    <h1>Build a skills-based talent map</h1>
+    <p class="lede">A working method for decomposing a role into its actual skills, then mapping where those skills live — externally, internally, and one reskilling step away. Built for the semi/AI context, where job titles change but the underlying skill stack determines who can really do the work. Decision-first, not taxonomy-first.</p>
+    <div class="tag-row">
+      <span class="tag accent">Tier 2 Library Guide</span>
+      <span class="tag">Full Guide</span>
+      <span class="tag">7 Steps</span>
+      <span class="tag">~18 min read</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container">
+
+<!-- ========== TOC ========== -->
+<nav class="toc">
+  <div class="toc-label">Inside this guide</div>
+  <ol>
+    <li><a href="#when">When to use this guide</a></li>
+    <li><a href="#need">What you need before starting</a></li>
+    <li><a href="#steps">The 7 steps</a></li>
+    <li><a href="#good">What good looks like</a></li>
+    <li><a href="#mistakes">Common mistakes</a></li>
+    <li><a href="#template">Starter skills map template</a></li>
+  </ol>
+</nav>
+
+<!-- ========== WHEN ========== -->
+<section class="section" id="when">
+  <div class="section-label">01 &nbsp;·&nbsp; When to Use</div>
+  <h2>When to build a skills-based map</h2>
+  <p class="preamble">A skills-based map is not an always-on artifact. It's built for a specific decision — and the decision shapes the map. Run this guide when you hit one of these:</p>
+
+  <ul class="scenario-list">
+    <li><strong>You're hiring for a role that keeps failing.</strong> Three rounds of recs and you're still not getting offers out. Decomposing the role into skills almost always reveals you've been hiring for an impossible profile — a unicorn that doesn't exist in the market, or shouldn't.</li>
+    <li><strong>You're building build-vs-buy-vs-borrow strategy.</strong> Without a skills decomposition, the answer always defaults to "buy" (hire externally). The map exposes where "borrow" (reskill internally, contract, partner) is actually viable.</li>
+    <li><strong>You're standing up a new function or role family.</strong> Especially in fast-moving areas like AI inference, ML infrastructure, or photonic compute — where job titles haven't standardized but skill stacks have.</li>
+    <li><strong>You're planning internal mobility or a talent marketplace.</strong> Without a skills layer, internal mobility runs on title-matching, which produces narrow lateral moves. With a skills layer, it surfaces the adjacent moves that actually grow the workforce.</li>
+    <li><strong>You're doing M&A due diligence on the talent base.</strong> Acquiring a company is partly acquiring a skills portfolio. Mapping the target's skill base against your role architecture reveals integration risk and capability upside.</li>
+    <li><strong>You're investing in reskilling.</strong> A reskilling investment built around a declining skill wastes money. The skills map identifies which skills are on a sunrise trajectory and which are sunsetting.</li>
+  </ul>
+</section>
+
+<!-- ========== NEED ========== -->
+<section class="section" id="need">
+  <div class="section-label">02 &nbsp;·&nbsp; Inputs</div>
+  <h2>What you need before starting</h2>
+  <p class="preamble">A skills map for a single role takes 8–15 hours done well. A role family takes 3–5x that. These inputs determine whether the analysis actually lands.</p>
+
+  <div class="need-grid">
+    <div class="need-card">
+      <div class="need-card-label">Target role(s)</div>
+      <p>A realistic job description — not the aspirational one. The role as it would actually be staffed today, with current expectations of scope and impact.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Subject matter expert</div>
+      <p>The hiring manager or a senior IC who'll validate the skills decomposition. The map fails if the SME isn't engaged — usually 2-3 sessions of an hour each.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Decision frame</div>
+      <p>Why are you building this? Sourcing strategy? Internal mobility? Build-buy-borrow? Different framings produce different maps — and a generic "all uses" map is useful for none.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">External skills data</div>
+      <p><a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a>, <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a>, <a href="https://draup.com/" target="_blank" rel="noopener" class="src">Draup</a>, or <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a> for skills inventories and trajectory. <a href="https://www.onetonline.org/" target="_blank" rel="noopener" class="src">O*NET</a> for foundational US gov taxonomy if needed.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Internal skills inventory</div>
+      <p>HRIS skills data, internal talent marketplace, or skills-tagged ATS. If none exists, flag the gap explicitly — you'll do the external half of the map and call out the internal half as Phase 2.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Hierarchical framework</div>
+      <p>Pick a skill taxonomy: <a href="https://draup.com/" target="_blank" rel="noopener" class="src">Draup's</a> root → core → soft → tools, Lightcast's open library, or your own. The choice matters less than picking <em>one</em> and using it consistently.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STEPS ========== -->
+<section class="section" id="steps">
+  <div class="section-label">03 &nbsp;·&nbsp; The Method</div>
+  <h2>The seven steps</h2>
+  <p class="preamble">The order matters. Most failed skills-map projects skip Step 1 (framing) and start with Step 2 (decomposition), which produces a taxonomy with no consumer. Step 3 (criticality) is the most-skipped step, and the reason most skills maps are unusable. Step 5 (internal mapping) is where the build-vs-buy-vs-borrow value actually lives.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 01</div>
+      <h3>Frame what the map is for — decision first, taxonomy second</h3>
+    </div>
+    <p class="step-what">A skills map without a decision frame becomes a taxonomy. Taxonomies are easy to build and rarely used. Pick the decision the map will serve <em>before</em> you start the decomposition.</p>
+    <div class="step-do">
+      <div class="step-do-label">Pick one (or two) primary uses</div>
+      <ul>
+        <li><strong>Sourcing strategy</strong> — finding non-obvious candidate pools via adjacent skills.</li>
+        <li><strong>Internal mobility</strong> — surfacing employees with the right skills for an open role even if titles don't match.</li>
+        <li><strong>Build-buy-borrow</strong> — deciding whether to hire, reskill, or contract per capability.</li>
+        <li><strong>Workforce planning</strong> — forecasting which skills will be in surplus or deficit at 12–36 months.</li>
+        <li><strong>Reskilling investment</strong> — choosing which L&D bets to make.</li>
+        <li><strong>EVP and role design</strong> — crafting a role that's actually hireable in the current market.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> A team trying to hire 6 "Senior AI Inference Engineers" with no progress in 4 months has two very different maps available. A sourcing-strategy map focuses on adjacent skills and unconventional source pools. A build-buy-borrow map asks whether you should reskill 3 internal GPU engineers and hire 3 externals. Same role, different maps. Pick which decision matters more before starting.</p>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 02</div>
+      <h3>Decompose the role into a skills inventory</h3>
+    </div>
+    <p class="step-what">Break the role down into the actual skills required, structured hierarchically. Don't list 40 skills — list the 8-15 that matter, with levels. Use a consistent framework like Draup's root → core → soft → tools.</p>
+
+    <div class="hierarchy">
+      <div class="hierarchy-head">
+        <div class="hierarchy-label">The framework</div>
+        <div class="hierarchy-title">Hierarchical skills decomposition — 4 layers</div>
+        <div class="hierarchy-cite">Adapted from the <a href="https://draup.com/" target="_blank" rel="noopener">Draup</a> Skills Architecture Framework</div>
+      </div>
+
+      <div class="layer-stack">
+        <div class="layer-row">
+          <div class="layer-num">Layer 01</div>
+          <div>
+            <div class="layer-name">Root skills</div>
+            <p class="layer-what">The fundamental capabilities the role depends on — the things you'd struggle to teach in under a year. Often domain knowledge or deep technical foundations.</p>
+            <div class="layer-example"><strong>Senior CUDA kernel example</strong> Parallel programming patterns · GPU memory hierarchy · Performance profiling fundamentals</div>
+          </div>
+        </div>
+
+        <div class="layer-row">
+          <div class="layer-num">Layer 02</div>
+          <div>
+            <div class="layer-name">Core skills</div>
+            <p class="layer-what">Role-specific skills built on the root layer. The "this is what you do day-to-day" skills. Teachable in 3-9 months with the right foundations.</p>
+            <div class="layer-example"><strong>Example</strong> CUDA kernel writing · Specific kernel domain (training vs inference) · NCCL / collective comms · Triton or MLIR familiarity</div>
+          </div>
+        </div>
+
+        <div class="layer-row">
+          <div class="layer-num">Layer 03</div>
+          <div>
+            <div class="layer-name">Soft skills</div>
+            <p class="layer-what">Cross-cutting capabilities that determine whether the technical work translates into actual delivery. Often underweighted in skills maps but heavily weighted in offer decisions.</p>
+            <div class="layer-example"><strong>Example</strong> Cross-functional comms (across ML and infra teams) · Trade-off framing · Mentorship of mid-level engineers · Async written comms</div>
+          </div>
+        </div>
+
+        <div class="layer-row">
+          <div class="layer-num">Layer 04</div>
+          <div>
+            <div class="layer-name">Tool / tech stack</div>
+            <p class="layer-what">The specific tools and platforms. Often the most volatile layer — what was state-of-the-art 18 months ago may already be on the way out.</p>
+            <div class="layer-example"><strong>Example</strong> CUDA · PyTorch · Triton · MLIR · cuDNN · NCCL · Nsight profiler</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="step-example"><strong>Why levels matter</strong> "Python" is not a skill — "Python at intermediate level for backend services" is. "CUDA" is not a skill — "CUDA at advanced level for production inference kernels at scale" is. Without levels, the map produces over-qualified pool sizes and under-qualified candidates.</p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 03</div>
+      <h3>Categorize each skill by criticality and trajectory</h3>
+    </div>
+    <p class="step-what">This is the most-skipped step and the reason most skills maps are unusable. If every skill is equally important, no skill is. Tag each skill on two axes: criticality (foundational, differentiating) and trajectory (emerging, declining).</p>
+
+    <div class="matrix">
+      <div class="matrix-cell foundational">
+        <div class="matrix-label">Foundational</div>
+        <h4>Table stakes</h4>
+        <p>Abundant in the market. Non-negotiable but not a hiring constraint. Don't over-spec these — they're available.</p>
+      </div>
+      <div class="matrix-cell differentiating">
+        <div class="matrix-label">Differentiating</div>
+        <h4>Rare and decisive</h4>
+        <p>The skills that actually constrain hiring. The 2-4 that are scarce in the market and central to the role.</p>
+      </div>
+      <div class="matrix-cell emerging">
+        <div class="matrix-label">Emerging</div>
+        <h4>Sunrise trajectory</h4>
+        <p>Growing in importance. Worth a premium and worth investing in for reskilling. Often where you find non-traditional candidates.</p>
+      </div>
+      <div class="matrix-cell declining">
+        <div class="matrix-label">Declining</div>
+        <h4>Sunset trajectory</h4>
+        <p>Fading from relevance. Don't over-invest in hiring for or reskilling toward. Tag for retirement from the spec.</p>
+      </div>
+    </div>
+
+    <div class="step-do">
+      <div class="step-do-label">For each skill in the inventory, ask</div>
+      <ul>
+        <li>Is this <strong>foundational</strong> (broadly available) or <strong>differentiating</strong> (scarce and role-defining)?</li>
+        <li>Is this <strong>emerging</strong> (growing fast in 12-24 mo data), <strong>steady</strong>, or <strong>declining</strong> (being supplanted)?</li>
+        <li>What's the realistic acquisition path — hire, reskill from adjacent, contract, or partner?</li>
+      </ul>
+    </div>
+
+    <p class="step-example"><strong>Semi/AI example</strong> In a Senior AI Inference Engineer role: CUDA kernel writing is differentiating but steady (it's hard but stable). MLIR / Triton is differentiating and emerging (growing fast, premium pricing). XLA expertise is differentiating but declining (partially supplanted). C++ is foundational. Most "skills map" outputs treat all four equally — which produces a hiring spec optimized for a market that doesn't exist.</p>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 04</div>
+      <h3>Map external supply per skill</h3>
+      <a href="#" class="step-link">↗ Uses Step 02 module</a>
+    </div>
+    <p class="step-what">For each differentiating and emerging skill, map where the supply actually lives. This step is what turns the skill list into a sourcing strategy.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each priority skill, capture</div>
+      <ul>
+        <li><strong>Total professionals with the skill at level</strong> — from Lightcast, TalentNeuron, LinkedIn TI skills inventories.</li>
+        <li><strong>Top 10 employers by headcount in this skill</strong> — gives you the realistic sourcing target list.</li>
+        <li><strong>Top geographic concentrations</strong> — where the skill physically lives (links to <a href="#" class="src">Step 3 geo light module</a>).</li>
+        <li><strong>University and certification programs producing the skill</strong> — leading indicator for early-career and mid-career sources.</li>
+        <li><strong>Adjacent communities</strong> — open-source repos (GitHub stars/contributors for technical), conferences, professional associations, certification populations.</li>
+        <li><strong>Growth trajectory of supply</strong> — is the skill being produced faster or slower than demand?</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Mapping external supply for "Triton kernel programming" reveals the supply is dramatically concentrated: ~85% sit at fewer than 12 companies, the GitHub community is small and identifiable (contributors are findable by name), and university coverage is essentially zero. That's a very different sourcing strategy than "CUDA in general" — where the pool is large but extremely contested.</p>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 05</div>
+      <h3>Map internal supply and adjacencies</h3>
+    </div>
+    <p class="step-what">The build-buy-borrow value of a skills map lives in this step. Without it, the answer always defaults to buy. With it, you can name specific employees and adjacent roles that could be redeployed or reskilled.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each priority skill, surface from internal data</div>
+      <ul>
+        <li><strong>Direct matches</strong> — employees with the skill at the required level today.</li>
+        <li><strong>One-step adjacencies</strong> — employees with 70-80% skill overlap who could move with 3-6 months bridge training.</li>
+        <li><strong>Two-step adjacencies</strong> — employees with 50-70% overlap who could move with 9-18 months of investment.</li>
+        <li><strong>Skill clusters</strong> — teams or job families where the skill is concentrated (good for cross-team mobility programs).</li>
+        <li><strong>Recent attrition with the skill</strong> — leavers from the past 12 months. Boomerang opportunities and competitive intel.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Mapping internal supply for "AI inference engineering" might reveal: 2 direct matches (currently in your training infrastructure org but who've worked on inference before), 8 one-step adjacencies (HPC engineers and GPU performance engineers with strong CUDA but no inference exposure), and 14 two-step adjacencies (game engine perf engineers and ML compiler engineers). That's 24 people inside the building before you write the first external req — and a credible "borrow" path that the executive sponsor can fund.</p>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 06</div>
+      <h3>Identify skill bridges — the reskilling pathways</h3>
+    </div>
+    <p class="step-what">Adjacencies are pools. Bridges are paths. For each adjacency you identified, define the concrete reskilling pathway: what does the person actually have to learn, how long does it take, and what's the cost of getting them there.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each adjacency, define</div>
+      <ul>
+        <li><strong>The gap</strong> — which specific skills are missing or at lower level?</li>
+        <li><strong>The learning path</strong> — what's the realistic combination of self-study, formal training, on-the-job project, and mentorship?</li>
+        <li><strong>The duration</strong> — 3 months, 6 months, 12 months? Be honest. Most internal mobility programs fail because the bridge is longer than admitted.</li>
+        <li><strong>The cost</strong> — training spend, productivity dip during ramp, mentor time. Not always cheaper than hiring; sometimes is.</li>
+        <li><strong>The retention upside</strong> — internally reskilled employees often have higher retention. Quantify it where you can.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Bridge from HPC engineer to AI inference engineer: gap is inference-specific tooling (Triton, ONNX, Nsight Compute for inference profiling) and inference-specific patterns (batched dynamic shapes, quantization, KV cache mgmt). Realistic path: 6 months of paired work + 1-2 internal training modules + production inference project ownership. Cost is the productivity dip + ~$15K formal training. Hiring externally would cost $40-80K in agency or sourcing time plus 4-month ramp. The bridge wins on cost and retention — but only when explicit.</p>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 07</div>
+      <h3>Synthesize into a decision-ready map</h3>
+    </div>
+    <p class="step-what">The deliverable is not a giant skills database. It's a one-page (or short multi-page) map structured by the decision the map serves. Different decisions, different output structures — but the discipline is the same: compress aggressively.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each use case, the map highlights different things</div>
+      <ul>
+        <li><strong>For sourcing strategy</strong> → the top 3 adjacent skill pools and the named source lists for each.</li>
+        <li><strong>For internal mobility</strong> → the named bridges and the time/cost to traverse each.</li>
+        <li><strong>For build-buy-borrow</strong> → the explicit comparison of the three paths with costs and timelines.</li>
+        <li><strong>For workforce planning</strong> → the supply/demand projection per priority skill at 12 and 36 months.</li>
+        <li><strong>For reskilling investment</strong> → the ranked list of skills worth investing in, with sunrise/sunset tagging.</li>
+        <li><strong>For role design</strong> → the recommended skill spec rewrite, with what to drop or relax.</li>
+      </ul>
+    </div>
+    <p class="step-example">See the starter template at the end of this guide for a flexible structure that accommodates any of these. The discipline is finishing with a named recommendation tied to the original decision frame — not a "here's the skills landscape" survey.</p>
+  </div>
+
+  <div class="culshaw">
+    <div class="culshaw-label">Field note · TI canon</div>
+    <p>"Skills adjacency is a way of opening non-traditional pathways for candidates who don't have the experience doing the exact job needed but have every ounce of capability required."</p>
+    <cite>Jolen Anderson, Global Head of HR, BNY Mellon — quoted in <a href="#" class="src">Deepening Talent Pools with Talent Intelligence</a> (SilkRoad, 2023)</cite>
+  </div>
+</section>
+
+<!-- ========== GOOD ========== -->
+<section class="section" id="good">
+  <div class="section-label">04 &nbsp;·&nbsp; The Standard</div>
+  <h2>What good looks like</h2>
+  <p class="preamble">A skills map that drives decisions has six observable features. A map without these is a taxonomy — interesting, but not operational.</p>
+
+  <div class="good-grid">
+    <div class="good-card">
+      <div class="good-card-num">01</div>
+      <h4>Hierarchical, not flat</h4>
+      <p>Skills are grouped in layers (root, core, soft, tools). A flat list of 40 skills is not a map — it's an unstructured inventory.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">02</div>
+      <h4>Tagged by criticality and trajectory</h4>
+      <p>Every priority skill has a criticality tag (foundational / differentiating) and a trajectory tag (emerging / steady / declining). The pattern visible at a glance.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">03</div>
+      <h4>Has levels, not binaries</h4>
+      <p>Skills are at L2/L3/L4 (or similar), not have/don't-have. The same skill at different levels is functionally different.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">04</div>
+      <h4>Maps both external and internal supply</h4>
+      <p>External supply is mapped from market data. Internal supply is mapped from HRIS or explicitly flagged as a Phase 2 gap.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">05</div>
+      <h4>Names adjacencies and bridges</h4>
+      <p>For each differentiating skill, the 1-step and 2-step adjacent skills are named, with concrete reskilling pathways and durations.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">06</div>
+      <h4>Tied to a decision and a refresh cycle</h4>
+      <p>The map says what decision it serves and when it gets refreshed. Tech skills shift on 12-18 month cycles — older maps mislead.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MISTAKES ========== -->
+<section class="section" id="mistakes">
+  <div class="section-label">05 &nbsp;·&nbsp; Pitfalls</div>
+  <h2>Common mistakes</h2>
+
+  <div class="mistakes">
+    <ul>
+      <li><strong>Skills list too long.</strong> A 40-skill list is not actionable. 90% accuracy on the top 12 skills beats 60% accuracy on a 50-skill list every time. Compress.</li>
+
+      <li><strong>No skill levels.</strong> "Python" and "Python at L4 for distributed ML inference at scale" are functionally different skills. A map without levels overstates pool size and produces under-qualified candidates.</li>
+
+      <li><strong>Skipping the criticality tagging.</strong> When every skill looks equally important, the spec becomes a wish list. Hiring against a wish-list spec is why some reqs sit open 9 months.</li>
+
+      <li><strong>No internal mapping.</strong> Without the internal half of the map, build-buy-borrow defaults to buy. Even if your HRIS is weak, do the qualitative version with team leaders — it's better than skipping.</li>
+
+      <li><strong>Treating skills as static.</strong> Tech skills decay and emerge on 12-18 month cycles. A skills map without a refresh cadence misleads by year-end. Commit to refresh up front.</li>
+
+      <li><strong>Org-wide rather than phased.</strong> Big skills-architecture projects almost always fail. Pilot on 1-2 priority role families, prove value, then scale. <a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a> and <a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a> both echo this advice.</li>
+
+      <li><strong>Taxonomy without consumer.</strong> Building "the skills taxonomy" without a named decision and a named decision-maker produces an academic exercise. Always Step 1 first.</li>
+
+      <li><strong>Ignoring the soft-skills layer.</strong> Cross-functional comms, trade-off framing, mentorship — these often determine offer decisions and retention more than the technical skills do. Skip them and the map under-explains the hiring failures.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== TEMPLATE ========== -->
+<section class="section" id="template">
+  <div class="section-label">06 &nbsp;·&nbsp; The Deliverable</div>
+  <h2>Starter skills map template</h2>
+  <p class="preamble">Flexible structure that accommodates the primary use cases (sourcing, mobility, build-buy-borrow, workforce planning, reskilling, role design). One role family per template. Adapt the synthesis section to the decision you're serving.</p>
+
+  <div class="template-card">
+    <div class="template-head">
+      <span class="template-head-label">Template · one-role skills map</span>
+      <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+    </div>
+    <div class="template-body" id="template-text">═════════════════════════════════════════════════════════════
+SKILLS MAP — [ROLE NAME]
+═════════════════════════════════════════════════════════════
+
+DECISION FRAME
+  Primary use:    [ ] Sourcing   [ ] Internal mobility
+                  [ ] Build-buy-borrow   [ ] WFP
+                  [ ] Reskilling   [ ] Role design
+  Decision-maker: [Name and role]
+  Decision date:  [When the map needs to inform a decision]
+  Last updated:   [YYYY-MM-DD]    Owner: [Name]
+  Refresh cadence: [Quarterly / semi-annual / event-driven]
+
+─────────────────────────────────────────────────────────────
+01 · ROLE DEFINITION
+[2-sentence realistic role definition — not aspirational.
+What does this person do on Tuesday afternoon?]
+
+─────────────────────────────────────────────────────────────
+02 · SKILLS INVENTORY (HIERARCHICAL)
+
+ROOT SKILLS (fundamentals)
+  · [Skill name] — [Level: L2/L3/L4] — [Crit: F/D] — [Traj: E/S/D]
+  · [Skill name] — [Level] — [Crit] — [Traj]
+  · [Skill name] — [Level] — [Crit] — [Traj]
+
+CORE SKILLS (role-specific)
+  · [Skill name] — [Level] — [Crit] — [Traj]
+  · [Skill name] — [Level] — [Crit] — [Traj]
+  · [Skill name] — [Level] — [Crit] — [Traj]
+  · [Skill name] — [Level] — [Crit] — [Traj]
+
+SOFT SKILLS (cross-cutting)
+  · [Skill name] — [Level] — [Crit] — [Traj]
+  · [Skill name] — [Level] — [Crit] — [Traj]
+
+TOOL / TECH STACK
+  · [Tool name] — [Level] — [Crit] — [Traj]
+  · [Tool name] — [Level] — [Crit] — [Traj]
+  · [Tool name] — [Level] — [Crit] — [Traj]
+
+Legend:
+  Crit:  F = Foundational    D = Differentiating
+  Traj:  E = Emerging   S = Steady   D = Declining
+
+─────────────────────────────────────────────────────────────
+03 · TOP 3-5 DIFFERENTIATING SKILLS (the constraints)
+  1. [Skill]  Why it constrains: [_____]
+  2. [Skill]  Why it constrains: [_____]
+  3. [Skill]  Why it constrains: [_____]
+
+─────────────────────────────────────────────────────────────
+04 · EXTERNAL SUPPLY (for each differentiating skill)
+
+[Skill 1]
+  Total pool at level:    [Number with source]
+  Top 5 employers:        [Companies with HC share]
+  Top 3 geo concentrations: [Cities/regions]
+  Communities / sources:  [GitHub repos, confs, certifications]
+  Supply trajectory:      [Growing / Steady / Shrinking]
+
+[Skill 2]
+  [Same structure]
+
+[Skill 3]
+  [Same structure]
+
+─────────────────────────────────────────────────────────────
+05 · INTERNAL SUPPLY + ADJACENCIES
+
+DIRECT MATCHES TODAY: [#] employees
+  Cluster locations:    [Teams/orgs they sit in]
+
+ONE-STEP ADJACENCIES (3-6 mo bridge): [#] employees
+  Adjacent skill pools: [Which adjacencies feed in]
+  Cluster locations:    [Teams/orgs]
+
+TWO-STEP ADJACENCIES (9-18 mo bridge): [#] employees
+  Adjacent skill pools: [Which adjacencies feed in]
+  Cluster locations:    [Teams/orgs]
+
+RECENT ATTRITION WITH SKILL (last 12 mo): [#] employees
+  Where they went:      [Competitors / industries]
+  Boomerang potential:  [Realistic / unlikely]
+
+─────────────────────────────────────────────────────────────
+06 · SKILL BRIDGES (for each named adjacency)
+
+Bridge A: [Adjacent role] → [Target role]
+  Gap skills:         [Specific skills missing or at lower level]
+  Learning path:      [Self-study / formal / project / mentorship]
+  Duration:           [Realistic, not optimistic]
+  Cost (per person):  [Training + productivity dip + mentor time]
+
+Bridge B: [Same structure]
+
+─────────────────────────────────────────────────────────────
+07 · RECOMMENDATION (tied to decision frame)
+[Specific, named, tied to the use case from Section 01]
+
+Example formats:
+  → For sourcing:        [3 named source lists and outreach plays]
+  → For internal mob:    [3 named bridges to fund / pilot]
+  → For build-buy-borrow:[Recommended mix per role with cost compare]
+  → For workforce plan:  [Forecast surplus/deficit at 12 and 36 mo]
+  → For reskilling:      [Top 3 skills worth L&D investment + why]
+  → For role design:     [Spec rewrite with what to drop and why]
+
+─────────────────────────────────────────────────────────────
+SOURCES & METHODOLOGY NOTES
+External: [Lightcast / TalentNeuron / Draup / LinkedIn TI / etc.]
+Internal: [HRIS / Talent marketplace / Manager interviews]
+SME validation: [Name and date of SME review session]
+Known gaps:     [What we don't know and why]
+
+═════════════════════════════════════════════════════════════
+NEXT REFRESH: [YYYY-MM-DD]
+═════════════════════════════════════════════════════════════</div>
+  </div>
+</section>
+
+<!-- ========== XREF ========== -->
+<section class="xref">
+  <div class="xref-label">↗ Cross-references · related modules</div>
+  <div class="xref-grid">
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 02 · Shared module</div>
+      <div class="xref-title">Size the qualified pool</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 03 · Light module</div>
+      <div class="xref-title">Map geo concentration</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 03</div>
+      <div class="xref-title">Run a competitor talent analysis</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 04</div>
+      <div class="xref-title">Map a talent pool for a new market</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Tier 2 · Tactical</div>
+      <div class="xref-title">Brief a hiring manager with market data</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Guide 01 · Flagship</div>
+      <div class="xref-title">Pull a talent supply snapshot</div>
+    </a>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div>Talent Intelligence Playbook · Library Guide 05 · Build a Skills-Based Talent Map · v1.0</div>
+</footer>
+
+<script>
+function copyTemplate(btn) {
+  const text = document.getElementById('template-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+  });
+}
+</script>
+
+</body>
+</html>

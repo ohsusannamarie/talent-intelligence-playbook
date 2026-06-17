@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Dive — Reading the Demand Signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F0E6;--paper-2:#ECE6D7;--ink:#1B212C;--ink-2:#272E3B;--ink-soft:#3A4250;
+    --teal:#0F6E56;--teal-bright:#1D9E75;--teal-pale:#E1F0E9;
+    --amber:#BA7517;--amber-deep:#854F0B;--amber-pale:#F6EAD4;
+    --rust:#A23A1D;--rust-pale:#F3E4DE;
+    --line:#D8D0BD;--line-soft:#E3DCCB;
+    --text:#23272F;--text-soft:#5C5848;--text-faint:#8A8472;
+    --serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--text);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px 120px;}
+
+  a{color:var(--teal);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px;text-decoration-color:rgba(15,110,86,0.35);transition:color .12s,text-decoration-color .12s;}
+  a:hover{color:var(--teal-bright);text-decoration-color:var(--teal-bright);}
+
+  .masthead{border-bottom:2px solid var(--ink);padding:48px 0 28px;margin-bottom:40px;}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber-deep);display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .eyebrow::after{content:"";flex:1;height:1px;background:var(--line);}
+  .crumb{font-family:var(--mono);font-size:12px;color:var(--text-faint);margin-bottom:8px;}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.5vw,44px);line-height:1.06;letter-spacing:-0.01em;color:var(--ink);margin-bottom:16px;}
+  .standfirst{font-size:18px;color:var(--text-soft);line-height:1.55;}
+
+  section{margin-bottom:52px;}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--teal);letter-spacing:0.05em;}
+  .sec-title{font-family:var(--serif);font-weight:500;font-size:23px;color:var(--ink);letter-spacing:-0.01em;}
+  p{margin-bottom:14px;font-size:16px;}
+  p.lead{color:var(--text-soft);}
+
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .metric{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:0 6px 6px 0;padding:14px 16px;}
+  .metric-name{font-weight:600;color:var(--ink);font-size:14px;margin-bottom:5px;}
+  .metric p{font-size:13px;margin:0;color:var(--ink-soft);line-height:1.5;}
+  .metric p b{color:var(--teal);font-weight:600;}
+
+  .ratio{background:var(--ink);color:var(--paper);border-radius:8px;padding:24px 26px;margin-bottom:16px;}
+  .ratio-label{font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--teal-bright);margin-bottom:14px;}
+  .ratio-eq{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+  .ratio-term{flex:1;min-width:130px;text-align:center;background:var(--ink-2);border-radius:6px;padding:14px;}
+  .ratio-term .rt-top{font-family:var(--serif);font-size:22px;color:var(--paper);font-weight:500;margin-bottom:2px;}
+  .ratio-term .rt-bot{font-size:11px;color:#A9A491;font-family:var(--mono);letter-spacing:0.06em;text-transform:uppercase;}
+  .ratio-op{font-family:var(--serif);font-size:26px;color:var(--amber);}
+  .ratio p{font-size:14px;color:#E8E4D8;margin:0;line-height:1.55;}
+  .ratio b{color:var(--paper);}
+
+  .scale{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .band{border-radius:6px;padding:14px 16px;}
+  .band.loose{background:var(--teal-pale);}
+  .band.balanced{background:var(--amber-pale);}
+  .band.tight{background:var(--rust-pale);}
+  .band-r{font-family:var(--mono);font-size:13px;font-weight:500;margin-bottom:4px;}
+  .band.loose .band-r{color:var(--teal);}
+  .band.balanced .band-r{color:var(--amber-deep);}
+  .band.tight .band-r{color:var(--rust);}
+  .band-l{font-weight:600;font-size:14px;color:var(--ink);margin-bottom:4px;}
+  .band p{font-size:12px;margin:0;color:var(--ink-soft);line-height:1.45;}
+
+  .src-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+  .src-card{background:var(--paper-2);border:1px solid var(--line);border-radius:6px;padding:14px 16px;}
+  .src-name{font-size:15px;margin-bottom:2px;}
+  .src-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(15,110,86,0.4);}
+  .src-name a:hover{color:var(--teal);}
+  .src-name .ext{font-size:11px;color:var(--text-faint);margin-left:4px;text-decoration:none;}
+  .src-type{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);margin-bottom:8px;}
+  .src-good{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .src-good b{color:var(--teal);font-weight:600;}
+
+  .router{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:24px;}
+  .tool{border:1px solid var(--line);border-radius:6px;padding:14px 16px;background:var(--paper-2);border-top:3px solid var(--amber);border-radius:0 0 6px 6px;}
+  .tool-name{font-size:15px;margin-bottom:4px;}
+  .tool-name a{font-weight:600;color:var(--ink);text-decoration-color:rgba(186,117,23,0.4);}
+  .tool-name a:hover{color:var(--amber-deep);}
+  .tool-job{font-size:13px;color:var(--ink-soft);line-height:1.45;}
+  .tool-job b{color:var(--amber-deep);}
+
+  .code{background:var(--ink);border-radius:8px;margin-bottom:14px;overflow:hidden;}
+  .code-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--ink-soft);}
+  .code-title{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-bright);}
+  .code-copy{font-family:var(--mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;background:transparent;border:1px solid var(--ink-soft);color:#C9C4B4;padding:5px 12px;border-radius:4px;cursor:pointer;transition:all 0.15s;}
+  .code-copy:hover{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .code pre{font-family:var(--mono);font-size:13px;line-height:1.65;color:#E2DECF;padding:16px;white-space:pre-wrap;word-break:break-word;overflow-x:auto;}
+  .code pre .tok{color:var(--amber);}
+
+  .guard{background:var(--rust-pale);border-left:3px solid var(--rust);border-radius:0 6px 6px 0;padding:18px 22px;}
+  .guard-label{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--rust);margin-bottom:12px;}
+  .guard-item{font-size:14px;color:var(--ink-soft);padding:6px 0;line-height:1.5;display:flex;gap:10px;}
+  .guard-item .gm{color:var(--rust);font-family:var(--mono);flex-shrink:0;}
+  .guard-item b{color:var(--ink);font-weight:600;}
+  .xref{font-size:13px;color:var(--text-faint);font-family:var(--mono);margin-top:8px;}
+
+  @media(max-width:560px){
+    .scale{grid-template-columns:1fr;}
+    .ratio-eq{flex-direction:column;}
+  }
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">Field Guide 01 · Deep Dive</div>
+    <div class="crumb">Step 04 — Check the demand signal › Execution detail</div>
+    <h1>Reading the demand signal</h1>
+    <p class="standfirst">Supply is half the story. A pool of thousands is worthless if every rival is hunting the same people. Demand turns a raw count into the number that actually predicts whether you'll win.</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">A</span><span class="sec-title">What demand actually measures</span></div>
+    <p class="lead">Four signals, read together, tell you how hot a profile is right now and who you're fighting for it.</p>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-name">Active posting volume</div>
+        <p>How many open reqs target this profile in your geography. <b>The raw heat reading</b> — rising volume means intensifying competition.</p>
+      </div>
+      <div class="metric">
+        <div class="metric-name">Time-to-fill</div>
+        <p>How long these roles sit open. <b>Long fills signal scarcity</b> — the market is struggling, not just you.</p>
+      </div>
+      <div class="metric">
+        <div class="metric-name">Competitor set</div>
+        <p>The named companies posting for this profile. <b>Who you're up against</b> — and whether they outgun you on comp or brand.</p>
+      </div>
+      <div class="metric">
+        <div class="metric-name">Posting velocity trend</div>
+        <p>The direction over 6 to 12 months. <b>Acceleration is the real tell</b> — a profile heating up fast will be brutal by next quarter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">B</span><span class="sec-title">The supply-to-demand ratio</span></div>
+    <p class="lead">This is the number the whole snapshot turns on. One figure that says how contested the talent is.</p>
+    <div class="ratio">
+      <div class="ratio-label">The core calculation</div>
+      <div class="ratio-eq">
+        <div class="ratio-term"><div class="rt-top">Qualified pool</div><div class="rt-bot">from step 02</div></div>
+        <div class="ratio-op">÷</div>
+        <div class="ratio-term"><div class="rt-top">Active reqs</div><div class="rt-bot">this geography</div></div>
+        <div class="ratio-op">=</div>
+        <div class="ratio-term"><div class="rt-top">Candidates per open role</div><div class="rt-bot">the heat index</div></div>
+      </div>
+      <p><b>Read it simply:</b> a high ratio means plenty of talent per opening — you have room to be selective. A low ratio means every qualified person has multiple suitors — you're in a fight, and comp, speed, and brand decide it.</p>
+    </div>
+    <div class="scale">
+      <div class="band loose">
+        <div class="band-r">&gt; 50 : 1</div>
+        <div class="band-l">Loose market</div>
+        <p>Talent abundant relative to demand. You can hold standards and move at a normal pace.</p>
+      </div>
+      <div class="band balanced">
+        <div class="band-r">10–50 : 1</div>
+        <div class="band-l">Balanced</div>
+        <p>Competitive but workable. Speed and a clear pitch matter; you'll win a fair share.</p>
+      </div>
+      <div class="band tight">
+        <div class="band-r">&lt; 10 : 1</div>
+        <div class="band-l">Tight market</div>
+        <p>Scarcity. Expect bidding wars. Comp, brand, and a flawless process decide who lands the hire.</p>
+      </div>
+    </div>
+    <p class="anatomy-key" style="font-size:13px;color:var(--text-faint);margin-top:14px;">Treat the bands as directional, not absolute — they shift by function and seniority. A senior analog or RF pool runs tight even at higher ratios because the addressable, movable slice is small.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">C</span><span class="sec-title">Where to pull demand data</span></div>
+    <p class="lead">Job postings are the rawest demand signal there is. These are where you read them.</p>
+    <div class="src-grid">
+      <div class="src-card"><div class="src-name"><a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast <span class="ext">↗</span></a></div><div class="src-type">Paid · platform</div><div class="src-good"><b>Best for:</b> normalized posting volume, time-to-fill, and competitor breakdown by skill and geo.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://draup.com" target="_blank" rel="noopener">Draup <span class="ext">↗</span></a></div><div class="src-type">Paid · platform</div><div class="src-good"><b>Best for:</b> demand by company and location, with peer-set comparison built in.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.linkedin.com/talent" target="_blank" rel="noopener">LinkedIn Talent Insights <span class="ext">↗</span></a></div><div class="src-type">Paid · platform</div><div class="src-good"><b>Best for:</b> hiring demand and the supply/demand ratio natively, plus named competitors.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.indeed.com" target="_blank" rel="noopener">Indeed <span class="ext">↗</span></a></div><div class="src-type">Free · board</div><div class="src-good"><b>Best for:</b> a quick live read of raw posting counts when you have no platform access.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.google.com/search?q=jobs" target="_blank" rel="noopener">Google Jobs <span class="ext">↗</span></a></div><div class="src-type">Free · aggregator</div><div class="src-good"><b>Best for:</b> fast cross-board sanity check of who's actively posting a profile.</div></div>
+      <div class="src-card"><div class="src-name"><a href="https://www.bls.gov/data/" target="_blank" rel="noopener">BLS / official data <span class="ext">↗</span></a></div><div class="src-type">Free · official</div><div class="src-good"><b>Best for:</b> macro occupation growth to frame whether demand is structural or a blip.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">D</span><span class="sec-title">Using AI to read demand</span></div>
+    <p class="lead">AI compiles the competitor set, reads the velocity trend, and translates a ratio into a plain-English verdict you can hand a hiring manager.</p>
+
+    <div class="router">
+      <div class="tool"><div class="tool-name"><a href="https://www.perplexity.ai" target="_blank" rel="noopener">Perplexity</a></div><div class="tool-job"><b>Competitor scan.</b> Find who's actively hiring a profile right now, with sourced postings and recent news.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://claude.ai" target="_blank" rel="noopener">Claude</a> / <a href="https://chatgpt.com" target="_blank" rel="noopener">ChatGPT</a></div><div class="tool-job"><b>Synthesis.</b> Turn raw counts and a ratio into a competitive read and a clear verdict.</div></div>
+      <div class="tool"><div class="tool-name"><a href="https://lightcast.io" target="_blank" rel="noopener">Lightcast</a> / <a href="https://draup.com" target="_blank" rel="noopener">Draup</a></div><div class="tool-job"><b>The hard numbers.</b> Pull posting volume, trend, and time-to-fill directly — AI interprets, the platform measures.</div></div>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 1 · Competitor demand scan</span><button class="code-copy" data-target="p1">Copy</button></div>
+      <pre id="p1">Find the companies actively hiring for <span class="tok">[role]</span> in <span class="tok">[geo]</span> right now.
+
+For each, tell me:
+1. Roughly how many open reqs for this profile
+2. Whether their posting volume is rising or flat over recent months
+3. Their likely comp tier and employer-brand strength for this talent
+
+Rank them by how much of a threat they are to me winning this hire,
+and name the 3 I should worry about most.</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 2 · Ratio to verdict</span><button class="code-copy" data-target="p2">Copy</button></div>
+      <pre id="p2">For <span class="tok">[role]</span> in <span class="tok">[geo]</span>:
+- Qualified pool: <span class="tok">[n]</span> (from my sizing)
+- Active reqs targeting the profile: <span class="tok">[n]</span>
+
+Calculate the supply-to-demand ratio, place it on a loose / balanced /
+tight scale, and write a 2-3 sentence verdict a hiring manager can read.
+Note any reason the headline ratio overstates how winnable this is
+(e.g. how little of the pool is actually movable).</pre>
+    </div>
+
+    <div class="code">
+      <div class="code-bar"><span class="code-title">Prompt 3 · Velocity trend read</span><button class="code-copy" data-target="p3">Copy</button></div>
+      <pre id="p3">Here is monthly posting volume for <span class="tok">[role]</span> in <span class="tok">[geo]</span> over the
+last 12 months: <span class="tok">[paste the numbers]</span>.
+
+Tell me:
+1. The trend — accelerating, flat, or cooling
+2. Whether this looks structural or a short-term spike
+3. What it means for timing — should we move now or will it ease?</pre>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="sec-num">E</span><span class="sec-title">Guardrails</span></div>
+    <div class="guard">
+      <div class="guard-label">Before you trust the ratio</div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Postings double-count.</b> One role gets posted to five boards. Use a normalized platform, or de-dupe — a raw board sum inflates demand.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Match the denominator to the numerator.</b> If the pool is one metro, the reqs must be the same metro. Mixing geos breaks the ratio.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Movable pool, not total pool.</b> The honest ratio uses the slice that will actually move. A big pool of locked-in people makes a loose market look real when it isn't.</span></div>
+      <div class="guard-item"><span class="gm">!</span><span><b>Trend beats snapshot.</b> A single-month count misses the story. Acceleration is what bites you next quarter — always read the direction.</span></div>
+    </div>
+    <div class="xref">Cross-reference → Step 02 (pool sizing, supplies the numerator) · Step 06 (movability, corrects the pool) · Step 07 (verdict)</div>
+  </section>
+
+</div>
+
+<script>
+document.querySelectorAll('.code-copy').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var el=document.getElementById(btn.getAttribute('data-target'));
+    navigator.clipboard.writeText(el.innerText).then(function(){
+      var t=btn.textContent;btn.textContent='Copied ✓';
+      setTimeout(function(){btn.textContent=t;},1500);
+    });
+  });
+});
+</script>
+</body>
+</html>

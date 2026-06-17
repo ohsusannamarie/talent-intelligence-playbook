@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide 04 — Map a Talent Pool for a New Market | TI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F0E6;
+  --paper-soft: #EAE4D4;
+  --paper-deep: #DDD4BD;
+  --ink: #1B212C;
+  --ink-soft: #2A3140;
+  --ink-muted: #4A5260;
+  --teal: #0F6E56;
+  --teal-soft: #14876B;
+  --amber: #BA7517;
+  --amber-soft: #D08A28;
+  --rust: #A23A1D;
+  --line: rgba(27,33,44,0.12);
+  --line-strong: rgba(27,33,44,0.22);
+  --shadow: 0 2px 8px rgba(27,33,44,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ============ MASTHEAD ============ */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px 0 40px;
+  border-bottom: 3px solid var(--amber);
+}
+
+.masthead-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.crumb-sep { opacity: 0.4; }
+.crumb-self { color: var(--paper); }
+
+.masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+.masthead .lede {
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(244,240,230,0.8);
+  max-width: 720px;
+}
+
+.tag-row {
+  margin-top: 22px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(244,240,230,0.25);
+  border-radius: 2px;
+  color: rgba(244,240,230,0.8);
+}
+
+.tag.accent {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+/* ============ TOC ============ */
+.toc {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 22px 26px;
+  margin: 48px 0 40px;
+}
+
+.toc-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.toc li {
+  counter-increment: toc;
+  padding: 6px 0 6px 32px;
+  position: relative;
+  font-size: 14px;
+}
+
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+
+.toc a:hover {
+  border-bottom-color: var(--teal);
+  color: var(--teal);
+}
+
+/* ============ MAIN ============ */
+main { padding: 0 0 40px; }
+
+.section {
+  margin-bottom: 64px;
+  scroll-margin-top: 24px;
+}
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--teal);
+}
+
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1.18;
+  margin-bottom: 22px;
+  letter-spacing: -0.01em;
+}
+
+.section h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 32px 0 14px;
+}
+
+.section p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  color: var(--ink-soft);
+}
+
+.section p strong { color: var(--ink); font-weight: 600; }
+
+.section .preamble {
+  font-size: 17px;
+  margin-bottom: 28px;
+}
+
+/* ============ SCENARIO + NEED LISTS ============ */
+.scenario-list {
+  list-style: none;
+}
+
+.scenario-list li {
+  padding: 14px 18px 14px 48px;
+  background: var(--paper-soft);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.55;
+  border-left: 2px solid var(--teal);
+}
+
+.scenario-list li::before {
+  content: '→';
+  position: absolute;
+  left: 18px;
+  top: 14px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.scenario-list strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.need-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.need-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-top: 2px solid var(--amber);
+}
+
+.need-card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.need-card p {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* ============ STEP CARDS ============ */
+.step {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 26px 30px;
+  margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--teal);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.step h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  margin: 0;
+  flex: 1;
+}
+
+.step-link {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  text-decoration: none;
+  border: 1px solid var(--amber);
+  padding: 3px 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.step-link:hover { background: var(--amber); color: var(--ink); }
+
+.step .step-what {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin-bottom: 14px;
+}
+
+.step .step-do {
+  background: rgba(27,33,44,0.04);
+  padding: 14px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--ink-muted);
+  margin-bottom: 12px;
+}
+
+.step .step-do-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.step .step-do ul {
+  list-style: none;
+  margin: 0;
+}
+
+.step .step-do li {
+  padding: 4px 0 4px 18px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.step .step-do li::before {
+  content: '·';
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  color: var(--teal);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.step .step-example {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  font-style: italic;
+  padding-top: 6px;
+}
+
+.step .step-example strong {
+  font-family: 'IBM Plex Mono', monospace;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* ============ FIVE-LENS PANEL ============ */
+.five-lens {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  padding: 28px 32px;
+  margin: 28px 0;
+}
+
+.five-lens-head {
+  margin-bottom: 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(244,240,230,0.18);
+}
+
+.five-lens-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.five-lens-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  color: var(--paper);
+  margin-bottom: 8px;
+}
+
+.five-lens-cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: rgba(244,240,230,0.6);
+}
+
+.five-lens-cite a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.five-lens-cite a:hover { border-bottom-style: solid; }
+
+.lens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.lens-card {
+  background: rgba(244,240,230,0.06);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-top: 2px solid var(--amber);
+}
+
+.lens-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.lens-card h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.3;
+  margin-bottom: 8px;
+  color: var(--paper);
+}
+
+.lens-card .lens-what {
+  font-size: 13px;
+  line-height: 1.55;
+  margin-bottom: 10px;
+  color: rgba(244,240,230,0.78);
+}
+
+.lens-card .lens-eval {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: rgba(244,240,230,0.55);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.lens-card .lens-list {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(244,240,230,0.78);
+  list-style: none;
+  padding: 0;
+}
+
+.lens-card .lens-list li {
+  padding: 2px 0 2px 12px;
+  position: relative;
+}
+
+.lens-card .lens-list li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--amber);
+  font-weight: 700;
+}
+
+.lens-card .lens-sources {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(244,240,230,0.18);
+  font-size: 11px;
+  color: rgba(244,240,230,0.55);
+  line-height: 1.5;
+}
+
+.lens-card .lens-sources a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.4);
+}
+
+.lens-card .lens-sources a:hover { border-bottom-style: solid; }
+
+/* ============ CULSHAW QUOTE ============ */
+.culshaw {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 28px 32px;
+  border-radius: 4px;
+  margin: 32px 0;
+}
+
+.culshaw-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+
+.culshaw p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.55;
+  font-style: italic;
+  margin-bottom: 14px;
+  color: var(--paper);
+}
+
+.culshaw cite {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-style: normal;
+  color: rgba(244,240,230,0.65);
+}
+
+.culshaw cite a {
+  color: var(--amber);
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(186,117,23,0.5);
+}
+
+.culshaw cite a:hover { border-bottom-style: solid; }
+
+/* ============ GOOD ============ */
+.good-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.good-card {
+  background: var(--paper-soft);
+  padding: 18px 20px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+}
+
+.good-card-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.good-card h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.good-card p {
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* ============ MISTAKES ============ */
+.mistakes {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 24px 28px;
+}
+
+.mistakes ul {
+  list-style: none;
+  padding: 0;
+}
+
+.mistakes li {
+  padding: 12px 0 12px 32px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.6;
+  border-bottom: 1px dashed var(--line);
+}
+
+.mistakes li:last-child { border-bottom: none; }
+
+.mistakes li::before {
+  content: '✕';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 22px;
+  height: 22px;
+  background: var(--rust);
+  color: var(--paper);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.mistakes strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ============ STARTER TEMPLATE ============ */
+.template-card {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27,33,44,0.15);
+}
+
+.template-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(244,240,230,0.06);
+  border-bottom: 1px solid rgba(244,240,230,0.12);
+}
+
+.template-head-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.copy-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(244,240,230,0.3);
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+.copy-btn.copied {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+.template-body {
+  padding: 24px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ============ XREF ============ */
+.xref {
+  margin-top: 48px;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 32px;
+}
+
+.xref-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+}
+
+.xref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.xref-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s ease;
+  display: block;
+}
+
+.xref-card:hover { background: var(--paper-deep); }
+
+.xref-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.xref-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ============ LINKS ============ */
+a.src {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(15,110,86,0.3);
+  transition: border-color 0.15s ease;
+}
+
+a.src:hover { border-bottom-color: var(--teal); }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--ink);
+  color: rgba(244,240,230,0.6);
+  padding: 28px 0;
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 700px) {
+  .container, .masthead-inner { padding: 0 22px; }
+  .masthead h1 { font-size: 30px; }
+  .masthead .lede { font-size: 16px; }
+  .section h2 { font-size: 24px; }
+  .step { padding: 20px 22px; }
+  .step-head { flex-wrap: wrap; gap: 10px; }
+  .step h3 { font-size: 18px; }
+  .culshaw, .five-lens { padding: 22px; }
+  .culshaw p { font-size: 16px; }
+  .template-body { font-size: 11.5px; padding: 18px; }
+  .xref-grid, .toc ol { grid-template-columns: 1fr; }
+}
+
+/* ============ A11Y ============ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #14181F; color: #E8E2D2; }
+  .step, .scenario-list li, .need-card, .good-card, .xref-card, .toc { background: #1F2530; }
+  .step p, .step-what, .good-card p, .need-card p { color: rgba(232,226,210,0.75); }
+  .mistakes { background: #1A1F28; border-color: rgba(232,226,210,0.15); }
+  .mistakes strong { color: #E8E2D2; }
+  .xref-card { color: #E8E2D2; }
+  .xref-card:hover { background: #252C38; }
+  .step .step-do { background: rgba(232,226,210,0.04); }
+  .toc { border-color: rgba(232,226,210,0.15); }
+  .toc a { color: #E8E2D2; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <span>TI Playbook</span>
+      <span class="crumb-sep">/</span>
+      <span>Library</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-self">Guide 04 of Tier 1</span>
+    </div>
+    <h1>Map a talent pool for a new market</h1>
+    <p class="lede">A working method for evaluating whether a market is worth entering — and how to enter it — for a specific role family. Built around the Draup Five-Lens framework, calibrated for the semi/AI context where new sites get evaluated against visa friction, AI sovereignty, and the realistic accessible pool, not just the cost arbitrage.</p>
+    <div class="tag-row">
+      <span class="tag accent">Tier 1 Library Guide</span>
+      <span class="tag">Full Guide</span>
+      <span class="tag">7 Steps</span>
+      <span class="tag">~18 min read</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container">
+
+<!-- ========== TOC ========== -->
+<nav class="toc">
+  <div class="toc-label">Inside this guide</div>
+  <ol>
+    <li><a href="#when">When to use this guide</a></li>
+    <li><a href="#need">What you need before starting</a></li>
+    <li><a href="#steps">The 7 steps</a></li>
+    <li><a href="#good">What good looks like</a></li>
+    <li><a href="#mistakes">Common mistakes</a></li>
+    <li><a href="#template">Starter market brief template</a></li>
+  </ol>
+</nav>
+
+<!-- ========== WHEN ========== -->
+<section class="section" id="when">
+  <div class="section-label">01 &nbsp;·&nbsp; When to Use</div>
+  <h2>When to run this analysis</h2>
+  <p class="preamble">This guide is for capital-stakes decisions — multi-year, multi-million-dollar commitments where being wrong is expensive. It is not for "should we let one person work from Toronto?" That's a remote-work policy question, not a market mapping exercise. The five most common triggers:</p>
+
+  <ul class="scenario-list">
+    <li><strong>Standing up a new design center, R&D site, or fab adjacency.</strong> Leadership is debating where to plant the flag. You need to compare 2–4 candidate markets with rigor.</li>
+    <li><strong>Considering a GCC or global capability center expansion.</strong> Especially in India, Eastern Europe, Latin America, or Southeast Asia. The default cities are often saturated; the real question is which second-tier city is the right one.</li>
+    <li><strong>Evaluating a satellite team in a new geo for a niche skill.</strong> Often AI/ML or specialized hardware. The "micro-hub" thesis — Toronto for visa-friendly AI, Pittsburgh for CMU outflow, Eindhoven for photonics — is now mainstream strategy.</li>
+    <li><strong>Build-vs-buy decision.</strong> Open a new office, hire 50 remote, or acquire a small company to inherit a market. Each has very different talent dynamics that need to be on the table.</li>
+    <li><strong>Annual location strategy refresh.</strong> The 2026 location landscape is shifting fast — visa rules, AI sovereignty, cluster saturation. Strategies older than 12–18 months are often quietly out of date.</li>
+  </ul>
+</section>
+
+<!-- ========== NEED ========== -->
+<section class="section" id="need">
+  <div class="section-label">02 &nbsp;·&nbsp; Inputs</div>
+  <h2>What you need before starting</h2>
+  <p class="preamble">This guide takes 3–6 weeks for a serious comparison of 2–3 markets. Start without these inputs and the analysis stalls in week two.</p>
+
+  <div class="need-grid">
+    <div class="need-card">
+      <div class="need-card-label">Strategic intent</div>
+      <p>One sentence on what's being decided — new design center, GCC, satellite team, acquisition target evaluation. Owned by the business leader, not the TI team.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Comparison set</div>
+      <p>2–4 candidate markets, not just one. Single-market analyses underdeliver because leadership inevitably asks "compared to what?" Pre-empt it.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Role scope</div>
+      <p>3–8 specific roles you'd hire into this market. Not a function, not a job family — specific role definitions tied to the work that needs to happen there.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Time horizon</div>
+      <p>Operational by when? 6 months, 18 months, 3 years? Determines whether the answer is greenfield site, acqui-hire, or remote-first.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Data access</div>
+      <p><a href="https://www.talentneuron.com/" target="_blank" rel="noopener" class="src">TalentNeuron</a>, <a href="https://lightcast.io/" target="_blank" rel="noopener" class="src">Lightcast</a>, <a href="https://draup.com/" target="_blank" rel="noopener" class="src">Draup</a>, <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn Talent Insights</a> — plus government data: <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener" class="src">BLS OES</a>, <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noopener" class="src">Eurostat</a>, <a href="https://stats.oecd.org/" target="_blank" rel="noopener" class="src">OECD Stats</a>, national stat offices.</p>
+    </div>
+    <div class="need-card">
+      <div class="need-card-label">Cross-functional partners</div>
+      <p>Comp/total rewards, mobility/immigration, real estate, finance, legal/compliance. Pre-engage them — you'll need their input by Step 4.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== STEPS ========== -->
+<section class="section" id="steps">
+  <div class="section-label">03 &nbsp;·&nbsp; The Method</div>
+  <h2>The seven steps</h2>
+  <p class="preamble">The order is deliberate. Steps 1–2 set the question. Step 3 quantifies the pool. Step 4 (the Five-Lens read) is the analytical heart. Steps 5–6 add depth. Step 7 compresses everything into a decision document. The discipline to follow the order — instead of jumping to data pulls — is what separates a credible market brief from a long-form report no one acts on.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 01</div>
+      <h3>Frame the decision and the success criteria</h3>
+    </div>
+    <p class="step-what">A market mapping exercise without a decision frame becomes a survey. Before you pull a single number, get explicit alignment on what's being decided and what "good" looks like.</p>
+    <div class="step-do">
+      <div class="step-do-label">Lock down before starting</div>
+      <ul>
+        <li><strong>Entry mode under evaluation</strong> — greenfield site, satellite team, GCC build, acqui-hire, fully distributed remote, or "decide which of these."</li>
+        <li><strong>Comparison set</strong> — single-market evaluation or comparison of 2–4 candidates. Leadership almost always wants comparison; default to it.</li>
+        <li><strong>Roles in scope and target headcount per role over 3 years.</strong></li>
+        <li><strong>Success criteria</strong> — what does a "yes" market look like? Pool size? Cost target? Time-to-stand-up? Risk threshold?</li>
+        <li><strong>Decision-maker and decision date.</strong> If both are unclear, the analysis lacks an audience and will drift.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> "Should we add an AI inference engineering team?" is not a decision frame. "Should we stand up a 40-person AI inference engineering team by Q4 2027, comparing Toronto, Krakow, and Bangalore, optimizing for visa-resilience and 24-month time-to-productivity?" is.</p>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 02</div>
+      <h3>Define the market boundary for each candidate</h3>
+      <a href="#" class="step-link">↗ Uses Step 03 module</a>
+    </div>
+    <p class="step-what">"Toronto" is not a market boundary. Greater Toronto Area, Toronto-Waterloo Corridor, and Ontario are three different markets that produce three different talent pool numbers. The boundary call has to come up front.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each candidate market, define</div>
+      <ul>
+        <li><strong>The geographic boundary</strong> — metro, region, country, or cross-border cluster (e.g., the Toronto-Waterloo corridor spans two metros but functions as one talent market).</li>
+        <li><strong>The commute or relocation logic</strong> — what's the realistic commute radius for an on-site role? What's a reasonable national relo capture rate?</li>
+        <li><strong>The data source's matching boundary</strong> — <a href="https://www.bls.gov/oes/" target="_blank" rel="noopener" class="src">BLS</a> MSA, <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener" class="src">LinkedIn TI</a> region, <a href="https://ec.europa.eu/eurostat" target="_blank" rel="noopener" class="src">Eurostat</a> NUTS-2 — pick one anchor and footnote the others.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Toronto looks like one market. For AI engineering it's functionally three: downtown Toronto (Vector Institute, Cohere, Layer 6), Waterloo (Waterloo CS, UWaterloo coop pipeline, Tesla / Apple satellite teams), and Mississauga / 905 belt (Nvidia AI office, biotech AI). Treating it as one number overstates accessibility and understates concentration.</p>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 03</div>
+      <h3>Size the addressable pool per market, per role</h3>
+      <a href="#" class="step-link">↗ Uses Step 02 module</a>
+    </div>
+    <p class="step-what">Now apply the pool sizing module from the playbook for each role in each candidate market. Output is a comparable matrix — markets across the top, roles down the side, with both total and accessible pool numbers in each cell.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each role × market cell, capture</div>
+      <ul>
+        <li><strong>Total pool</strong> — raw count from chosen data source.</li>
+        <li><strong>Accessible pool</strong> — after employer concentration and stickiness adjustments.</li>
+        <li><strong>Movable pool (12-month)</strong> — applying realistic attrition and counter-offer logic.</li>
+        <li><strong>Annual graduate inflow</strong> — universities feeding the role, recent-graduate volume.</li>
+        <li><strong>Per-source data confidence</strong> — note where the data is thin or estimated.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> A 40-person ML inference team needs senior CUDA, mid-level CUDA, MLIR compiler, model deployment, and inference SRE roles. Sizing each across Toronto / Krakow / Bangalore gives you a 5x3 matrix that immediately shows which markets clear the bar for which roles — and which roles will need international relo capture regardless of market choice.</p>
+  </div>
+
+  <!-- STEP 4 — THE FIVE LENS -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 04</div>
+      <h3>Run the Five-Lens evaluation for each candidate market</h3>
+    </div>
+    <p class="step-what">This is the analytical heart of the guide. The Five-Lens framework moves beyond cost arbitrage into the dimensions that actually determine whether a market is viable in 2026 — policy friction, economic gravity, capability density, sovereignty constraints, and execution reality. Score each market against each lens, ideally on a comparable 1–5 scale.</p>
+
+    <div class="five-lens">
+      <div class="five-lens-head">
+        <div class="five-lens-label">The framework</div>
+        <div class="five-lens-title">The Five-Lens framework for talent hub evaluation</div>
+        <div class="five-lens-cite">Adapted from the <a href="https://draup.com/" target="_blank" rel="noopener">Draup</a> Global Talent Location Strategy 2026 Framework and <em>The New Geography of Work</em> (Jan 2026)</div>
+      </div>
+
+      <div class="lens-grid">
+
+        <div class="lens-card">
+          <div class="lens-num">Lens 01</div>
+          <h4>Policy Friction</h4>
+          <p class="lens-what">Regulatory and administrative barriers to talent mobility, work authorization, and cross-border operations.</p>
+          <div class="lens-eval">What to evaluate</div>
+          <ul class="lens-list">
+            <li>Visa processing times and denial rates</li>
+            <li>Work authorization volatility (recent rule changes)</li>
+            <li>Non-compete enforceability</li>
+            <li>Tax and employer-of-record complexity</li>
+            <li>Student visa flows (for graduate pipeline)</li>
+          </ul>
+          <div class="lens-sources"><a href="https://www.uscis.gov/" target="_blank" rel="noopener">USCIS</a> · <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener">IRCC Canada</a> · <a href="https://www.migrationpolicy.org/" target="_blank" rel="noopener">MPI</a></div>
+        </div>
+
+        <div class="lens-card">
+          <div class="lens-num">Lens 02</div>
+          <h4>Economic Gravity</h4>
+          <p class="lens-what">Investment flows, sector growth trajectory, and wage pressure dynamics that determine medium-term cost and stability.</p>
+          <div class="lens-eval">What to evaluate</div>
+          <ul class="lens-list">
+            <li>Inbound investment and sector growth</li>
+            <li>Wage growth trend (12–36 month)</li>
+            <li>Currency volatility (for cross-border)</li>
+            <li>Single-market dependency exposure</li>
+            <li>R&D spend trajectory</li>
+          </ul>
+          <div class="lens-sources"><a href="https://www.worldbank.org/" target="_blank" rel="noopener">World Bank</a> · <a href="https://www.imf.org/" target="_blank" rel="noopener">IMF</a> · <a href="https://stats.oecd.org/" target="_blank" rel="noopener">OECD Stats</a></div>
+        </div>
+
+        <div class="lens-card">
+          <div class="lens-num">Lens 03</div>
+          <h4>Capability Density</h4>
+          <p class="lens-what">Depth, breadth, and maturity of the talent ecosystem for the specific roles and skill families you need.</p>
+          <div class="lens-eval">What to evaluate</div>
+          <ul class="lens-list">
+            <li>Talent availability for target roles</li>
+            <li>Ecosystem maturity (universities, startups, vendor density)</li>
+            <li>Leadership bench depth (senior IC and management)</li>
+            <li>Skills adjacency and reskilling potential</li>
+            <li>Retention and attrition patterns</li>
+          </ul>
+          <div class="lens-sources"><a href="https://www.talentneuron.com/" target="_blank" rel="noopener">TalentNeuron</a> · <a href="https://lightcast.io/" target="_blank" rel="noopener">Lightcast</a> · <a href="https://business.linkedin.com/talent-solutions/talent-insights" target="_blank" rel="noopener">LinkedIn TI</a></div>
+        </div>
+
+        <div class="lens-card">
+          <div class="lens-num">Lens 04</div>
+          <h4>Sovereignty Constraints</h4>
+          <p class="lens-what">Data residency, AI model localization, and export-control regimes that determine whether your work can legally run from this market.</p>
+          <div class="lens-eval">What to evaluate</div>
+          <ul class="lens-list">
+            <li>Data residency requirements</li>
+            <li>AI sovereignty / model localization rules</li>
+            <li>Export control exposure (EAR / ITAR / EU dual-use)</li>
+            <li>Government access laws</li>
+            <li>Critical-tech investment screening</li>
+          </ul>
+          <div class="lens-sources"><a href="https://www.bis.doc.gov/" target="_blank" rel="noopener">US BIS</a> · <a href="https://artificialintelligenceact.eu/" target="_blank" rel="noopener">EU AI Act</a> · <a href="https://www.weforum.org/" target="_blank" rel="noopener">WEF AI Governance</a></div>
+        </div>
+
+        <div class="lens-card">
+          <div class="lens-num">Lens 05</div>
+          <h4>Execution Reality</h4>
+          <p class="lens-what">Time-to-stand-up, vendor and infrastructure ecosystem, and operational risk profile — the difference between a market that looks good on paper and one you can actually operate in.</p>
+          <div class="lens-eval">What to evaluate</div>
+          <ul class="lens-list">
+            <li>Time-to-stand-up (entity, payroll, real estate)</li>
+            <li>Local vendor ecosystem (recruiters, PEOs, IT, legal)</li>
+            <li>Business continuity risk (climate, political, infra)</li>
+            <li>Local management talent availability</li>
+            <li>Cultural fit and time-zone overlap</li>
+          </ul>
+          <div class="lens-sources">Local employer associations · in-market vendors · regional risk monitors</div>
+        </div>
+
+      </div>
+    </div>
+
+    <p class="step-example"><strong>Semi/AI example</strong> Toronto scores high on Policy Friction (Canada study-work-permit pathway), strong on Capability Density (UofT, Waterloo, Vector Institute), moderate on Sovereignty (some US export-control complications for advanced ML work), and high on Execution Reality. Krakow scores high on Capability Density and Execution but moderate on Sovereignty Constraints (EU AI Act compliance overhead). Bangalore scores extreme on Capability Density and Execution but lower on Sovereignty for sensitive AI workloads. None of these markets is universally "better" — the scores expose the trade-off the decision actually needs to make.</p>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 05</div>
+      <h3>Map the cluster ecosystem in depth</h3>
+    </div>
+    <p class="step-what">The Five-Lens read tells you the macro shape. The ecosystem map tells you who actually lives and works there. This is what determines whether you can hire fast or slowly, and from where.</p>
+    <div class="step-do">
+      <div class="step-do-label">For each candidate market, build</div>
+      <ul>
+        <li><strong>Anchor employers</strong> — top 10 employers of your target roles, with rough headcount share. Identifies both where talent comes from and competitive density.</li>
+        <li><strong>University feeders</strong> — top 5–8 universities producing recent graduates in the relevant fields. Annual graduating class size where available.</li>
+        <li><strong>R&D centers and labs</strong> — corporate R&D, research institutes (Vector, MILA, Max Planck, IIIT, Skoltech, Weizmann, etc.), national labs.</li>
+        <li><strong>Alumni networks</strong> — where do people go after leaving the anchors? Reveals exit patterns and adjacent pools.</li>
+        <li><strong>Government incentives</strong> — tax credits, R&D rebates, employment subsidies, accelerator programs.</li>
+        <li><strong>Infrastructure</strong> — international airport hub status, English-language depth, time-zone overlap with HQ, internet/data infrastructure for AI workloads.</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Mapping the Eindhoven photonics ecosystem reveals ASML as the dominant anchor (~25K employees), TU/e as the primary feeder, the Brainport Eindhoven cluster as an incentive layer, and Philips alumni as a deep adjacent pool. That ecosystem can support a satellite team — but you're not "competing in Eindhoven" so much as "operating downstream of ASML's gravitational pull." That's a very different strategic posture than competing in Bay Area where no one company dominates.</p>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 06</div>
+      <h3>Assess competitive intensity and entry friction</h3>
+      <a href="#" class="step-link">↗ Uses Step 06 module</a>
+    </div>
+    <p class="step-what">A market with a deep pool and weak ecosystem can still be miserable to hire in. This step asks: what's the realistic friction profile of entering, and how does that compare across candidates?</p>
+    <div class="step-do">
+      <div class="step-do-label">For each candidate market, score</div>
+      <ul>
+        <li><strong>Competitor saturation</strong> — how many other employers are actively hiring the same roles? How aggressive are they?</li>
+        <li><strong>Local comp pressure</strong> — wage trajectory over 12–24 months. Is the market overheating?</li>
+        <li><strong>Attrition norms</strong> — what's "normal" tenure in this market? India GCCs run shorter tenures than Eastern European hubs.</li>
+        <li><strong>Employer brand bar to entry</strong> — do you need to spend on brand-building before recruiting? How long does that take?</li>
+        <li><strong>Movability windows</strong> — are there cyclical or event-driven openings (post-bonus, equity cliffs, recent layoffs nearby)?</li>
+        <li><strong>Sourcing channel maturity</strong> — does the recruiting infrastructure exist (good agencies, strong referral norms, active dev communities) or are you building from scratch?</li>
+      </ul>
+    </div>
+    <p class="step-example"><strong>Semi/AI example</strong> Bangalore's AI talent pool is enormous but attrition runs 20–25% annually in hot GCCs and comp pressure is intense. The "pool" exists — the question is whether you can hold the people you hire. A market brief that lists Bangalore's headcount without flagging this is operationally misleading.</p>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">Step 07</div>
+      <h3>Build the go / no-go / conditional recommendation</h3>
+    </div>
+    <p class="step-what">The deliverable is a one-page market brief per candidate market, plus a comparison view if you've evaluated multiple. It ends with a named recommendation, not a "here are the trade-offs" summary that punts the decision back to the asker.</p>
+    <div class="step-do">
+      <div class="step-do-label">The recommendation has three flavors</div>
+      <ul>
+        <li><strong>Go</strong> — proceed with entry. Specify entry mode (greenfield site, satellite, acqui-hire), recommended initial headcount, and 18-month milestones.</li>
+        <li><strong>No-go</strong> — do not enter. Specify the single most important reason and what would have to change for you to revisit.</li>
+        <li><strong>Conditional</strong> — proceed only if specific conditions are met. List the conditions concretely (e.g., "if non-compete reform passes in MA," "if visa processing time drops below 4 months," "if AI export-control rule X is clarified").</li>
+      </ul>
+    </div>
+    <p class="step-example">A market brief that lands with "Toronto: Conditional — proceed with a 25-person Phase 1 in Q3 if (a) we secure a Vector Institute affiliate partnership by month 6, and (b) US export-control guidance for our specific model architecture is confirmed compliant" is a brief leadership can act on. A brief that ends with "Toronto has many advantages and some risks" is a brief that gets passed to a consultant.</p>
+  </div>
+
+  <div class="culshaw">
+    <div class="culshaw-label">Field note · TI canon</div>
+    <p>"Location strategy is no longer an optimization problem — it is a portfolio design problem. The highest-performing organizations over the next five years will deliberately balance a small number of scale hubs for depth and efficiency, a wider layer of resilience hubs to hedge geopolitical, regulatory, and mobility risk, and a growing network of specialist micro-hubs aligned to scarce skills, universities, and regulated workloads."</p>
+    <cite><em>The New Geography of Work</em>, <a href="https://draup.com/" target="_blank" rel="noopener">Draup</a>, January 2026</cite>
+  </div>
+</section>
+
+<!-- ========== GOOD ========== -->
+<section class="section" id="good">
+  <div class="section-label">04 &nbsp;·&nbsp; The Standard</div>
+  <h2>What good looks like</h2>
+  <p class="preamble">A finished market mapping is not a 60-slide deck — it is a one-page market brief per candidate, backed by a structured working file. Six markers separate one that gets acted on from one that gets shelved.</p>
+
+  <div class="good-grid">
+    <div class="good-card">
+      <div class="good-card-num">01</div>
+      <h4>Comparison view, not single-market</h4>
+      <p>Even if leadership only asked about one market, deliver a comparison with 2–3 named alternatives. They will ask. Have the answer ready.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">02</div>
+      <h4>Five-Lens scoring is visible</h4>
+      <p>Each candidate market is scored on each lens with a one-line rationale. The strategic trade-off is obvious at a glance.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">03</div>
+      <h4>Pool sizing is per-role, not aggregate</h4>
+      <p>Total "engineering talent" is not a useful number. The brief shows pool depth for each of the 3–8 roles you'd actually hire.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">04</div>
+      <h4>Named recommendation</h4>
+      <p>Go / no-go / conditional. Not a list of trade-offs. The recommendation can be wrong; the absence of one is worse.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">05</div>
+      <h4>Risk register with mitigations</h4>
+      <p>For each top risk, name the mitigation and the trigger condition that activates it. Risks without mitigations are anxieties, not analysis.</p>
+    </div>
+    <div class="good-card">
+      <div class="good-card-num">06</div>
+      <h4>Dated, owned, scheduled for refresh</h4>
+      <p>Location data shifts on a 12-month cycle in 2026. The brief commits to a refresh date and an owner who'll do it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== MISTAKES ========== -->
+<section class="section" id="mistakes">
+  <div class="section-label">05 &nbsp;·&nbsp; Pitfalls</div>
+  <h2>Common mistakes</h2>
+
+  <div class="mistakes">
+    <ul>
+      <li><strong>Single-market evaluation when leadership wants comparison.</strong> A brief that says "Toronto looks great" without showing how it compares to Krakow and Bangalore is a brief that gets sent back. Build comparison from the start, even when only one market was named.</li>
+
+      <li><strong>Skipping the Sovereignty lens because "we're domestic."</strong> US-only is not exempt from sovereignty considerations — state-level non-compete enforcement, ITAR/EAR for semi work, and federal-contractor compliance all live in this lens. Don't skip it.</li>
+
+      <li><strong>Quantifying the pool, skipping movability.</strong> The pool exists ≠ you can hire from it. A market brief without the movability read (links to <a href="#" class="src">Step 06 deep dive</a>) is half a brief.</li>
+
+      <li><strong>Locking in on a familiar city too early.</strong> Leadership's "let's just go to Austin again" deserves real comparison. If Austin still wins after rigorous comparison, that's a credible answer. If you skip the comparison, "we went to Austin again" stops being a strategy.</li>
+
+      <li><strong>Treating cost as a primary lens.</strong> Cost shows up inside Economic Gravity, but it's not a lens on its own — and treating it as one produces the kind of brief that leads to under-resourced sites in expensive markets.</li>
+
+      <li><strong>Building a deck instead of a brief.</strong> A 60-slide deck is a documentation exercise. A 1-page brief per market is a decision tool. Discipline the output.</li>
+
+      <li><strong>Ignoring the time-to-stand-up reality.</strong> A market that scores 5/5 on Capability Density but takes 12 months to legally operate in is not the same market as one that takes 3 months. Execution Reality is a real lens, not a footnote.</li>
+
+      <li><strong>No refresh commitment.</strong> 2026 location data shifts fast — visa rules, AI sovereignty, cluster saturation. A brief without a refresh date is misleading by year-end.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== TEMPLATE ========== -->
+<section class="section" id="template">
+  <div class="section-label">06 &nbsp;·&nbsp; The Deliverable</div>
+  <h2>Starter market brief template</h2>
+  <p class="preamble">Copy this structure into a Google Doc, Notion page, or Confluence template. One market per page, with a comparison page if you've evaluated multiple. Discipline the compression — if it spills, ask what gets cut.</p>
+
+  <div class="template-card">
+    <div class="template-head">
+      <span class="template-head-label">Template · one-page new-market brief</span>
+      <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+    </div>
+    <div class="template-body" id="template-text">═════════════════════════════════════════════════════════════
+NEW-MARKET BRIEF — [MARKET NAME]
+═════════════════════════════════════════════════════════════
+
+DECISION SUMMARY
+  Strategic intent:    [What's being decided in one sentence]
+  Entry mode evaluated: [Site / Satellite / GCC / Acqui-hire / Remote]
+  Recommendation:       [ ] GO   [ ] NO-GO   [ ] CONDITIONAL
+  Time horizon:         [Operational by date]
+  Last updated: [YYYY-MM-DD]    Owner: [Name]    Refresh: [Date]
+
+─────────────────────────────────────────────────────────────
+01 · MARKET CONTEXT
+[Two-sentence framing: what is this market, why is it on the
+list, and what's the candidate set we're comparing against.]
+
+─────────────────────────────────────────────────────────────
+02 · ADDRESSABLE POOL (per role)
+Role A: [Total pool] · [Accessible] · [12-mo movable]
+Role B: [Total pool] · [Accessible] · [12-mo movable]
+Role C: [Total pool] · [Accessible] · [12-mo movable]
+Annual graduate inflow:  [Number across relevant programs]
+Data source / confidence: [Source name / High / Med / Low]
+
+─────────────────────────────────────────────────────────────
+03 · FIVE-LENS SCORECARD          Score (1-5)
+  Policy Friction         [#]    [One-line rationale]
+  Economic Gravity        [#]    [One-line rationale]
+  Capability Density      [#]    [One-line rationale]
+  Sovereignty Constraints [#]    [One-line rationale]
+  Execution Reality       [#]    [One-line rationale]
+
+─────────────────────────────────────────────────────────────
+04 · CLUSTER ECOSYSTEM
+Anchor employers:      [Top 5–8 with headcount share]
+University feeders:    [Top 3–5 with annual class size]
+R&D centers / labs:    [Named institutions]
+Alumni adjacent pools: [Where talent goes after the anchors]
+Government incentives: [Named programs and dollar/equity scale]
+
+─────────────────────────────────────────────────────────────
+05 · COMPETITIVE INTENSITY + FRICTION
+Competitor saturation:    [Low / Med / High + named players]
+Local comp trajectory:    [12-24 mo direction]
+Attrition norm:           [Market-typical % annual]
+Employer brand bar:       [Time/spend to be recognized here]
+Sourcing channel maturity: [Mature / Emerging / Thin]
+Movability window:        [Cyclical / Event-driven / Steady]
+
+─────────────────────────────────────────────────────────────
+06 · TOP RISKS + MITIGATIONS
+Risk 1: [Risk] → Mitigation: [Action] · Trigger: [Condition]
+Risk 2: [Risk] → Mitigation: [Action] · Trigger: [Condition]
+Risk 3: [Risk] → Mitigation: [Action] · Trigger: [Condition]
+
+─────────────────────────────────────────────────────────────
+07 · RECOMMENDATION
+[ ] GO        → Entry mode: [_____]  Initial HC: [_____]
+              → 18-mo milestones: [_____]
+
+[ ] NO-GO     → Primary reason: [_____]
+              → Revisit trigger: [_____]
+
+[ ] CONDITIONAL → Proceed if:
+                  - [Condition 1 with measurable trigger]
+                  - [Condition 2 with measurable trigger]
+                  - [Condition 3 with measurable trigger]
+
+─────────────────────────────────────────────────────────────
+SOURCES & METHODOLOGY NOTES
+Quantitative:  [Platforms used, date pulled]
+Qualitative:   [Primary interviews / vendor conversations]
+Known gaps:    [What we don't know yet and why]
+
+═════════════════════════════════════════════════════════════
+NEXT REFRESH: [YYYY-MM-DD]
+═════════════════════════════════════════════════════════════</div>
+  </div>
+</section>
+
+<!-- ========== XREF ========== -->
+<section class="xref">
+  <div class="xref-label">↗ Cross-references · related modules</div>
+  <div class="xref-grid">
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 02 · Shared module</div>
+      <div class="xref-title">Size the qualified pool</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 03 · Light module</div>
+      <div class="xref-title">Map geo concentration</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 05 · Shared module</div>
+      <div class="xref-title">Pull comp benchmarks</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 06 · Deep dive</div>
+      <div class="xref-title">Assess movability</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 03</div>
+      <div class="xref-title">Run a competitor talent analysis</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Guide 01 · Flagship</div>
+      <div class="xref-title">Pull a talent supply snapshot</div>
+    </a>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div>Talent Intelligence Playbook · Library Guide 04 · Map a Talent Pool for a New Market · v1.0</div>
+</footer>
+
+<script>
+function copyTemplate(btn) {
+  const text = document.getElementById('template-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+  });
+}
+</script>
+
+</body>
+</html>

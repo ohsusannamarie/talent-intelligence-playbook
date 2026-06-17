@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talent Intelligence Field Manual</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:#1a1208;--paper:#f5f0e8;--paper2:#ede8dc;--paper3:#e4ddd0;
+  --teal:#0f6e56;--teal-light:#e1f5ee;--teal-mid:#1d9e75;
+  --amber:#854f0b;--amber-light:#faeeda;--amber-mid:#ba7517;
+  --rust:#993c1d;--rust-light:#faece7;
+  --muted:#5a5040;--border:#c8bfaa;--border-light:#ddd6c4;
+  --shadow:rgba(26,18,8,0.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--paper3);color:var(--ink);font-family:'Source Serif 4',Georgia,serif;font-size:16px;line-height:1.7}
+
+/* Progress bar */
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--teal);z-index:1000;transition:width 0.1s}
+
+/* Nav */
+#nav{position:fixed;top:3px;left:0;width:280px;height:100vh;background:var(--ink);color:#e8e0d0;overflow-y:auto;z-index:900;padding:1.5rem 0;transform:translateX(-280px);transition:transform 0.3s}
+#nav.open{transform:translateX(0)}
+#nav-toggle{position:fixed;top:1rem;left:1rem;z-index:950;background:var(--ink);color:#e8e0d0;border:none;width:38px;height:38px;border-radius:4px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center}
+#nav h3{font-family:'Playfair Display',serif;font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;color:#8a7f6a;padding:0 1.25rem;margin-bottom:0.5rem;margin-top:1rem}
+#nav ul{list-style:none}
+#nav ul li a{display:block;padding:0.35rem 1.25rem;font-family:'Inter',sans-serif;font-size:0.78rem;color:#c8bfaa;text-decoration:none;border-left:2px solid transparent;transition:all 0.15s}
+#nav ul li a:hover,#nav ul li a.active{color:#e8e0d0;border-left-color:var(--teal-mid);background:rgba(255,255,255,0.04)}
+#nav ul li a .num{opacity:0.45;margin-right:0.4rem}
+
+/* Main content */
+main{max-width:760px;margin:0 auto;padding:3rem 2rem 6rem;min-height:100vh}
+
+/* Sections */
+.section{display:none;animation:fadeIn 0.3s ease}
+.section.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Typography */
+.section-label{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem}
+h1.section-title{font-family:'Playfair Display',serif;font-size:2.4rem;line-height:1.15;color:var(--ink);margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:1rem}
+h2.sub-head{font-family:'Playfair Display',serif;font-size:1.5rem;margin:2rem 0 0.75rem;color:var(--ink)}
+h3.sub-sub{font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--teal);margin:1.5rem 0 0.5rem}
+p{margin-bottom:1rem;color:#2a2010}
+ul.doc-list,ol.doc-list{padding-left:1.5rem;margin-bottom:1rem}
+ul.doc-list li,ol.doc-list li{margin-bottom:0.4rem;color:#2a2010}
+strong{font-weight:600}
+em{font-style:italic}
+blockquote{border-left:3px solid var(--teal-mid);padding:0.75rem 1rem;background:var(--teal-light);margin:1.25rem 0;font-style:italic;color:var(--teal);border-radius:0 4px 4px 0}
+blockquote cite{display:block;font-size:0.82rem;margin-top:0.4rem;font-style:normal;opacity:0.8}
+code{font-family:'IBM Plex Mono',monospace;font-size:0.85em;background:var(--paper2);padding:0.1em 0.4em;border-radius:3px;color:var(--rust)}
+
+/* Intelligence dossier panels */
+.panel{background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:1.25rem 1.5rem;margin:1.25rem 0}
+.panel.teal{border-left:4px solid var(--teal);background:var(--teal-light)}
+.panel.amber{border-left:4px solid var(--amber-mid);background:var(--amber-light)}
+.panel.rust{border-left:4px solid var(--rust);background:var(--rust-light)}
+.panel-label{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem}
+.panel h4{font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:0.5rem}
+.panel.amber h4{color:var(--amber)}
+.panel.teal h4{color:var(--teal)}
+.panel.rust h4{color:var(--rust)}
+
+/* Toby's Takeaways box */
+.takeaways{background:var(--ink);color:#e8e0d0;border-radius:4px;padding:1.25rem 1.5rem;margin:2rem 0}
+.takeaways .tk-label{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:#8a7f6a;margin-bottom:0.75rem}
+.takeaways ul{padding-left:1.25rem}
+.takeaways ul li{color:#d0c8b8;margin-bottom:0.4rem;font-size:0.92rem}
+
+/* Definition box */
+.definition{background:var(--paper2);border:1px solid var(--border);border-radius:4px;padding:1rem 1.25rem;margin:1rem 0;font-style:italic}
+.definition .def-label{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-style:normal;margin-bottom:0.3rem}
+
+/* Comparison table */
+table.compare{width:100%;border-collapse:collapse;margin:1rem 0;font-size:0.88rem}
+table.compare th{background:var(--ink);color:#e8e0d0;padding:0.5rem 0.75rem;text-align:left;font-family:'Inter',sans-serif;font-weight:500;font-size:0.78rem;letter-spacing:0.05em}
+table.compare td{padding:0.5rem 0.75rem;border-bottom:1px solid var(--border-light);vertical-align:top}
+table.compare tr:nth-child(even) td{background:var(--paper2)}
+table.compare td:first-child{font-weight:600;color:var(--teal);white-space:nowrap}
+
+/* Grid for use cases etc */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1rem 0}
+.card{background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:1rem 1.1rem}
+.card h4{font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:600;color:var(--teal);margin-bottom:0.4rem}
+.card p{font-size:0.84rem;margin:0;color:var(--muted)}
+
+/* Interactive tools */
+.tool-box{background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin:1.5rem 0}
+.tool-box h3{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:1rem;color:var(--ink)}
+.tool-result{background:var(--ink);color:#e8e0d0;border-radius:4px;padding:1rem 1.25rem;margin-top:1rem;font-family:'Inter',sans-serif;font-size:0.88rem;min-height:60px;display:none}
+.tool-result.show{display:block}
+label.tool-label{font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:500;color:var(--muted);display:block;margin-bottom:0.25rem;margin-top:0.75rem}
+input[type=range]{width:100%;accent-color:var(--teal);cursor:pointer}
+select.tool-select,input.tool-input{width:100%;padding:0.4rem 0.6rem;border:1px solid var(--border);border-radius:3px;background:var(--paper);font-family:'Inter',sans-serif;font-size:0.85rem;color:var(--ink);cursor:pointer}
+.range-row{display:flex;align-items:center;gap:0.75rem}
+.range-val{font-family:'IBM Plex Mono',monospace;font-size:0.82rem;min-width:50px;color:var(--teal);font-weight:500}
+.tool-btn{background:var(--teal);color:#fff;border:none;padding:0.5rem 1.25rem;border-radius:3px;font-family:'Inter',sans-serif;font-size:0.85rem;font-weight:500;cursor:pointer;margin-top:0.75rem}
+.tool-btn:hover{background:var(--teal-mid)}
+.btn-row{display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap}
+
+/* Nav arrows */
+.nav-arrows{display:flex;justify-content:space-between;margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.nav-arrows button{background:none;border:1px solid var(--border);padding:0.5rem 1rem;border-radius:3px;font-family:'Inter',sans-serif;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s}
+.nav-arrows button:hover{background:var(--ink);color:#e8e0d0;border-color:var(--ink)}
+.nav-arrows button:disabled{opacity:0.3;cursor:not-allowed}
+
+/* Maturity levels */
+.maturity-level{border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:0.75rem}
+.maturity-header{background:var(--paper2);padding:0.6rem 1rem;display:flex;align-items:center;gap:0.75rem;cursor:pointer;user-select:none}
+.maturity-header:hover{background:var(--paper3)}
+.maturity-num{font-family:'IBM Plex Mono',monospace;font-size:0.85rem;font-weight:500;color:var(--teal);min-width:24px}
+.maturity-name{font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:600;color:var(--ink)}
+.maturity-badge{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.08em;padding:0.15rem 0.5rem;border-radius:3px;background:var(--teal-light);color:var(--teal)}
+.maturity-body{padding:0.75rem 1rem;border-top:1px solid var(--border-light);display:none;font-size:0.88rem}
+.maturity-body.open{display:block}
+.maturity-row{display:grid;grid-template-columns:110px 1fr;gap:0.25rem 0.75rem;margin-bottom:0.4rem}
+.maturity-row .ml{font-family:'Inter',sans-serif;font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;padding-top:0.1rem}
+.maturity-row .mv{color:#2a2010}
+
+/* Org placement cards */
+.org-card{border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:0.75rem}
+.org-card h4{font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;color:var(--teal);margin-bottom:0.5rem}
+.org-pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.82rem}
+.org-pros-cons .side{padding:0.5rem 0.75rem;border-radius:3px}
+.org-pros-cons .pros{background:var(--teal-light)}
+.org-pros-cons .cons{background:var(--rust-light)}
+.org-pros-cons .side-label{font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.25rem}
+.org-pros-cons .pros .side-label{color:var(--teal)}
+.org-pros-cons .cons .side-label{color:var(--rust)}
+
+/* Confidence model */
+.conf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1rem 0}
+.conf-cell{border:1px solid var(--border);border-radius:4px;padding:0.75rem;text-align:center}
+.conf-cell .conf-code{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:600;color:var(--teal);margin-bottom:0.25rem}
+.conf-cell .conf-name{font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;margin-bottom:0.25rem}
+.conf-cell p{font-size:0.78rem;color:var(--muted);margin:0}
+
+/* Step flow */
+.step-flow{counter-reset:step}
+.step{display:flex;gap:1rem;margin-bottom:1rem;align-items:flex-start}
+.step-num{flex-shrink:0;width:28px;height:28px;background:var(--ink);color:#e8e0d0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:0.78rem;font-weight:500;margin-top:0.1rem}
+.step-body h4{font-family:'Inter',sans-serif;font-size:0.88rem;font-weight:600;margin-bottom:0.2rem;color:var(--ink)}
+.step-body p{font-size:0.85rem;margin:0;color:var(--muted)}
+
+/* Eisenhower */
+.eisenhower{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin:1rem 0}
+.eq{border:1px solid var(--border);border-radius:4px;padding:0.75rem;font-size:0.82rem}
+.eq .eq-label{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem}
+.eq.do{background:#e1f5ee;border-color:var(--teal-mid)}.eq.do .eq-label{color:var(--teal)}
+.eq.schedule{background:#e6f1fb;border-color:#378add}.eq.schedule .eq-label{color:#185fa5}
+.eq.delegate{background:var(--amber-light);border-color:var(--amber-mid)}.eq.delegate .eq-label{color:var(--amber)}
+.eq.avoid{background:#fcebeb;border-color:#e24b4a}.eq.avoid .eq-label{color:#a32d2d}
+
+/* Function comparison */
+.fn-compare{overflow-x:auto;margin:1rem 0}
+table.fn-table{min-width:600px;width:100%;border-collapse:collapse;font-size:0.82rem}
+table.fn-table th{background:var(--ink);color:#e8e0d0;padding:0.4rem 0.6rem;font-family:'Inter',sans-serif;font-weight:500;font-size:0.75rem;letter-spacing:0.05em;text-align:left}
+table.fn-table td{padding:0.4rem 0.6rem;border-bottom:1px solid var(--border-light);vertical-align:top}
+table.fn-table tr:nth-child(even) td{background:var(--paper2)}
+table.fn-table td.fn-name{font-weight:600;color:var(--teal);white-space:nowrap}
+table.fn-table td.fn-hi{background:var(--teal-light);font-weight:500;color:var(--teal)}
+
+/* Use case grid with filter */
+.uc-filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.uc-filter{background:var(--paper2);border:1px solid var(--border);border-radius:3px;padding:0.25rem 0.75rem;font-family:'Inter',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.15s;color:var(--muted)}
+.uc-filter:hover,.uc-filter.active{background:var(--ink);color:#e8e0d0;border-color:var(--ink)}
+.uc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem}
+.uc-card{background:var(--paper);border:1px solid var(--border);border-radius:4px;padding:0.85rem 1rem}
+.uc-card[data-hidden]{display:none}
+.uc-card .uc-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;padding:0.1rem 0.4rem;border-radius:2px;margin-bottom:0.35rem;text-transform:uppercase}
+.uc-card.tag-strategic .uc-tag{background:var(--teal-light);color:var(--teal)}
+.uc-card.tag-sourcing .uc-tag{background:var(--amber-light);color:var(--amber)}
+.uc-card.tag-programmatic .uc-tag{background:#e6f1fb;color:#185fa5}
+.uc-card.tag-research .uc-tag{background:var(--rust-light);color:var(--rust)}
+.uc-card h4{font-family:'Inter',sans-serif;font-size:0.83rem;font-weight:600;color:var(--ink);margin-bottom:0.25rem}
+.uc-card p{font-size:0.79rem;color:var(--muted);margin:0}
+
+/* ROI calculator */
+.roi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.roi-out{background:var(--ink);color:#e8e0d0;border-radius:4px;padding:1.25rem;margin-top:1rem}
+.roi-out .roi-val{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:500;color:#9fe1cb;display:block;margin:0.25rem 0}
+.roi-out .roi-sub{font-family:'Inter',sans-serif;font-size:0.78rem;color:#8a7f6a;margin-top:0.15rem}
+.roi-rows{display:grid;gap:0.5rem;margin-top:0.75rem}
+.roi-row{display:flex;justify-content:space-between;font-family:'Inter',sans-serif;font-size:0.82rem;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:0.35rem}
+.roi-row .rk{color:#a0988a}.roi-row .rv{color:#d0c8b8;font-weight:500}
+
+/* Print mode */
+@media print{
+  #nav,#nav-toggle,#progress-bar,.nav-arrows,.tool-btn,.uc-filters{display:none!important}
+  .section{display:block!important}
+  main{max-width:none;padding:1rem}
+  h1.section-title{page-break-before:always}
+}
+
+/* Responsive */
+@media(max-width:600px){
+  main{padding:2rem 1rem 5rem}
+  h1.section-title{font-size:1.8rem}
+  .roi-grid{grid-template-columns:1fr}
+  .org-pros-cons{grid-template-columns:1fr}
+  .conf-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<button id="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">☰</button>
+
+<nav id="nav" aria-label="Section navigation">
+  <h3>Field Manual</h3>
+  <ul id="nav-list">
+    <li><a href="#" onclick="goto(0);return false"><span class="num">00</span> Overview</a></li>
+  </ul>
+  <h3>I · Foundations</h3>
+  <ul>
+    <li><a href="#" onclick="goto(1);return false"><span class="num">01</span> What Is TI</a></li>
+    <li><a href="#" onclick="goto(2);return false"><span class="num">02</span> TI vs Adjacent Functions</a></li>
+    <li><a href="#" onclick="goto(3);return false"><span class="num">03</span> External Data</a></li>
+    <li><a href="#" onclick="goto(4);return false"><span class="num">04</span> The Landscape</a></li>
+    <li><a href="#" onclick="goto(5);return false"><span class="num">05</span> Maturity Model</a></li>
+  </ul>
+  <h3>II · Build</h3>
+  <ul>
+    <li><a href="#" onclick="goto(6);return false"><span class="num">06</span> Operating Model</a></li>
+    <li><a href="#" onclick="goto(7);return false"><span class="num">07</span> Where TI Sits</a></li>
+    <li><a href="#" onclick="goto(8);return false"><span class="num">08</span> Roles &amp; Team</a></li>
+    <li><a href="#" onclick="goto(9);return false"><span class="num">09</span> Tooling &amp; Data</a></li>
+  </ul>
+  <h3>III · Operate</h3>
+  <ul>
+    <li><a href="#" onclick="goto(10);return false"><span class="num">10</span> Project Lifecycle</a></li>
+    <li><a href="#" onclick="goto(11);return false"><span class="num">11</span> Use-Case Portfolio</a></li>
+    <li><a href="#" onclick="goto(12);return false"><span class="num">12</span> Skills &amp; Planning</a></li>
+    <li><a href="#" onclick="goto(13);return false"><span class="num">13</span> Governance &amp; Ethics</a></li>
+  </ul>
+  <h3>IV · Prove &amp; Scale</h3>
+  <ul>
+    <li><a href="#" onclick="goto(14);return false"><span class="num">14</span> Measurement</a></li>
+    <li><a href="#" onclick="goto(15);return false"><span class="num">15</span> Stakeholders &amp; Comms</a></li>
+    <li><a href="#" onclick="goto(16);return false"><span class="num">16</span> Build Roadmap</a></li>
+  </ul>
+  <h3>Reference</h3>
+  <ul>
+    <li><a href="#" onclick="goto(17);return false"><span class="num">17</span> Glossary</a></li>
+  </ul>
+  <div style="padding:1.25rem;margin-top:1.5rem;border-top:1px solid rgba(255,255,255,0.08)">
+    <button onclick="togglePrint()" style="background:none;border:1px solid rgba(255,255,255,0.2);color:#a0988a;padding:0.35rem 0.75rem;border-radius:3px;font-family:Inter,sans-serif;font-size:0.75rem;cursor:pointer;width:100%">⎙ Print / Save PDF</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- SECTION 00: OVERVIEW -->
+<div id="s0" class="section active">
+  <div class="section-label">Intelligence Dossier</div>
+  <h1 class="section-title">Talent Intelligence<br>Field Manual</h1>
+  <p style="font-size:1.1rem;font-style:italic;color:var(--muted);margin-bottom:2rem">"Without data, you're just another person with an opinion." — W Edwards Deming</p>
+  <p>This field manual is a practitioner's guide to standing up, operating, and scaling a Talent Intelligence function. It synthesizes the foundational work of Toby Culshaw's <em>Talent Intelligence</em> (2022) with frameworks from Draup, Lightcast, TalentNeuron, and Josh Bersin Company.</p>
+  <p>Use the navigation panel on the left (or the arrows below) to move through sections. Interactive tools are embedded throughout — use them to apply frameworks to your context in real time.</p>
+
+  <div class="card-grid" style="margin-top:2rem">
+    <div class="card">
+      <h4>18 sections</h4>
+      <p>Foundations through measurement, plus a reference glossary</p>
+    </div>
+    <div class="card">
+      <h4>8 interactive tools</h4>
+      <p>Maturity explorer, readiness diagnostic, ROI calculator, prioritizer, and more</p>
+    </div>
+    <div class="card">
+      <h4>Grounded in practice</h4>
+      <p>Built from Culshaw's Amazon/Philips experience and the TI Collective benchmarking surveys</p>
+    </div>
+    <div class="card">
+      <h4>Semiconductor / AI ready</h4>
+      <p>Tailored context for chip design, fab, and AI engineering talent markets</p>
+    </div>
+  </div>
+
+  <h2 class="sub-head">Reading guide</h2>
+  <p>New to TI? Start at <strong>Section 01</strong> and read linearly through the Foundations group. Building a team? Jump to <strong>Sections 06–09</strong>. Proving value to leadership? Go directly to <strong>Sections 14–15</strong>. Use the glossary for term disambiguation — the field has significant vocabulary overlap with adjacent functions.</p>
+
+  <div class="panel teal">
+    <div class="panel-label">A note on definition</div>
+    <h4>TI is both a verb and a noun</h4>
+    <p style="margin:0;font-size:0.9rem">Talent Intelligence (proper noun) = the function or centre of excellence. Talent intelligence (noun) = the output and deliverable. Talent intelligence (verb) = the action and process. This manual uses the distinction throughout — it matters more than it appears to, because it determines who owns what and how success is measured.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <button disabled>← Previous</button>
+    <button onclick="goto(1)">What Is TI →</button>
+  </div>
+</div>
+
+<!-- SECTION 01: WHAT IS TI -->
+<div id="s1" class="section">
+  <div class="section-label">Foundations · 01</div>
+  <h1 class="section-title">What Is Talent Intelligence?</h1>
+
+  <h2 class="sub-head">The unified definition</h2>
+  <p>Two camps have long debated what TI means. Practitioners emphasize external labor market data. Vendors (Eightfold, LinkedIn, etc.) emphasize internal lifecycle data and AI-driven tools. Neither is complete. The most useful synthesis:</p>
+
+  <div class="definition">
+    <div class="def-label">Culshaw's Unified Definition (2022)</div>
+    Talent Intelligence is the <strong>augmentation of internal and external people data</strong> with the application of technology, science, insights and intelligence relating to people, skills, jobs, functions, competitors and geographies to <strong>drive business decisions</strong>.
+  </div>
+
+  <p>Key phrase: <em>drive business decisions</em>. Not inform. Not support. Drive. This distinction determines what customer level you should be targeting and what KPIs should govern your work.</p>
+
+  <h3 class="sub-sub">TI as three things at once</h3>
+  <table class="compare">
+    <tr><th>Form</th><th>Usage</th><th>Example</th></tr>
+    <tr><td>Proper noun</td><td>The function / platform / field</td><td>"The Talent Intelligence team will present to leadership."</td></tr>
+    <tr><td>Noun</td><td>The deliverable or output</td><td>"The talent intelligence report shows a 14-month hiring lead time."</td></tr>
+    <tr><td>Verb</td><td>The action / process</td><td>"By talent intelligencing this market we uncovered competitor org structure."</td></tr>
+  </table>
+
+  <h2 class="sub-head">Why now?</h2>
+  <p>Three forces converged to make TI essential rather than optional:</p>
+  <ul class="doc-list">
+    <li><strong>Skills shortage at scale.</strong> KornFerry (2018) projected 85 million skilled worker shortages by 2030, representing $8.45 trillion in lost revenue — the combined GDP of Germany and Japan.</li>
+    <li><strong>Accelerated digital transformation.</strong> Covid compressed years of workforce change into months; organizations entered new markets needing skills they had never hired for.</li>
+    <li><strong>Labor market data finally aggregated.</strong> Vendors like Burning Glass (1999), EMSI (2000), Horsefly (2011), TalentNeuron (2012), Draup (2017), and Stratigens (2018) created the infrastructure for macro-level intelligence that previously required raw government data and specialist economists.</li>
+  </ul>
+
+  <div class="panel amber">
+    <div class="panel-label">Context signal</div>
+    <h4>The moonwalking bear</h4>
+    <p style="font-size:0.88rem;margin:0">Transport for London's 2008 awareness campaign showed viewers counting basketball passes while missing a person in a bear suit moonwalk across screen. Culshaw uses this as the central metaphor for TI: leaders making decisions on autopilot, brain on autopilot, missing the obvious because they're focused elsewhere. TI's job is to make the bear visible — <em>before</em> it becomes a problem.</p>
+  </div>
+
+  <h2 class="sub-head">The intelligence history</h2>
+  <p>Talent Intelligence as a term appeared sporadically from the mid-1990s — initially referring only to analytics on internal talent. The modern external-data form emerged with the second wave of vendor platforms (2017–2019). The 2021 TI Collective survey found that over 50% of existing TI functions had been created in the previous two years.</p>
+
+  <div class="takeaways">
+    <div class="tk-label">Toby's Takeaways</div>
+    <ul>
+      <li>TI is a new and largely undefined field — practitioners still have the power to shape it</li>
+      <li>There has never been a more relevant time to launch a TI capability</li>
+      <li>The demand pull is real and growing — controlling supply will be your primary constraint</li>
+      <li>Vocabulary discipline matters: be specific about whether you mean the function, the output, or the activity</li>
+    </ul>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(0)">← Overview</button>
+    <button onclick="goto(2)">TI vs Adjacent Functions →</button>
+  </div>
+</div>
+
+<!-- SECTION 02: TI VS ADJACENT FUNCTIONS -->
+<div id="s2" class="section">
+  <div class="section-label">Foundations · 02</div>
+  <h1 class="section-title">TI vs. Adjacent Functions</h1>
+  <p style="font-style:italic;color:var(--muted)">"The Great Debate" — Culshaw, Chapter 3</p>
+
+  <p>The most common question in the field: <em>What's the difference between Talent Intelligence and HR Analytics?</em> The honest answer is that the lines are blurry and constantly shifting. But the distinctions matter — they determine scope, customer base, KPIs, and team composition. Here's the clearest framework for navigating this.</p>
+
+  <h2 class="sub-head">The six disciplines</h2>
+  <div class="fn-compare">
+    <table class="fn-table">
+      <tr>
+        <th>Function</th>
+        <th>Primary lens</th>
+        <th>Data orientation</th>
+        <th>Typical customer</th>
+        <th>Key output</th>
+      </tr>
+      <tr>
+        <td class="fn-name">HR Analytics (HRA)</td>
+        <td>Internal health &amp; KPIs</td>
+        <td>Internal only</td>
+        <td>HR leadership</td>
+        <td>Attrition, retention, DEI rates</td>
+      </tr>
+      <tr>
+        <td class="fn-name">People Analytics (PA)</td>
+        <td>Holistic employee + customer data</td>
+        <td>Internal (expanding)</td>
+        <td>CHRO, board</td>
+        <td>Org health, engagement, culture</td>
+      </tr>
+      <tr>
+        <td class="fn-name">Workforce Analytics (WA)</td>
+        <td>Productivity &amp; collaboration</td>
+        <td>Internal, future-facing</td>
+        <td>Business leaders</td>
+        <td>Capacity, flight risk, performance</td>
+      </tr>
+      <tr>
+        <td class="fn-name fn-hi">Talent Intelligence (TI)</td>
+        <td class="fn-hi">External labor market</td>
+        <td class="fn-hi">External + internal augmented</td>
+        <td class="fn-hi">Strategic decision-makers</td>
+        <td class="fn-hi">Location, competitor, skills decisions</td>
+      </tr>
+      <tr>
+        <td class="fn-name">Sourcing Intelligence (SI)</td>
+        <td>External talent at micro level</td>
+        <td>External (candidate-level)</td>
+        <td>TA leaders, recruiters</td>
+        <td>Sourcing strategy, pipelines</td>
+      </tr>
+      <tr>
+        <td class="fn-name">Executive Recruitment Research (ERR)</td>
+        <td>Niche executive market</td>
+        <td>External (individual-level)</td>
+        <td>Exec search partners</td>
+        <td>Org maps, executive profiles</td>
+      </tr>
+      <tr>
+        <td class="fn-name">TA Analytics (TAA)</td>
+        <td>Recruiting efficiency</td>
+        <td>Internal (ATS/CRM)</td>
+        <td>TA team</td>
+        <td>Time-to-hire, cost-per-hire, funnel</td>
+      </tr>
+    </table>
+  </div>
+
+  <h2 class="sub-head">The clearest distinction</h2>
+  <p>Internally-focused functions (HRA, PA, WA) tend to have stronger data analytics skills and self-service culture, while building consulting skills. Externally-focused functions (TI, SI, ERR) tend to be stronger on consulting and business partnering, while developing data analytics capability.</p>
+
+  <div class="panel teal">
+    <div class="panel-label">The core dividing line</div>
+    <h4>Internal vs. external data focus</h4>
+    <p style="font-size:0.88rem;margin:0">The most reliable way to map these functions is by their primary data source. HRA/PA/WA start from your own employees and look inward. TI/SI/ERR start from the external labor market and look outward. The bridge function — the one that spans both — is Talent Acquisition Analytics. All functions are expanding their scopes, and future convergence into an "HR Science" model is likely.</p>
+  </div>
+
+  <h2 class="sub-head">How they interact in organizations</h2>
+  <p>Most organizations won't have all of these. Many will have activities covered by other groups, several merged into single functions, or none with clear ownership. This is a transformative period — don't expect clean org charts.</p>
+  <p>The practical approach: understand what each function is doing in your organization, identify the white space (usually external market context), and use that white space to define your TI remit without stepping on adjacent capabilities. Partner early and often.</p>
+
+  <div class="panel amber">
+    <div class="panel-label">Scope discipline</div>
+    <h4>What TI is NOT</h4>
+    <p style="font-size:0.88rem;margin:0">TI is not TA efficiency reporting (time to fill, cost per hire). It's not HR health metrics (engagement scores, headcount reporting). It's not candidate ATS tracking. These belong elsewhere. TI's unique value is the external market context — the view from outside that internal teams structurally cannot see themselves.</p>
+  </div>
+
+  <div class="takeaways">
+    <div class="tk-label">Toby's Takeaways</div>
+    <ul>
+      <li>Many functions are now touching human capital intelligence from different angles — there's enormous overlap</li>
+      <li>Internally-focused teams have stronger analytics skills; externally-focused teams have stronger consulting skills. Know which you are and develop the other</li>
+      <li>Alignment between functions is a big opportunity — but be clear about the differences before trying to merge them</li>
+      <li>All these functions are broadening scope; convergence into a unified "HR Science" function is a likely future state</li>
+    </ul>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(1)">← What Is TI</button>
+    <button onclick="goto(3)">External Data →</button>
+  </div>
+</div>
+
+<!-- SECTION 03: EXTERNAL DATA / THE OUTSIDE VIEW -->
+<div id="s3" class="section">
+  <div class="section-label">Foundations · 03</div>
+  <h1 class="section-title">The Outside View</h1>
+  <p>Most organizations have rich internal data on what happened. External labor market data tells you what's possible — and why the internal picture looks the way it does.</p>
+
+  <h2 class="sub-head">Inside vs. outside contrast</h2>
+  <table class="compare">
+    <tr><th>Internal data tells you</th><th>External data tells you</th></tr>
+    <tr><td>Your time-to-hire is 67 days</td><td>Whether 67 days is fast or slow for this role in this market</td></tr>
+    <tr><td>Your offer acceptance rate dropped 12%</td><td>Whether competitors raised comp, launched in your market, or the talent pool shifted</td></tr>
+    <tr><td>You lost 18% of engineers last year</td><td>Where they went, what those companies offered, and what the flight risk looks like next year</td></tr>
+    <tr><td>A location has 2,000 engineers on LinkedIn</td><td>What % are actively looking, what skills they actually have, and what demand they're already facing</td></tr>
+  </table>
+
+  <h2 class="sub-head">The 7 external data signals</h2>
+  <div class="card-grid">
+    <div class="card"><h4>Job postings</h4><p>Real-time demand signal. What are competitors hiring for — and what does a sudden volume spike suggest about strategy?</p></div>
+    <div class="card"><h4>Talent flows</h4><p>Where talent moves between employers, industries, and geographies. Reveals talent magnets and vulnerability.</p></div>
+    <div class="card"><h4>Salary benchmarks</h4><p>Market compensation by role, level, geography. Essential for offer competitiveness and location cost modeling.</p></div>
+    <div class="card"><h4>Skills supply</h4><p>How many people carry a specific skill, where they are, how that supply is growing or shrinking.</p></div>
+    <div class="card"><h4>Candidate sentiment</h4><p>Glassdoor, Blind, Indeed reviews. What talent thinks of you and your competitors as employers.</p></div>
+    <div class="card"><h4>Macro labor data</h4><p>BLS, ILO, national statistics — long-term trends, demographic shifts, retirement cliffs.</p></div>
+    <div class="card"><h4>OSINT signals</h4><p>News, patents, executive movement, company filings. Leading indicators of competitor strategy shifts.</p></div>
+  </div>
+
+  <h2 class="sub-head">Questions internal data can't answer</h2>
+  <ul class="doc-list">
+    <li>Is our salary competitive or are we bleeding talent to better-paying competitors?</li>
+    <li>If we open a new site in Phoenix, what's the realistic talent pool — and who's already competing for it?</li>
+    <li>Are our diversity hiring targets feasible given who actually exists in this market?</li>
+    <li>What skills are emerging in our industry that we have no internal capability in yet?</li>
+    <li>Should we build, buy, borrow, or automate this capability?</li>
+  </ul>
+
+  <h3 class="sub-sub">Intelligence disciplines relevant to TI</h3>
+  <p>Culshaw maps military intelligence disciplines to TI practice. The most directly relevant:</p>
+  <div class="card-grid">
+    <div class="card">
+      <h4>OSINT</h4>
+      <p>Open Source Intelligence — intelligence from publicly available sources. Job postings, LinkedIn, news, patents, Glassdoor, company websites. The backbone of most TI work.</p>
+    </div>
+    <div class="card">
+      <h4>HUMINT</h4>
+      <p>Human Intelligence — from direct contact. Every recruiter conversation is an intelligence gathering opportunity. No other function talks to as many competitor employees.</p>
+    </div>
+    <div class="card">
+      <h4>GEOINT</h4>
+      <p>Geospatial Intelligence — location analysis, talent concentration maps, commute shed modeling. Relevant to site selection and location strategy.</p>
+    </div>
+  </div>
+
+  <div class="panel teal">
+    <div class="panel-label">HUMINT in practice</div>
+    <h4>Recruiters as intelligence assets</h4>
+    <p style="font-size:0.88rem;margin:0">No other function in your organization talks to as many competitor employees as TA does. During a job interview, a candidate from a competitor might mention a new product, a restructure, or a comp change. Most organizations have no process to capture, route, or act on this intelligence. Building a structured competitive intelligence intake into the TA process — even surgical and targeted — is one of the highest-ROI TI investments available.</p>
+  </div>
+
+  <h2 class="sub-head">From raw data to decision-grade intelligence</h2>
+  <div class="step-flow">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Raw signals</h4><p>Job postings, LinkedIn profiles, news feeds, government statistics — unstructured, voluminous, noisy</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Aggregation</h4><p>Vendor platforms normalize and structure the raw signals — Draup, TalentNeuron, Lightcast, Horsefly, Stratigens</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Analysis</h4><p>Layer context: what does the data mean for this specific business question in this specific market?</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Intelligence</h4><p>Synthesized, contextualized insight with confidence level and recommended action — decision-grade</p></div></div>
+  </div>
+
+  <h2 class="sub-head">Honest limits</h2>
+  <div class="panel rust">
+    <div class="panel-label">Data humility</div>
+    <h4>What external data cannot do</h4>
+    <p style="font-size:0.88rem;margin:0">External platforms show talent that's visible online — not the full market. A job posting analysis misses internal transfers, campus programs, and referrals. LinkedIn penetration varies dramatically by geography and function. Platform data can lag 30–90 days. No dashboard can capture a toll road that cuts your commute shed in half, or a competitor just announcing a new site next door. Context — from humans on the ground — remains irreplaceable. Use triangulation across at least two vendors plus a primary data source for any decision of consequence.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(2)">← Adjacent Functions</button>
+    <button onclick="goto(4)">The Landscape →</button>
+  </div>
+</div>
+
+<!-- SECTION 04: LANDSCAPE -->
+<div id="s4" class="section">
+  <div class="section-label">Foundations · 04</div>
+  <h1 class="section-title">The Vendor Landscape</h1>
+
+  <p>The TI platform market grew from ~$6.5B in 2020 to a projected $13B+ by 2028 (CAGR 9.4%). Understanding the landscape helps you choose tools strategically rather than reactively.</p>
+
+  <h2 class="sub-head">Platform categories</h2>
+  <div class="card-grid">
+    <div class="card"><h4>Macro LMI Aggregators</h4><p>Lightcast (EMSI/Burning Glass), TalentNeuron, Horsefly, Draup, Stratigens, Claro — structured labor market intelligence at population scale</p></div>
+    <div class="card"><h4>Talent Lifecycle Platforms</h4><p>Eightfold, SeekOut, hireEZ, Entelo — AI-driven internal + external candidate intelligence across the hiring lifecycle</p></div>
+    <div class="card"><h4>Insights Portals</h4><p>LinkedIn Talent Insights — talent pool sizing, company benchmarking, skills trends, embedded in existing recruiter workflows</p></div>
+    <div class="card"><h4>Specialist / Niche</h4><p>Crunchbase/Pitchbook (M&amp;A intelligence), Owler (competitor data), Glassdoor/Indeed (sentiment), Talkwalker (media monitoring)</p></div>
+    <div class="card"><h4>HCM / ATS / CRM</h4><p>Workday, SAP SuccessFactors, Oracle, iCIMS, Greenhouse, Beamery — internal data infrastructure that TI augments with external context</p></div>
+    <div class="card"><h4>Raw Government Data</h4><p>BLS O*NET, EU-LFS, ILO — authoritative, free, slow to update, requires significant processing</p></div>
+  </div>
+
+  <h2 class="sub-head">Selection framework</h2>
+  <p>No single platform covers everything. Culshaw's recommendation: triangulate across at least two vendors and validate with a third external source. Key selection criteria:</p>
+  <ul class="doc-list">
+    <li><strong>Geography coverage:</strong> Global vendors vary dramatically in depth outside North America and Western Europe</li>
+    <li><strong>Skills taxonomy:</strong> Bucketed vs. granular — a "software engineer" bucket is useless if you need RF analog designers specifically</li>
+    <li><strong>Data refresh rate:</strong> Understand lag time before relying on any platform for fast-moving decisions</li>
+    <li><strong>User model:</strong> Platform only vs. supported workbench — what's your team's analytical capability?</li>
+    <li><strong>Integration:</strong> Can it connect to your ATS/HCM for blended internal/external views?</li>
+  </ul>
+
+  <h3 class="sub-sub">Build vs. Buy vs. Borrow vs. Bot</h3>
+  <div class="tool-box">
+    <h3>Resource Decision Tool</h3>
+    <label class="tool-label">What capability do you need?</label>
+    <select class="tool-select" id="bbb-cap" onchange="runBBB()">
+      <option value="">— select —</option>
+      <option value="lmi">Labor market intelligence platform</option>
+      <option value="analyst">TI analyst capacity</option>
+      <option value="osint">OSINT / research capability</option>
+      <option value="dashboard">Self-service data dashboard</option>
+      <option value="competitive">Competitor monitoring</option>
+      <option value="executive">Executive research</option>
+    </select>
+    <label class="tool-label">Your organization's TI maturity?</label>
+    <select class="tool-select" id="bbb-mat" onchange="runBBB()">
+      <option value="">— select —</option>
+      <option value="1">Level 1 — Experimental/Foundational</option>
+      <option value="2">Level 2 — Tactical</option>
+      <option value="3">Level 3 — Operational</option>
+      <option value="4">Level 4–5 — Strategic/Transformational</option>
+    </select>
+    <div id="bbb-result" class="tool-result"></div>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(3)">← External Data</button>
+    <button onclick="goto(5)">Maturity Model →</button>
+  </div>
+</div>
+
+<!-- SECTION 05: MATURITY MODEL -->
+<div id="s5" class="section">
+  <div class="section-label">Foundations · 05</div>
+  <h1 class="section-title">Maturity Model</h1>
+  <p>Culshaw's TI maturity model maps the evolution of a function across five levels, tracking functional health, work horizon, data sophistication, operational clarity, and career path development. It's calibrated to the trusted adviser journey.</p>
+
+  <h2 class="sub-head">The trusted adviser path</h2>
+  <p>Before the five levels, understand the four role stages any TI practitioner or team passes through:</p>
+  <div class="card-grid">
+    <div class="card" style="border-left:3px solid var(--border)"><h4>Provider</h4><p>Delivering objective intelligence against defined requests. Reactive, project-by-project. Aligned to SI/sourcing level.</p></div>
+    <div class="card" style="border-left:3px solid var(--amber-mid)"><h4>Problem Solver</h4><p>Root-cause analysis. Cross-functional. Driving decisions, not just informing. Tactical-to-strategic bridge.</p></div>
+    <div class="card" style="border-left:3px solid var(--teal-mid)"><h4>Insight Generator</h4><p>Proactive suggestions. VP-level engagement. Owns complex programs. High impact, limited guidance.</p></div>
+    <div class="card" style="border-left:3px solid var(--ink)"><h4>Trusted Adviser</h4><p>Seat at the strategy table. Challenges leadership. Knows the problem before they do. Global impact.</p></div>
+  </div>
+
+  <div class="panel amber">
+    <div class="panel-label">The unrealized value gap</div>
+    <h4>Most teams are stuck at Provider</h4>
+    <p style="font-size:0.88rem;margin:0">Even excellent TI teams making huge impact at the Provider level are leaving significant value on the table. The gap between Provider and Trusted Adviser is where TI functions earn their strategic seat. The path forward: align expectations as you evolve, build skills for the next level, maintain quality throughout, and ruthlessly prioritize high-impact work.</p>
+  </div>
+
+  <h2 class="sub-head">The five maturity levels</h2>
+  <p>Click each level to expand. Use the Readiness Diagnostic below to identify your current position.</p>
+
+  <div id="maturity-levels">
+    <div class="maturity-level">
+      <div class="maturity-header" onclick="toggleMaturity(this)">
+        <span class="maturity-num">L1</span>
+        <span class="maturity-name">Experimental / Foundational</span>
+        <span class="maturity-badge">Jack of all trades</span>
+        <span style="margin-left:0.5rem;color:var(--muted);font-size:0.8rem">▾</span>
+      </div>
+      <div class="maturity-body">
+        <div class="maturity-row"><span class="ml">Function</span><span class="mv">Reactionary mode, no demand signal. Limited context on overall strategy. Capacity management is very difficult.</span></div>
+        <div class="maturity-row"><span class="ml">Work horizon</span><span class="mv">0–6 months. Deep dives for unforeseen circumstances. Highly erratic. This is the experimentation phase.</span></div>
+        <div class="maturity-row"><span class="ml">Data</span><span class="mv">Little governance or engineering. Early tooling. Low stakeholder data maturity.</span></div>
+        <div class="maturity-row"><span class="ml">Operations</span><span class="mv">No vision, mission, KPIs, customer definition, systems, or processes.</span></div>
+        <div class="maturity-row"><span class="ml">Career path</span><span class="mv">Undefined. No specialization. Function vs. capability decision still pending.</span></div>
+        <p style="margin-top:0.75rem;font-size:0.82rem;font-style:italic;color:var(--muted)">This is normal. "A jack-of-all-trades is a master of none, but oftentimes better than a master of one." Experiment, set tone, don't fear the scrappiness.</p>
+      </div>
+    </div>
+    <div class="maturity-level">
+      <div class="maturity-header" onclick="toggleMaturity(this)">
+        <span class="maturity-num">L2</span>
+        <span class="maturity-name">Tactical</span>
+        <span class="maturity-badge">Building foundations</span>
+        <span style="margin-left:0.5rem;color:var(--muted);font-size:0.8rem">▾</span>
+      </div>
+      <div class="maturity-body">
+        <div class="maturity-row"><span class="ml">Function</span><span class="mv">Closer customer alignment. Cleaner demand signal. Some cross-functional engagement (HR, finance, real estate).</span></div>
+        <div class="maturity-row"><span class="ml">Work horizon</span><span class="mv">0–12 months. Starting to impact the decision cycle with more consistency.</span></div>
+        <div class="maturity-row"><span class="ml">Data</span><span class="mv">Somewhat standardized structure and product offering. Understanding limitations of data sets.</span></div>
+        <div class="maturity-row"><span class="ml">Operations</span><span class="mv">Vision, mission, KPIs, customer definition, systems and processes in place. Tracking and scaling becoming feasible.</span></div>
+        <div class="maturity-row"><span class="ml">Career path</span><span class="mv">Starting to clarify. Some role definition and specialization, but no development paths yet.</span></div>
+      </div>
+    </div>
+    <div class="maturity-level">
+      <div class="maturity-header" onclick="toggleMaturity(this)">
+        <span class="maturity-num">L3</span>
+        <span class="maturity-name">Operational</span>
+        <span class="maturity-badge">Consistent delivery</span>
+        <span style="margin-left:0.5rem;color:var(--muted);font-size:0.8rem">▾</span>
+      </div>
+      <div class="maturity-body">
+        <div class="maturity-row"><span class="ml">Function</span><span class="mv">Strong customer alignment and account management. Ahead of the work. Capacity loading less of an issue.</span></div>
+        <div class="maturity-row"><span class="ml">Work horizon</span><span class="mv">3–18 months. Aligned to core strategic goals and working with senior leadership.</span></div>
+        <div class="maturity-row"><span class="ml">Data</span><span class="mv">Standardized structure. Augmenting with alternative external and internal data sets.</span></div>
+        <div class="maturity-row"><span class="ml">Operations</span><span class="mv">Can clearly articulate measurable business impact value. Business case exists to scale.</span></div>
+        <div class="maturity-row"><span class="ml">Career path</span><span class="mv">Clear, structured development paths across most role specializations.</span></div>
+      </div>
+    </div>
+    <div class="maturity-level">
+      <div class="maturity-header" onclick="toggleMaturity(this)">
+        <span class="maturity-num">L4</span>
+        <span class="maturity-name">Strategic</span>
+        <span class="maturity-badge">True partner</span>
+        <span style="margin-left:0.5rem;color:var(--muted);font-size:0.8rem">▾</span>
+      </div>
+      <div class="maturity-body">
+        <div class="maturity-row"><span class="ml">Function</span><span class="mv">Seen as true TI partners. Tight leadership alignment. More and more cross-functional collaboration.</span></div>
+        <div class="maturity-row"><span class="ml">Work horizon</span><span class="mv">3–18 months plus. Strategically impactful work aligned to longer-term vision.</span></div>
+        <div class="maturity-row"><span class="ml">Data</span><span class="mv">Expanding data sets beyond HR/talent: real estate, infrastructure, political stability, ease of doing business.</span></div>
+        <div class="maturity-row"><span class="ml">Operations</span><span class="mv">Very clean processes enabling rapid scaling and model flexibility.</span></div>
+        <div class="maturity-row"><span class="ml">Career path</span><span class="mv">Clear development paths. Becoming a talent magnet internally and externally.</span></div>
+      </div>
+    </div>
+    <div class="maturity-level">
+      <div class="maturity-header" onclick="toggleMaturity(this)">
+        <span class="maturity-num">L5</span>
+        <span class="maturity-name">Transformational</span>
+        <span class="maturity-badge">Trusted adviser</span>
+        <span style="margin-left:0.5rem;color:var(--muted);font-size:0.8rem">▾</span>
+      </div>
+      <div class="maturity-body">
+        <div class="maturity-row"><span class="ml">Function</span><span class="mv">Trusted adviser across the organization. Truly embedded with customers. Helps guide and challenge long-term business strategy.</span></div>
+        <div class="maturity-row"><span class="ml">Work horizon</span><span class="mv">18 months+. Challenging the business on strategy, model, market positioning.</span></div>
+        <div class="maturity-row"><span class="ml">Data</span><span class="mv">Pan-silo, holistic data set. Clean engineering means scaling at will while offering truly contextual intelligence.</span></div>
+        <div class="maturity-row"><span class="ml">Operations</span><span class="mv">All systems, processes and tools work as a well-oiled machine.</span></div>
+        <div class="maturity-row"><span class="ml">Career path</span><span class="mv">Clear development paths at all levels. Recognized industry-wide as best-in-class.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub-head" style="margin-top:2rem">Readiness Diagnostic</h2>
+  <p>Answer five questions to get a directional readiness score and recommended next moves.</p>
+  <div class="tool-box" id="diag-tool">
+    <h3>Readiness Diagnostic</h3>
+    <div id="diag-questions"></div>
+    <button class="tool-btn" onclick="runDiagnostic()">Score my function</button>
+    <div id="diag-result" class="tool-result"></div>
+  </div>
+
+  <div class="takeaways">
+    <div class="tk-label">Toby's Takeaways</div>
+    <ul>
+      <li>It is very normal to feel spread too thin and failing in the early days — this is when you experiment and play with the offering</li>
+      <li>We are all on this journey together; no one has mastered this yet</li>
+      <li>Use this maturity model as a framework but build your own version for your own north star</li>
+      <li>Trust takes time to build through consistency and output — don't try to force the Trusted Adviser relationship</li>
+    </ul>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(4)">← The Landscape</button>
+    <button onclick="goto(6)">Operating Model →</button>
+  </div>
+</div>
+
+<!-- SECTION 06: OPERATING MODEL -->
+<div id="s6" class="section">
+  <div class="section-label">Build · 06</div>
+  <h1 class="section-title">Operating Model</h1>
+
+  <h2 class="sub-head">The foundational questions</h2>
+  <p>Before designing your operating model, you need clarity on four things. Get these wrong and everything downstream suffers.</p>
+
+  <h3 class="sub-sub">1. Who is your customer? (The most important question)</h3>
+  <p>Anyone who decides they're a stakeholder is one. Customers are different — they're specifically the people whose needs you're trying to satisfy. Culshaw's key test:</p>
+  <blockquote>"The key phrase is to drive business decisions. Be clear about whether your customers are in fact the drivers of those business decisions — or if they are simply informing those decision makers. If they are simply informing decision makers, I would argue you have the wrong customer base."<cite>— Toby Culshaw</cite></blockquote>
+  <p>The implication: TI teams seated in TA often serve TA as their customer, when the real customer should be the business leader TA is hiring for. This matters because KPIs drive behavior — and TA KPIs (time to fill, cost per hire) will inevitably shape your TI output in ways that limit strategic impact.</p>
+
+  <h3 class="sub-sub">Upstream vs. downstream — the oil production metaphor</h3>
+  <div class="panel teal">
+    <div class="panel-label">Culshaw's upstream/downstream model</div>
+    <h4>Go as far upstream as possible</h4>
+    <p style="font-size:0.88rem;margin:0">Think of your customer workflow like oil production. Upstream = where decisions are made. Downstream = where these decisions land operationally. If your TI is positioned downstream (reacting to decisions already made), you spend enormous time and resources mitigating the effects of poor upstream decisions. It is far more effective to inject TI upstream — before the decision is set — where you can actually influence the outcome. Every time you're called in after a decision is made to explain why it's not working, that's a downstream failure that could have been prevented.</p>
+  </div>
+
+  <h3 class="sub-sub">2. Capability vs. function — be deliberate</h3>
+  <p>Are you building talent intelligence as a side-of-desk activity inside an existing team? Or a dedicated Talent Intelligence function? Both are valid. But the pivot from one to the other requires a hard reset — don't let it happen by accident. If you're moving from capability to function:</p>
+  <ul class="doc-list">
+    <li>Redefine the customer base rather than inheriting the previous one</li>
+    <li>Set a new vision, mission, and principles — don't carry over old ones</li>
+    <li>Be explicit about what's in and out of scope</li>
+  </ul>
+
+  <h3 class="sub-sub">3. Vision, mission, and principles</h3>
+  <p><strong>Vision</strong> = why you exist and what you're building toward. Should be ambitious, realistic, and aligned to company goals.</p>
+  <p style="font-style:italic;background:var(--paper2);padding:0.75rem;border-radius:3px;margin:0.5rem 0"><em>Example: "The Global Talent Intelligence team will enable and empower our leadership with the right market data, analysis and intelligence, at the right time to drive impactful strategic decisions."</em></p>
+  <p><strong>Mission</strong> = operational mechanism for achieving the vision today.</p>
+  <p style="font-style:italic;background:var(--paper2);padding:0.75rem;border-radius:3px;margin:0.5rem 0"><em>Example: "Delivery of talent intelligence work will be made to the end customer and decision maker. We will leverage existing relationships with the business via partner teams and inject talent intelligence into the relevant process mechanisms."</em></p>
+  <p><strong>Principles / tenets</strong> = guardrails for day-to-day decisions. Examples from high-performing teams:</p>
+  <ul class="doc-list">
+    <li>We make recommendations based on research and evangelize data-driven decision-making</li>
+    <li>We identify and solve root causes of problems, not their symptoms</li>
+    <li>We prioritize work that results in measurable impact for our customers</li>
+    <li>We provide both self-service and custom TI solutions to our customers globally</li>
+  </ul>
+
+  <h3 class="sub-sub">4. Loss leader projects — proactive TI</h3>
+  <p>Not all TI projects should come from defined customer requests. Loss leaders are proactive projects with no defined customer or pre-identified red flag — but where you can see the pain coming and want to spark a conversation:</p>
+  <div class="card-grid">
+    <div class="card"><h4>Macro demographic shifts</h4><p>Retirement cliffs, baby boomer knowledge transfer, pipeline issues that won't manifest for 5 years</p></div>
+    <div class="card"><h4>Geopolitical talent impact</h4><p>Wars, visa regulation changes, Brexit-type events affecting your talent pool before leadership is asking</p></div>
+    <div class="card"><h4>Industry-level shortages</h4><p>Skills gaps that industry analysts see coming years out but organizations rarely plan for</p></div>
+    <div class="card"><h4>Competitor pivots</h4><p>A talent competitor entering your market or changing their hiring strategy — surfacing this before leadership feels it</p></div>
+  </div>
+  <p>Loss leaders serve two purposes: they spark conversations internally, and they market your TI capability to levels of the organization you can't yet reach through traditional project request channels.</p>
+
+  <h2 class="sub-head">Operating model comparator</h2>
+  <div class="tool-box">
+    <h3>Operating Model Selector</h3>
+    <label class="tool-label">Primary customer type</label>
+    <select class="tool-select" id="om-cust" onchange="runOM()">
+      <option value="">— select —</option>
+      <option value="strategic">C-suite / SVP strategy leaders</option>
+      <option value="ta">Talent Acquisition / TA leadership</option>
+      <option value="hr">HR / People Analytics</option>
+      <option value="business">Business unit / functional leaders</option>
+      <option value="mixed">Mixed / multiple customer groups</option>
+    </select>
+    <label class="tool-label">Primary output type</label>
+    <select class="tool-select" id="om-output" onchange="runOM()">
+      <option value="">— select —</option>
+      <option value="strategic">Strategic advisory / white papers</option>
+      <option value="location">Location / expansion analysis</option>
+      <option value="sourcing">Sourcing intelligence / playbooks</option>
+      <option value="competitive">Competitive intelligence / battlecards</option>
+      <option value="programmatic">Always-on monitoring / dashboards</option>
+    </select>
+    <div id="om-result" class="tool-result"></div>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(5)">← Maturity Model</button>
+    <button onclick="goto(7)">Where TI Sits →</button>
+  </div>
+</div>
+
+<!-- SECTION 07: WHERE TI SITS -->
+<div id="s7" class="section">
+  <div class="section-label">Build · 07</div>
+  <h1 class="section-title">Where TI Sits in the Org</h1>
+  <p>Where Talent Intelligence reports shapes its KPIs, customer access, resource model, and long-term trajectory. The 2021 TI Collective survey found: over 50% of TI functions reported into Talent Acquisition, but only 22% thought that was the right home.</p>
+
+  <h2 class="sub-head">The five placement options</h2>
+
+  <div class="org-card">
+    <h4>Option 1: Talent Acquisition</h4>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.5rem">The most common starting point. Natural home for SI work. Close to the sourcing market.</p>
+    <div class="org-pros-cons">
+      <div class="side pros">
+        <div class="side-label">Pros</div>
+        Natural affinity with sourcing skills. Close to talent market. Recruiters as intelligence assets (HUMINT). Clear initial customer.
+      </div>
+      <div class="side cons">
+        <div class="side-label">Cons</div>
+        TA KPIs (time-to-fill) can limit strategic horizon. Customer base capped at TA unless intentionally expanded. Short-termism risk.
+      </div>
+    </div>
+  </div>
+
+  <div class="org-card">
+    <h4>Option 2: HR Analytics</h4>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.5rem">Strong data infrastructure. Route to senior leadership already established.</p>
+    <div class="org-pros-cons">
+      <div class="side pros">
+        <div class="side-label">Pros</div>
+        Existing route to strategic stakeholders. Clean data architecture. Can set external context for internal HR metrics. Strong self-service culture.
+      </div>
+      <div class="side cons">
+        <div class="side-label">Cons</div>
+        Skills mismatch (analytics-heavy vs. consulting-heavy). Different operational rhythms. TI maturity may lag HRA maturity.
+      </div>
+    </div>
+  </div>
+
+  <div class="org-card">
+    <h4>Option 3: Executive Recruitment</h4>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.5rem">Natural for OSINT and competitor intelligence. Immediate access to senior leaders.</p>
+    <div class="org-pros-cons">
+      <div class="side pros">
+        <div class="side-label">Pros</div>
+        Instant senior-level route to market. Competitive intelligence already embedded. Consulting skills aligned. Trust with leadership.
+      </div>
+      <div class="side cons">
+        <div class="side-label">Cons</div>
+        Micro (individual) focus may limit macro (population) data capability. Tools/systems may not suit macro LMI work. Consider a ringfenced TI sub-team.
+      </div>
+    </div>
+  </div>
+
+  <div class="org-card">
+    <h4>Option 4: Strategic Workforce Planning</h4>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.5rem">Natural fit for long-horizon, strategy-aligned TI work.</p>
+    <div class="org-pros-cons">
+      <div class="side pros">
+        <div class="side-label">Pros</div>
+        Strategic timeframe alignment. Natural demand for external labor market context. Senior decision-maker access. Long-term view.
+      </div>
+      <div class="side cons">
+        <div class="side-label">Cons</div>
+        SWP functions vary widely in maturity and resources. May not have TI tooling. Less common as a standalone home for TI.
+      </div>
+    </div>
+  </div>
+
+  <div class="org-card">
+    <h4>Option 5: Centralized Intelligence</h4>
+    <p style="font-size:0.84rem;color:var(--muted);margin-bottom:0.5rem">The emerging "future state" preferred by ~20% of TI professionals. Aligned with CI/Market Intelligence functions.</p>
+    <div class="org-pros-cons">
+      <div class="side pros">
+        <div class="side-label">Pros</div>
+        Breaks silos. Aligned with Competitor/Market/Marketing Intelligence. Programmatic cadence. Pan-org data access. Most strategic positioning.
+      </div>
+      <div class="side cons">
+        <div class="side-label">Cons</div>
+        Rare in current state. TI functions not yet common in CI teams. Requires org maturity to implement. Institutional will needed.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel teal">
+    <div class="panel-label">Culshaw's principle</div>
+    <h4>Nothing is fixed</h4>
+    <p style="font-size:0.88rem;margin:0">No matter where your function is placed today, it does not limit your reach or potential impact. Teams evolve; offerings mature; functions realign. It's very unlikely that any TI function created today will have the same organizational home in five years. Be bold about building relationships and customer base beyond your reporting line. Do not be limited by your org chart.</p>
+  </div>
+
+  <h2 class="sub-head">Intelligence cadence: the AoI alignment</h2>
+  <p>One critical advantage of Centralized Intelligence placement: alignment with <strong>Always On Intelligence (AoI)</strong>. Most other intelligence functions (Competitor, Market, Marketing) are designed around programmatic, ongoing work — not project-by-project delivery. AoI bridges this gap, giving TI a natural home in CI frameworks and a regular, structured output cadence that leadership expects.</p>
+
+  <div class="nav-arrows">
+    <button onclick="goto(6)">← Operating Model</button>
+    <button onclick="goto(8)">Roles &amp; Team →</button>
+  </div>
+</div>
+
+<!-- SECTION 08: ROLES & TEAM -->
+<div id="s8" class="section">
+  <div class="section-label">Build · 08</div>
+  <h1 class="section-title">Roles &amp; Team</h1>
+
+  <h2 class="sub-head">Core skills for TI practitioners</h2>
+  <div class="card-grid">
+    <div class="card"><h4>Research &amp; OSINT</h4><p>Ability to find, evaluate, and synthesize publicly available data at pace. Boolean logic, OSINT tools, data triangulation.</p></div>
+    <div class="card"><h4>Data analysis</h4><p>Working with structured and unstructured data sets. Not necessarily coding — but comfort with data, trend identification, and quantitative reasoning.</p></div>
+    <div class="card"><h4>Consulting &amp; storytelling</h4><p>Translating complex findings into executive-ready narratives. Stakeholder management, business acumen, presentation skills.</p></div>
+    <div class="card"><h4>Domain knowledge</h4><p>Deep understanding of the specific talent markets you serve — functional, geographic, industry-specific nuances.</p></div>
+    <div class="card"><h4>Project management</h4><p>Running multiple concurrent projects with defined scopes, timelines, and stakeholders. Intake management, prioritization.</p></div>
+    <div class="card"><h4>Ethics &amp; judgment</h4><p>Understanding data privacy, GDPR, appropriate use of OSINT and HUMINT. Knowing the line between intelligence and surveillance.</p></div>
+  </div>
+
+  <h2 class="sub-head">Team structure models</h2>
+  <table class="compare">
+    <tr><th>Structure</th><th>Best for</th><th>Risk</th></tr>
+    <tr><td>Business unit aligned</td><td>Deep domain expertise per BU; strong BU relationships</td><td>Siloed knowledge; inconsistent standards</td></tr>
+    <tr><td>Geographic / market aligned</td><td>Global orgs with distinct regional talent markets</td><td>Functional expertise gaps; coordination overhead</td></tr>
+    <tr><td>Functional alignment</td><td>Specialization by TI product type (SI, competitive, M&amp;A)</td><td>Can feel siloed from business units</td></tr>
+    <tr><td>Hybrid matrix</td><td>Large, mature TI functions needing both depth and breadth</td><td>Complexity; management overhead; requires clear RACI</td></tr>
+    <tr><td>Centralized</td><td>Consistent standards, clear brand, efficiency</td><td>Distance from business context; escalation paths</td></tr>
+  </table>
+
+  <h2 class="sub-head">Career pathing</h2>
+  <p>TI is still a young enough field that career paths aren't well-defined across the industry. But within high-performing functions, Culshaw identifies two flows:</p>
+  <p><strong>Inflow</strong> — common entry points: sourcing / executive research, HR analytics, management consulting, research firms, workforce planning, economics / data science.</p>
+  <p><strong>Outflow</strong> — TI alumni commonly move into: strategic workforce planning, people analytics leadership, TA leadership, consultant/advisory roles, vendor-side solutions teams. The skills travel well.</p>
+
+  <div class="panel amber">
+    <div class="panel-label">Semiconductor / AI talent context</div>
+    <h4>Hiring TI practitioners for deep tech markets</h4>
+    <p style="font-size:0.88rem;margin:0">For semiconductor and AI engineering talent markets, TI practitioners need functional fluency beyond standard TA backgrounds: understanding of chip design vs. fab roles, analog vs. digital vs. RF distinctions, the academic pipeline (PhD-heavy fields like quantum, photonics), geographic concentration in specific hubs (TSMC ecosystem, ARM ecosystem), and the IP-sensitivity of competitive intelligence in this sector. Domain knowledge is non-negotiable — a generalist TI analyst will miss the signal in a job posting that a domain expert reads immediately.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(7)">← Where TI Sits</button>
+    <button onclick="goto(9)">Tooling &amp; Data →</button>
+  </div>
+</div>
+
+<!-- SECTION 09: TOOLING & DATA -->
+<div id="s9" class="section">
+  <div class="section-label">Build · 09</div>
+  <h1 class="section-title">Tooling &amp; Data</h1>
+
+  <h2 class="sub-head">Internal data goldmine</h2>
+  <p>Before purchasing external platforms, audit what you already have. Most orgs carry rich data in systems that aren't being used for TI.</p>
+  <table class="compare">
+    <tr><th>System</th><th>TI-relevant data</th><th>Key questions it enables</th></tr>
+    <tr><td>HCM / HRIS</td><td>Org structure, tenure, performance, compensation, location, job family</td><td>Where do our top performers come from? How does training affect attrition?</td></tr>
+    <tr><td>ATS</td><td>Application source, funnel conversion, time-to-hire by role/location, offer accept/decline</td><td>What roles take longest? Where's the unnatural funnel fallout?</td></tr>
+    <tr><td>CRM</td><td>Candidate engagement history, outreach success rates, competitor targeting results</td><td>How many touches before application? What's our competitive sourcing success rate?</td></tr>
+    <tr><td>Finance</td><td>Headcount investment, real estate cost by site, project costs</td><td>What's the true cost-per-location for a given talent strategy?</td></tr>
+    <tr><td>Marketing Intelligence</td><td>Brand sentiment, social listening, competitor messaging</td><td>How is our employer brand tracking vs. talent competitors?</td></tr>
+  </table>
+
+  <h2 class="sub-head">External platform selection</h2>
+  <p>Culshaw's recommendation: triangulate across at least two vendors, validate with a third source. No single platform covers all use cases reliably. Key platforms by strength:</p>
+  <div class="card-grid">
+    <div class="card"><h4>Lightcast / EMSI Burning Glass</h4><p>Deep US/UK skills taxonomy. Job posting volume and trends. Strong for skills supply/demand modeling.</p></div>
+    <div class="card"><h4>TalentNeuron</h4><p>Global coverage. Strong for location strategy, workforce planning scenarios. Scenario modeling tools.</p></div>
+    <div class="card"><h4>Draup</h4><p>AI-powered. Strong for talent segmentation, skills clustering, competitive talent intelligence. Semiconductor/tech depth.</p></div>
+    <div class="card"><h4>Horsefly Analytics</h4><p>UK-origin. Strong sentiment and market benchmarking. Good for DEI data and candidate behavior.</p></div>
+    <div class="card"><h4>Stratigens</h4><p>Location strategy specialist. Strong for global site selection with talent + cost + risk overlay.</p></div>
+    <div class="card"><h4>LinkedIn Talent Insights</h4><p>Broadest reach globally. Embedded in recruiter workflow. Best for talent pool sizing and company benchmarking.</p></div>
+  </div>
+
+  <h2 class="sub-head">Data triangulation methodology</h2>
+  <p>For any decision of consequence, use at least three data sources: two platforms that can corroborate each other, plus a primary research element (recruiter intel, candidate surveys, or qualitative interviews). This is especially important for:</p>
+  <ul class="doc-list">
+    <li>Location decisions (platform data + local recruiter ground-truth + government data)</li>
+    <li>Salary benchmarking (two platforms + offer decline analysis)</li>
+    <li>DEI feasibility (macro data + targeted sourcing experiments + pipeline analysis)</li>
+    <li>Competitor intelligence (public signals + HUMINT from TA + sentiment data)</li>
+  </ul>
+
+  <div class="panel teal">
+    <div class="panel-label">Platform limitation</div>
+    <h4>No dashboard captures context</h4>
+    <p style="font-size:0.88rem;margin:0">Culshaw's three scenarios illustrate this: a strong site on paper can be undermined by a toll road inside the commute shed; a growing talent pool can be irrelevant if three competitors just announced sites next door; an "engineering" skills count can be misleading if the taxonomy buckets all STEM and hides the scarcity of your specific niche. External data platforms are directional guides — not decision machines. Human judgment and contextual intelligence remain essential at the final stage of any analysis.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(8)">← Roles &amp; Team</button>
+    <button onclick="goto(10)">Project Lifecycle →</button>
+  </div>
+</div>
+
+<!-- SECTION 10: PROJECT LIFECYCLE -->
+<div id="s10" class="section">
+  <div class="section-label">Operate · 10</div>
+  <h1 class="section-title">Project Lifecycle</h1>
+  <p>Culshaw's six-phase lifecycle mirrors military intelligence collection (planning → approach → questioning → termination → reporting), adapted for TI's consulting model.</p>
+
+  <h2 class="sub-head">The six phases</h2>
+  <div class="step-flow">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Needs capture</h4><p>Understand the business problem, measurable impact, parameters, stakeholders, timeline, and confidentiality level. Never start a project without this documented.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Planning &amp; sign-off</h4><p>Problem statement, deliverables, success criteria, in/out of scope, risks, timeline. Get this signed off in writing before starting research. Never skip this phase.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Research</h4><p>Data gathering using appropriate sources and methods. Apply data confidence model throughout. Work backwards from delivery date to sequence data acquisition.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Project delivery</h4><p>Output format matched to audience: white paper, presentation, model, dashboard. Control the narrative; match format to how stakeholders will consume it.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Post-project wash-up</h4><p>Internal team debrief: what went well, what could improve, what to do differently. This is the most skipped and most important step. No blame, no hierarchy.</p></div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-body"><h4>Stakeholder feedback</h4><p>NPS, CSAT, qualitative debrief with the customer. Done live/virtually — not by form. Use this session to also business develop and discover upcoming pipeline.</p></div></div>
+  </div>
+
+  <h2 class="sub-head">The Data Confidence Model</h2>
+  <p>Borrowed from UK Police Intelligence reporting. Applies three classification layers to every piece of research:</p>
+  <div class="conf-grid">
+    <div class="conf-cell"><div class="conf-code">DCC</div><div class="conf-name">Document Confidence</div><p>Overall confidence in the document as a whole: High (H), Moderate (M), or Low (L)</p></div>
+    <div class="conf-cell"><div class="conf-code">DSC</div><div class="conf-name">Data Source</div><p>Confidence in each source used: Reliable (R), Untested (U), or Not Reliable (NR)</p></div>
+    <div class="conf-cell"><div class="conf-code">DPC</div><div class="conf-name">Data Point</div><p>Confidence in each data point: 1 (known first-hand) → 5 (suspected false)</p></div>
+  </div>
+  <p>Data Point scoring (1–5):</p>
+  <ul class="doc-list">
+    <li><strong>1</strong> — Known directly to the source (first-hand)</li>
+    <li><strong>2</strong> — Known indirectly, but corroborated by independent source</li>
+    <li><strong>3</strong> — Known indirectly (told by someone else)</li>
+    <li><strong>4</strong> — Not known — no means of assessing</li>
+    <li><strong>5</strong> — Suspected to be false</li>
+  </ul>
+  <p>Applying this model — even directionally — professionalizes your research and builds leadership trust in ways that raw data delivery never will.</p>
+
+  <h2 class="sub-head">Intake barriers — by design</h2>
+  <p>Counterintuitively, Culshaw recommends deliberately creating friction in your project intake. This reduces low-value demand and ensures you work on what matters.</p>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Non-automated intake</h4>
+      <p>An online form without a follow-up call is dangerous — the customer thinks the clock starts when they submit, putting you on the back foot before day one.</p>
+    </div>
+    <div class="card">
+      <h4>Required project sponsor</h4>
+      <p>Projects must have a sponsor at decision-making level who attends intake and delivery meetings. Removes "nice to have" requests.</p>
+    </div>
+    <div class="card">
+      <h4>Measurable business impact value</h4>
+      <p>Customers must articulate the business impact before you engage. This alone eliminates vanity requests and forces real problem-statement thinking.</p>
+    </div>
+  </div>
+
+  <h2 class="sub-head">Prioritization matrix</h2>
+  <p>Apply Eisenhower's framework with TI-specific definitions:</p>
+  <p><strong>Important</strong> = activities leading to TI functional strategic goals. <strong>Urgent</strong> = activities directly aligned to stakeholder-defined business value. (Escalation ≠ automatically urgent.)</p>
+  <div class="eisenhower">
+    <div class="eq do"><div class="eq-label">Do first · 3 pts (High importance + High urgency)</div>High-visibility projects with defined impact aligned to both TI strategic goals and clear business value.</div>
+    <div class="eq schedule"><div class="eq-label">Schedule · 2 pts (High importance + Low urgency)</div>Fulfil TI strategic goals (customer expansion, levelling) but no clear immediate business impact articulated.</div>
+    <div class="eq delegate"><div class="eq-label">Delegate · 1 pt (Low importance + High urgency)</div>Clear business impact from requestor but doesn't fulfil TI strategic goals. Use strategically to build stakeholder trust.</div>
+    <div class="eq avoid"><div class="eq-label">Don't do · 0 pts (Low importance + Low urgency)</div>Neither fulfils TI strategic goals nor has articulated business impact. Politely decline.</div>
+  </div>
+
+  <h2 class="sub-head">Project Prioritizer</h2>
+  <div class="tool-box">
+    <h3>Score Your Project</h3>
+    <label class="tool-label">Does this project align to TI functional strategic goals?</label>
+    <select class="tool-select" id="pp-imp" onchange="runPP()">
+      <option value="">— select —</option>
+      <option value="2">Yes — clearly aligned to our strategic goals</option>
+      <option value="0">No — does not align to strategic goals</option>
+    </select>
+    <label class="tool-label">Has the customer articulated clear, measurable business value?</label>
+    <select class="tool-select" id="pp-urg" onchange="runPP()">
+      <option value="">— select —</option>
+      <option value="1">Yes — specific business impact defined</option>
+      <option value="0">No — business value not clearly articulated</option>
+    </select>
+    <div id="pp-result" class="tool-result"></div>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(9)">← Tooling &amp; Data</button>
+    <button onclick="goto(11)">Use-Case Portfolio →</button>
+  </div>
+</div>
+
+<!-- SECTION 11: USE-CASE PORTFOLIO -->
+<div id="s11" class="section">
+  <div class="section-label">Operate · 11</div>
+  <h1 class="section-title">Use-Case Portfolio</h1>
+  <p>TI's breadth of work is one of the field's defining features — and one of its capacity management challenges. Use this grid to explore use cases by type. Filter to find what's most relevant to your current function.</p>
+
+  <div class="uc-filters">
+    <button class="uc-filter active" onclick="filterUC('all',this)">All</button>
+    <button class="uc-filter" onclick="filterUC('strategic',this)">Strategic</button>
+    <button class="uc-filter" onclick="filterUC('sourcing',this)">Sourcing</button>
+    <button class="uc-filter" onclick="filterUC('programmatic',this)">Programmatic</button>
+    <button class="uc-filter" onclick="filterUC('research',this)">Research</button>
+  </div>
+
+  <div class="uc-grid">
+    <div class="uc-card tag-strategic"><span class="uc-tag">Strategic</span><h4>Location Strategy</h4><p>Talent supply/demand, cost, risk, and feasibility analysis for site selection and expansion</p></div>
+    <div class="uc-card tag-strategic"><span class="uc-tag">Strategic</span><h4>M&amp;A Intelligence</h4><p>Pre-due-diligence workforce analysis, org structure mapping, culture and retention risk assessment</p></div>
+    <div class="uc-card tag-strategic"><span class="uc-tag">Strategic</span><h4>Skills-Based Planning</h4><p>Future skills forecasting, gap analysis, build/buy/borrow/automate decision support</p></div>
+    <div class="uc-card tag-strategic"><span class="uc-tag">Strategic</span><h4>Diversity Intelligence</h4><p>DEI feasibility by market, funnel analysis, non-traditional hiring pool identification</p></div>
+    <div class="uc-card tag-strategic"><span class="uc-tag">Strategic</span><h4>Future Horizons</h4><p>18-month+ forecast: headwinds, talent gaps, labor market shifts, and intervention strategies</p></div>
+    <div class="uc-card tag-strategic"><span class="uc-tag">Strategic</span><h4>Cultural Intelligence</h4><p>Org culture assessment for M&amp;A targets, market entry, and leadership change</p></div>
+    <div class="uc-card tag-sourcing"><span class="uc-tag">Sourcing</span><h4>Market Mapping</h4><p>Total accessible market sizing, talent concentration, demand/supply ratio, DEI composition</p></div>
+    <div class="uc-card tag-sourcing"><span class="uc-tag">Sourcing</span><h4>Profile Calibration</h4><p>Role design validation against market realities — leveling, skills, requirements</p></div>
+    <div class="uc-card tag-sourcing"><span class="uc-tag">Sourcing</span><h4>Sourcing Playbooks</h4><p>Standardized Boolean strings, channel recommendations, and diversity search parameters by role family</p></div>
+    <div class="uc-card tag-sourcing"><span class="uc-tag">Sourcing</span><h4>Salary Benchmarking</h4><p>Compensation analysis by role, level, and geography — triangulated across platforms</p></div>
+    <div class="uc-card tag-sourcing"><span class="uc-tag">Sourcing</span><h4>Historical Resurrection</h4><p>ATS/CRM archaeology — surfacing silver medallists and prior-engaged talent for re-activation</p></div>
+    <div class="uc-card tag-sourcing"><span class="uc-tag">Sourcing</span><h4>Talent Flow Analysis</h4><p>Where talent moves between employers, industries, geographies — revealing magnets and vulnerabilities</p></div>
+    <div class="uc-card tag-programmatic"><span class="uc-tag">Programmatic</span><h4>Always On Intelligence</h4><p>Permanent competitor monitoring campaigns — job postings, sentiment, news, executive movement</p></div>
+    <div class="uc-card tag-programmatic"><span class="uc-tag">Programmatic</span><h4>Battlecards</h4><p>Living competitor comparison assets — NOT a one-off project. Requires ongoing refresh capacity.</p></div>
+    <div class="uc-card tag-programmatic"><span class="uc-tag">Programmatic</span><h4>Field Alerts</h4><p>Rapid response to market events: layoffs, M&amp;A, exec movements, competitor expansion announcements</p></div>
+    <div class="uc-card tag-programmatic"><span class="uc-tag">Programmatic</span><h4>Employer Brand Monitoring</h4><p>Ongoing tracking of Glassdoor, Indeed, Blind, and social sentiment vs. talent competitors</p></div>
+    <div class="uc-card tag-research"><span class="uc-tag">Research</span><h4>Competitive Intelligence</h4><p>Deep competitor org analysis: structure, strategy, compensation, hiring patterns, product roadmap signals</p></div>
+    <div class="uc-card tag-research"><span class="uc-tag">Research</span><h4>Benchmarking Analysis</h4><p>How your org compares externally on diversity, org design, comp, talent management — requires internal data</p></div>
+    <div class="uc-card tag-research"><span class="uc-tag">Research</span><h4>Candidate Listening</h4><p>Primary + secondary research on talent population perceptions: interviews, surveys, sentiment analysis</p></div>
+    <div class="uc-card tag-research"><span class="uc-tag">Research</span><h4>Pipeline Analysis</h4><p>TAA work: application funnel, source of hire, channel effectiveness, diversity funnel conversion</p></div>
+  </div>
+
+  <div class="panel amber" style="margin-top:1.5rem">
+    <div class="panel-label">Critical distinction</div>
+    <h4>Battlecards are a program, not a project</h4>
+    <p style="font-size:0.88rem;margin:0">This is one of Culshaw's most important operational points. A battlecard is not a deliverable you produce and hand off. It's a living document that requires ongoing primary and secondary data refresh, embedded recruiter intelligence, and periodic deep-dive updates. The moment your battlecards go stale, they reflect poorly on everything your TI function produces. Factor the ongoing maintenance capacity into any battlecard commitment before you launch.</p>
+  </div>
+
+  <div class="panel teal" style="margin-top:1rem">
+    <div class="panel-label">Always On Intelligence</div>
+    <h4>Scalable by design</h4>
+    <p style="font-size:0.88rem;margin:0">AoI must be built for scale from the start. A brilliant analysis that can't be run across dozens of competitors simultaneously is not AoI — it's a one-off deep dive. The value of AoI is the radar function: early warning on competitor pivots, talent magnets, new market entries, and organizational shifts — visible to leadership on a regular cadence, before they feel it in their business results.</p>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(10)">← Project Lifecycle</button>
+    <button onclick="goto(12)">Skills &amp; Planning →</button>
+  </div>
+</div>
+
+<!-- SECTION 12: SKILLS & PLANNING -->
+<div id="s12" class="section">
+  <div class="section-label">Operate · 12</div>
+  <h1 class="section-title">Skills &amp; Planning</h1>
+
+  <h2 class="sub-head">Semiconductor &amp; AI talent specifics</h2>
+  <p>Standard TI frameworks apply — but this domain has unique structural characteristics that require specialist knowledge to interpret correctly.</p>
+  <div class="card-grid">
+    <div class="card"><h4>The fab vs. design divide</h4><p>Semiconductor talent splits into two mostly non-overlapping populations with different geographies, employers, compensation, and career paths. Conflating them produces garbage analysis.</p></div>
+    <div class="card"><h4>Scarce analog / RF pools</h4><p>Analog, RF, and mixed-signal design talent is genuinely rare globally. Supply is concentrated, academic pipeline is thin, and the populations don't respond to standard market mapping approaches.</p></div>
+    <div class="card"><h4>CUDA / AI accelerator talent</h4><p>GPU programming and AI accelerator skills have exploded in demand vs. supply. University pipeline lags demand by years. Geographic concentration (Bay Area, Austin, Toronto, Amsterdam) is extreme.</p></div>
+    <div class="card"><h4>IP sensitivity</h4><p>Competitive intelligence in this sector is especially sensitive. Job posting analysis revealing R&amp;D investment areas can be commercially sensitive. Treat OSINT work in this domain with heightened ethics consideration.</p></div>
+    <div class="card"><h4>PhD-heavy sub-markets</h4><p>Quantum computing, photonics, advanced packaging — small talent pools concentrated in specific universities, national labs, and a handful of companies. Academic relationship intelligence matters.</p></div>
+    <div class="card"><h4>Ecosystem dependencies</h4><p>ARM architecture, TSMC process node, EDA tool expertise (Cadence, Synopsys) — market moves by one ecosystem player create talent waves across the rest. Monitor competitor product roadmaps, not just hiring signals.</p></div>
+  </div>
+
+  <h2 class="sub-head">Build · Buy · Borrow · Bot framework</h2>
+  <p>For any TI capability or skills gap, apply this four-option framework before committing to a path:</p>
+  <table class="compare">
+    <tr><th>Option</th><th>Best when</th><th>Watch out for</th></tr>
+    <tr><td>Build (internal)</td><td>Core competency, strategic differentiation, long-term need, IP sensitivity</td><td>Slow to scale; requires talent to hire and develop; high opportunity cost</td></tr>
+    <tr><td>Buy (acquire / tool)</td><td>Speed to capability; technology replacing manual process; external aggregation cheaper than internal build</td><td>Integration complexity; vendor dependency; taxonomy lock-in</td></tr>
+    <tr><td>Borrow (partner)</td><td>Temporary spike demand; specialized niche expertise; cross-functional partnership available internally</td><td>Knowledge doesn't stay in-house; relationship management overhead</td></tr>
+    <tr><td>Bot (automate)</td><td>Repetitive, rule-based TI tasks; data normalization; report generation; alerts and monitoring</td><td>Context sensitivity — automation can't catch the toll road. Keep human review.</td></tr>
+  </table>
+
+  <div class="nav-arrows">
+    <button onclick="goto(11)">← Use-Case Portfolio</button>
+    <button onclick="goto(13)">Governance &amp; Ethics →</button>
+  </div>
+</div>
+
+<!-- SECTION 13: GOVERNANCE & ETHICS -->
+<div id="s13" class="section">
+  <div class="section-label">Operate · 13</div>
+  <h1 class="section-title">Governance &amp; Ethics</h1>
+
+  <h2 class="sub-head">Data ethics — the five principles</h2>
+  <p>From Harvard's framework for data ethics, applied to TI practice:</p>
+  <div class="card-grid">
+    <div class="card"><h4>1. Ownership &amp; Consent</h4><p>Never assume comfort with data collection. Processing personal data requires lawful basis. GDPR requires consent to be freely given, specific, informed, and unambiguous.</p></div>
+    <div class="card"><h4>2. Transparency</h4><p>Be clear about what you're collecting, how it will be used, and why. Deception about methods or intent is unlawful and damages trust.</p></div>
+    <div class="card"><h4>3. Privacy</h4><p>Even with consent, data subjects expect privacy. De-identify datasets wherever possible. Breaches hurt individuals and destroy organizational credibility.</p></div>
+    <div class="card"><h4>4. Intention</h4><p>Ask: why do we need this? What will change as a result? Is the minimum viable data collection? Good intentions don't automatically make data collection ethical.</p></div>
+    <div class="card"><h4>5. Outcomes</h4><p>Consider disparate impact — unintentional discrimination from data analysis. Think through worst-case misuse scenarios before deploying any tool or model.</p></div>
+  </div>
+
+  <h2 class="sub-head">GDPR for OSINT practitioners</h2>
+  <p>By its nature, OSINT work surfaces personally identifiable information (PII). If you or your target is in the EU, GDPR applies. Key obligations:</p>
+  <ul class="doc-list">
+    <li>Have a lawful basis for processing personal data before storing any individual's information</li>
+    <li>Even publicly available data (LinkedIn, news) still requires consent or legitimate interest as the lawful basis</li>
+    <li>Understand whether you're the data controller or data processor — different obligations apply</li>
+    <li>Honor data subject rights: access, erasure, portability</li>
+    <li>Engage your legal and data privacy teams early in any program involving individual-level data</li>
+  </ul>
+
+  <div class="panel rust">
+    <div class="panel-label">Culshaw's warning</div>
+    <h4>Just because you can, doesn't mean you should</h4>
+    <p style="font-size:0.88rem;margin:0">You could theoretically scrape LinkedIn photos and infer ethnicity for DEI analysis. You could use name analysis to infer gender. You could aggregate candidate location data to build commute profiles. All of these are technically possible. None of them are ethical or, in most jurisdictions, legal. The diversity data gap in most markets outside the US is real — but filling it through inference from personal data is not the answer. Be very clear about the ethics of your diversity intelligence work before you build it.</p>
+  </div>
+
+  <h2 class="sub-head">Confidentiality classification system</h2>
+  <p>Apply a standard classification to every project — and enforce data partitioning based on it:</p>
+  <table class="compare">
+    <tr><th>Level</th><th>Access</th><th>When to use</th></tr>
+    <tr><td>Confidential — project team only</td><td>TI team members on this project</td><td>M&amp;A targets, sensitive competitor analysis, executive profiles</td></tr>
+    <tr><td>Confidential — TI only</td><td>Full TI function</td><td>Ongoing competitor monitoring, pre-announcement location work</td></tr>
+    <tr><td>Restricted — leadership</td><td>Senior leadership only</td><td>Strategic reports for C-suite decision-making</td></tr>
+    <tr><td>Restricted — customer group</td><td>Specific team (e.g., TA)</td><td>Sourcing playbooks, market maps for specific hiring campaigns</td></tr>
+    <tr><td>Internal access</td><td>All employees</td><td>General market reports, DEI benchmarks</td></tr>
+    <tr><td>Open / unrestricted</td><td>External as well</td><td>Published thought leadership, public benchmarks</td></tr>
+  </table>
+
+  <div class="nav-arrows">
+    <button onclick="goto(12)">← Skills &amp; Planning</button>
+    <button onclick="goto(14)">Measurement →</button>
+  </div>
+</div>
+
+<!-- SECTION 14: MEASUREMENT -->
+<div id="s14" class="section">
+  <div class="section-label">Prove &amp; Scale · 14</div>
+  <h1 class="section-title">Measurement</h1>
+
+  <div class="panel rust">
+    <div class="panel-label">Culshaw's central warning</div>
+    <h4>KPIs drive behaviors — choose carefully</h4>
+    <p style="font-size:0.88rem;margin:0">Setting "number of projects completed" as a KPI tells your team to move fast over moving well. It incentivizes low-hanging fruit over strategic impact, parallel overload over quality delivery. Whatever you measure will shape how your team allocates time and energy. Set KPIs that drive the behaviors you want — not the ones that are easiest to count.</p>
+  </div>
+
+  <h2 class="sub-head">Metrics vs. KPIs</h2>
+  <table class="compare">
+    <tr><th></th><th>Metrics</th><th>KPIs</th></tr>
+    <tr><td>Purpose</td><td>Monitor health and process flow</td><td>Measure progress against strategic targets</td></tr>
+    <tr><td>Character</td><td>Business-as-usual; often static; industry benchmarks exist</td><td>Laser-focused; SMART; reset periodically</td></tr>
+    <tr><td>Driver</td><td>Operational visibility</td><td>Behavioral change and goal alignment</td></tr>
+    <tr><td>Example</td><td>Project overrun rate, average project duration</td><td>Business-articulated financial impact, cost avoidance vs. research firms</td></tr>
+  </table>
+
+  <h2 class="sub-head">Sourcing Intelligence metrics</h2>
+  <p>Common starting metrics for SI teams (use selectively — definitions matter):</p>
+  <ul class="doc-list">
+    <li>Total requisitions impacted by TI research</li>
+    <li>Placements where TI directly influenced the hire</li>
+    <li>Time savings vs. recruiter self-research baseline</li>
+    <li>Cost avoidance vs. external research firm rates</li>
+    <li>Recruitment marketing spend reduction tied to TI-informed channel decisions</li>
+  </ul>
+
+  <h2 class="sub-head">TI Consulting KPIs (recommended)</h2>
+  <p>For strategic TI functions, Culshaw recommends impact-oriented KPIs rather than activity metrics:</p>
+  <div class="card-grid">
+    <div class="card"><h4>Business-articulated financial impact</h4><p>The value the customer assigned to the decision the research informed. Captured at intake.</p></div>
+    <div class="card"><h4>Cost avoidance vs. research firms</h4><p>Research firm daily rates × project headcount × days. Highly credible to finance stakeholders.</p></div>
+    <div class="card"><h4>Customer expansion</h4><p>Number of projects in new customer groups — measures TI's reach into the organization.</p></div>
+    <div class="card"><h4>Levelling</h4><p>Number of projects at target decision-making level. Tracks whether TI is reaching the right stakeholders.</p></div>
+    <div class="card"><h4>Repeat business</h4><p>Senior stakeholders returning with follow-on work signals trust — the most important leading indicator.</p></div>
+    <div class="card"><h4>NPS / CSAT</h4><p>Stakeholder satisfaction score. Best collected live, not by form — completion rate and richness are dramatically higher.</p></div>
+  </div>
+
+  <h2 class="sub-head">ROI Calculator</h2>
+  <div class="tool-box">
+    <h3>TI ROI Estimator</h3>
+    <div class="roi-grid">
+      <div>
+        <label class="tool-label">Projects delivered per year</label>
+        <div class="range-row"><input type="range" min="5" max="100" value="30" id="roi-proj" oninput="calcROI()"><span class="range-val" id="roi-proj-v">30</span></div>
+        <label class="tool-label">Avg. project business impact ($K)</label>
+        <div class="range-row"><input type="range" min="100" max="5000" step="100" value="1000" id="roi-impact" oninput="calcROI()"><span class="range-val" id="roi-impact-v">$1,000K</span></div>
+        <label class="tool-label">External research firm rate ($/day)</label>
+        <div class="range-row"><input type="range" min="2000" max="20000" step="500" value="8000" id="roi-rate" oninput="calcROI()"><span class="range-val" id="roi-rate-v">$8,000</span></div>
+        <label class="tool-label">Avg. project duration (days)</label>
+        <div class="range-row"><input type="range" min="5" max="60" value="30" id="roi-days" oninput="calcROI()"><span class="range-val" id="roi-days-v">30 days</span></div>
+        <label class="tool-label">FTE TI team cost ($K/year)</label>
+        <div class="range-row"><input type="range" min="100" max="2000" step="50" value="400" id="roi-cost" oninput="calcROI()"><span class="range-val" id="roi-cost-v">$400K</span></div>
+      </div>
+      <div>
+        <div class="roi-out" id="roi-out">
+          <div style="font-family:Inter,sans-serif;font-size:0.75rem;color:#8a7f6a;margin-bottom:0.5rem">Annual TI ROI estimate</div>
+          <span class="roi-val" id="roi-total">—</span>
+          <div class="roi-sub" id="roi-label">Set parameters to calculate</div>
+          <div class="roi-rows" id="roi-rows"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub-head">Data capture infrastructure</h2>
+  <p>Build your tracking system from day one — even if you're a team of one. Track at minimum:</p>
+  <ul class="doc-list">
+    <li>Project name, status, start/end dates, delivery date vs. estimated (track overrun)</li>
+    <li>Customer name and level / sponsor name and level</li>
+    <li>Business impact value (as articulated by the customer at intake)</li>
+    <li>Project type and strategic goal alignment</li>
+    <li>Headcount impacted × average salary = headcount investment figure</li>
+    <li>Post-project NPS / feedback score</li>
+  </ul>
+  <p>Use existing platforms (Jira, Asana, Salesforce, even a well-structured spreadsheet) rather than building custom tooling. What matters is consistency and automation — not the platform itself.</p>
+
+  <div class="nav-arrows">
+    <button onclick="goto(13)">← Governance &amp; Ethics</button>
+    <button onclick="goto(15)">Stakeholders &amp; Comms →</button>
+  </div>
+</div>
+
+<!-- SECTION 15: STAKEHOLDERS & COMMS -->
+<div id="s15" class="section">
+  <div class="section-label">Prove &amp; Scale · 15</div>
+  <h1 class="section-title">Stakeholders &amp; Communications</h1>
+
+  <blockquote>"A communications strategy would sound strange at first in a talent intelligence team — but I think it is arguably the single biggest missed opportunity for most teams." <cite>— Toby Culshaw</cite></blockquote>
+
+  <h2 class="sub-head">Build trust — there are no shortcuts</h2>
+  <p>The path to trusted adviser status is built on consistent, high-quality delivery over time. Culshaw's trust-building principles:</p>
+  <ul class="doc-list">
+    <li><strong>Have a brand.</strong> Every TI team should have a name, visual identity, and tone that distinguishes their output from all others — internally and externally. Brand = credibility + memorability.</li>
+    <li><strong>Tell your story.</strong> How you came about, what you stand for, what you're building. Your customers should know your mission before they get their first deliverable.</li>
+    <li><strong>Be open, honest, and transparent.</strong> If you drop the ball — and you will — own it. Your customers are on your side; they want you to succeed too. Openness recovers trust faster than silence.</li>
+    <li><strong>Put a face to the name.</strong> A "meet the team" page or bio section in every newsletter. Remote work makes this more important, not less.</li>
+    <li><strong>Ask for feedback and act on it.</strong> Asking shows you care. Acting shows you listened. Both matter.</li>
+    <li><strong>Give customers what they need, not what they want.</strong> Being a trusted adviser sometimes means challenging the framing of a request. Don't sacrifice the long-term strategic relationship for short-term delivery comfort.</li>
+  </ul>
+
+  <h2 class="sub-head">Communications strategy</h2>
+  <p>Two tracks: internal (team rhythm) and external (stakeholders).</p>
+  <h3 class="sub-sub">Internal communications</h3>
+  <ul class="doc-list">
+    <li>Consistent meeting cadence and agendas (team reviews, capacity planning)</li>
+    <li>Workload visibility across the team at all times</li>
+    <li>Knowledge management: where research lives, how it's tagged and retrieved</li>
+    <li>Wash-up log and learning capture from every project</li>
+  </ul>
+  <h3 class="sub-sub">External communications</h3>
+  <ul class="doc-list">
+    <li><strong>Labor market newsletters:</strong> Monthly or bi-monthly. Targeted to a curated stakeholder list. Include team updates, market trends, events. Track open rates and adjust.</li>
+    <li><strong>Project updates:</strong> Regular comms on project pipeline and delivered work — not just at review meetings</li>
+    <li><strong>Awareness campaign:</strong> Proactive internal marketing to raise awareness of TI's capabilities and expand the customer base</li>
+    <li><strong>Business reviews (WBR/MBR/QBR):</strong> Structured review of function health, project highlights/lowlights, strategic obstacles, roadmap forward. Done live — email alone doesn't build the relationship</li>
+  </ul>
+
+  <h2 class="sub-head">Business review agenda template</h2>
+  <div class="panel teal">
+    <div class="panel-label">Recommended QBR structure</div>
+    <h4>Standard business review agenda</h4>
+    <ol class="doc-list" style="margin-top:0.5rem">
+      <li>Executive summary — where are we vs. last period?</li>
+      <li>Goals update — KPIs and strategic goal progress</li>
+      <li>Project highlights — what delivered well and what impact was measured</li>
+      <li>Lowlights / learnings — what didn't work and what we changed</li>
+      <li>Strategic obstacles and challenges — what's in the way?</li>
+      <li>Roadmap / path forward — what's coming and what do we need?</li>
+    </ol>
+  </div>
+
+  <h2 class="sub-head">Stakeholder message composer</h2>
+  <div class="tool-box">
+    <h3>Stakeholder Message Builder</h3>
+    <label class="tool-label">Message type</label>
+    <select class="tool-select" id="msg-type" onchange="buildMsg()">
+      <option value="">— select —</option>
+      <option value="intro">TI function introduction / capability overview</option>
+      <option value="project">Project delivery announcement</option>
+      <option value="newsletter">Newsletter introduction paragraph</option>
+      <option value="feedback">Feedback request after project delivery</option>
+      <option value="expand">Business development / customer expansion ask</option>
+    </select>
+    <label class="tool-label">Stakeholder level</label>
+    <select class="tool-select" id="msg-level" onchange="buildMsg()">
+      <option value="">— select —</option>
+      <option value="exec">C-suite / SVP / VP</option>
+      <option value="director">Director / Senior Manager</option>
+      <option value="ta">TA / HR team member</option>
+    </select>
+    <div id="msg-result" class="tool-result"></div>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(14)">← Measurement</button>
+    <button onclick="goto(16)">Build Roadmap →</button>
+  </div>
+</div>
+
+<!-- SECTION 16: BUILD ROADMAP -->
+<div id="s16" class="section">
+  <div class="section-label">Prove &amp; Scale · 16</div>
+  <h1 class="section-title">Build Roadmap</h1>
+  <p>Building TI is not a sprint. The roadmap below reflects Culshaw's phased approach — from scrappy beginnings to trusted adviser status. Use it as a framework, not a prescription.</p>
+
+  <h2 class="sub-head">Phase 1: Experimental (0–6 months)</h2>
+  <div class="panel">
+    <div class="panel-label">Jack-of-all-trades phase</div>
+    <ul class="doc-list" style="margin:0">
+      <li>Define customer base and initial scope — resist inheriting the previous team's default</li>
+      <li>Draft vision, mission, and 3–5 team principles</li>
+      <li>Run 2–3 pilot projects: one quick win for trust, one loss-leader for aspiration, one strategic to set the tone</li>
+      <li>Choose and onboard your first external LMI platform</li>
+      <li>Build a basic project intake and tracking process (even in a spreadsheet)</li>
+      <li>Establish stakeholder feedback mechanism from day one</li>
+    </ul>
+  </div>
+
+  <h2 class="sub-head">Phase 2: Tactical (6–18 months)</h2>
+  <div class="panel">
+    <div class="panel-label">Building foundations</div>
+    <ul class="doc-list" style="margin:0">
+      <li>Implement the Data Confidence Model into project documentation</li>
+      <li>Formalize prioritization matrix and intake barriers (non-automated intake, sponsor requirement)</li>
+      <li>Define and launch initial metrics dashboard (project tracking, impact value)</li>
+      <li>Build team brand: name, newsletter, communications cadence</li>
+      <li>Add second LMI platform and implement triangulation methodology</li>
+      <li>Expand customer base beyond initial group — start customer expansion tracking</li>
+    </ul>
+  </div>
+
+  <h2 class="sub-head">Phase 3: Operational (18 months – 3 years)</h2>
+  <div class="panel">
+    <div class="panel-label">Consistent, impactful delivery</div>
+    <ul class="doc-list" style="margin:0">
+      <li>Launch Always On Intelligence program for top 5–10 competitors</li>
+      <li>Build battlecard program (ensure refresh capacity exists before launching)</li>
+      <li>Formalize KPIs aligned to business impact, not activity</li>
+      <li>Establish QBR cadence with all key customer groups</li>
+      <li>Develop career paths for TI roles — contribute to the inflow pipeline</li>
+      <li>Publish first loss-leader report to expand organizational awareness</li>
+    </ul>
+  </div>
+
+  <h2 class="sub-head">Phase 4–5: Strategic → Transformational</h2>
+  <div class="panel">
+    <div class="panel-label">Trusted adviser status</div>
+    <ul class="doc-list" style="margin:0">
+      <li>TI present in all major strategic planning conversations — not as a support function but as a co-author</li>
+      <li>Future horizons capability: economists and business analysts forecasting 18-month+ talent headwinds</li>
+      <li>Pan-silo data integration: TI layer on top of finance, real estate, HR, and external market data</li>
+      <li>Centralized intelligence consideration: evaluate alignment with CI/Market Intelligence functions</li>
+      <li>TI recognized externally as industry benchmark (award submissions, TI Collective participation, industry speaking)</li>
+    </ul>
+  </div>
+
+  <div class="nav-arrows">
+    <button onclick="goto(15)">← Stakeholders &amp; Comms</button>
+    <button onclick="goto(17)">Glossary →</button>
+  </div>
+</div>
+
+<!-- SECTION 17: GLOSSARY -->
+<div id="s17" class="section">
+  <div class="section-label">Reference · 17</div>
+  <h1 class="section-title">Glossary &amp; Sources</h1>
+
+  <h2 class="sub-head">Key terms</h2>
+  <table class="compare">
+    <tr><th>Term</th><th>Definition</th></tr>
+    <tr><td>AoI (Always On Intelligence)</td><td>Permanent, programmatic competitor monitoring campaigns — distinct from one-off projects. Scalable by design.</td></tr>
+    <tr><td>ATS</td><td>Applicant Tracking System — recruiter-facing hiring workflow system (iCIMS, Greenhouse, Workday Recruiting)</td></tr>
+    <tr><td>Battlecard</td><td>Living competitor comparison asset. A program requiring ongoing refresh, not a one-time deliverable.</td></tr>
+    <tr><td>CRM</td><td>Candidate Relationship Management — candidate-centric pipeline and engagement tracking system</td></tr>
+    <tr><td>Data Confidence Model</td><td>Three-layer rating system: Document Confidence (H/M/L), Data Source (R/U/NR), Data Point (1–5)</td></tr>
+    <tr><td>DCC</td><td>Document Confidence Classification — overall confidence rating for a TI deliverable</td></tr>
+    <tr><td>DEI</td><td>Diversity, Equity, and Inclusion</td></tr>
+    <tr><td>DSC</td><td>Data Source Classification — reliability rating for each source used in research</td></tr>
+    <tr><td>ERR</td><td>Executive Recruitment Research — niche search process intelligence, often the precursor to TI functions</td></tr>
+    <tr><td>Field Alert</td><td>Rapid-response intelligence on market events: layoffs, M&amp;A, exec moves, competitor expansion</td></tr>
+    <tr><td>GEOINT</td><td>Geospatial Intelligence — location-based intelligence. Relevant to TI for site selection and commute shed analysis.</td></tr>
+    <tr><td>HCM</td><td>Human Capital Management system — the internal people data platform (Workday, SAP SuccessFactors, Oracle)</td></tr>
+    <tr><td>HRA</td><td>HR Analytics — internally-focused analysis of workforce health metrics</td></tr>
+    <tr><td>HUMINT</td><td>Human Intelligence — information gathered from human sources. In TI: recruiter candidate conversations, exit interviews.</td></tr>
+    <tr><td>LMI</td><td>Labor Market Intelligence — aggregated data on external talent supply, demand, and flows</td></tr>
+    <tr><td>Loss leader project</td><td>Proactive TI project with no pre-defined customer — built to spark conversations and market the TI function</td></tr>
+    <tr><td>M&amp;A Intelligence</td><td>Pre-due-diligence workforce and org analysis to support acquisition decisions</td></tr>
+    <tr><td>Market map / TAM</td><td>Total Accessible Market mapping — note Culshaw's distinction: accessible ≠ addressable</td></tr>
+    <tr><td>NPS</td><td>Net Promoter Score — stakeholder recommendation likelihood metric (0–10 scale)</td></tr>
+    <tr><td>OSINT</td><td>Open Source Intelligence — intelligence from publicly available sources. Core to most TI work.</td></tr>
+    <tr><td>PA</td><td>People Analytics — broader than HRA; includes customer data in some definitions</td></tr>
+    <tr><td>SI</td><td>Sourcing Intelligence — external talent intelligence at the micro/candidate level, supporting recruiters</td></tr>
+    <tr><td>SWP</td><td>Strategic Workforce Planning — long-horizon org capability planning; natural TI partner</td></tr>
+    <tr><td>TAA</td><td>Talent Acquisition Analytics — TA efficiency and effectiveness metrics (time-to-hire, cost-per-hire, funnel)</td></tr>
+    <tr><td>TI</td><td>Talent Intelligence — augmentation of internal and external people data to drive business decisions</td></tr>
+    <tr><td>TIC</td><td>Talent Intelligence Consulting — the strategic advisory form of TI output</td></tr>
+    <tr><td>Trusted Adviser</td><td>The fourth and highest stage of TI maturity — present before decisions, not after. Challenges leadership.</td></tr>
+    <tr><td>VoTA</td><td>Voice of Talent Acquisition — ground-truth intelligence from recruiter conversations fed into TI programs</td></tr>
+    <tr><td>WA</td><td>Workforce Analytics — productivity, engagement, and collaboration analysis; includes gig/contingent workers</td></tr>
+    <tr><td>Wash-up</td><td>Post-project internal team debrief. Most skipped, most important. No blame, equal voice, captures lessons.</td></tr>
+  </table>
+
+  <h2 class="sub-head">Primary sources</h2>
+  <ul class="doc-list">
+    <li>Culshaw, T. (2022). <em>Talent Intelligence: Use Business and People Data to Drive Organizational Performance.</em> Kogan Page.</li>
+    <li>Bersin, J. (2022). <em>Enterprise Talent Intelligence.</em> Josh Bersin Company.</li>
+    <li>Talent Intelligence Collective (2021). <em>Benchmarking Survey.</em> koganpage.com/talent-intelligence</li>
+    <li>Talent Tech Labs (2021). <em>The Rise of the Talent Intelligence Platform.</em></li>
+    <li>Draup. (2024). <em>Labor Market Intelligence Platform.</em> draup.com</li>
+    <li>TalentNeuron. (2024). <em>Strategic Workforce Planning.</em> talentneuron.com</li>
+    <li>Aptitude Research. (2023). <em>Talent Intelligence Buyer's Guide.</em></li>
+    <li>KornFerry. (2018). <em>Future of Work: The Global Talent Crunch.</em></li>
+    <li>Gartner. (2019). <em>7 Guiding Principles for Data Ethics in HR.</em></li>
+  </ul>
+
+  <div class="nav-arrows">
+    <button onclick="goto(16)">← Build Roadmap</button>
+    <button onclick="goto(0)" style="background:var(--ink);color:#e8e0d0;border-color:var(--ink)">↑ Back to top</button>
+  </div>
+</div>
+
+</main>
+<script>
+// ─── Navigation ───────────────────────────────────────────────────
+var current = 0;
+var total = 18;
+
+function goto(n) {
+  document.getElementById('s' + current).classList.remove('active');
+  document.getElementById('s' + n).classList.add('active');
+  current = n;
+  updateNav();
+  document.querySelector('main').scrollTop = 0;
+  window.scrollTo(0, 0);
+  if (document.getElementById('nav').classList.contains('open') && window.innerWidth < 700) {
+    toggleNav();
+  }
+}
+
+function updateNav() {
+  document.querySelectorAll('#nav a').forEach(function(a, i) {
+    a.classList.toggle('active', i === current);
+  });
+  updateProgress();
+}
+
+function toggleNav() {
+  document.getElementById('nav').classList.toggle('open');
+}
+
+function updateProgress() {
+  var pct = (current / (total - 1)) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ─── Print mode ──────────────────────────────────────────────────
+function togglePrint() {
+  var all = document.querySelectorAll('.section');
+  all.forEach(function(s) { s.classList.add('active'); });
+  window.print();
+  setTimeout(function() {
+    all.forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('s' + current).classList.add('active');
+  }, 2000);
+}
+
+// ─── Maturity accordion ──────────────────────────────────────────
+function toggleMaturity(header) {
+  var body = header.nextElementSibling;
+  var isOpen = body.classList.contains('open');
+  document.querySelectorAll('.maturity-body').forEach(function(b) { b.classList.remove('open'); });
+  if (!isOpen) body.classList.add('open');
+}
+
+// ─── Diagnostic ──────────────────────────────────────────────────
+var diagQuestions = [
+  { q: 'Do you have a defined customer base (not just a stakeholder list) with decision-maker access?', opts: ['No defined customer', 'TA or HR only', 'Business leaders + TA', 'C-suite / SVP access'] },
+  { q: 'Do you have a documented vision, mission, and team principles?', opts: ['None in place', 'Informal / verbal only', 'Documented, shared internally', 'Embedded in all comms and reviewed regularly'] },
+  { q: 'How formal is your project intake and prioritization process?', opts: ['Ad-hoc / no process', 'Basic intake form only', 'Intake + prioritization matrix', 'Full intake + sponsor req + impact value + matrix'] },
+  { q: 'How would you describe your measurement of TI impact?', opts: ['No measurement', 'Activity metrics only (# projects)', 'Mix of activity + some impact metrics', 'Business-articulated financial impact + NPS + cost avoidance'] },
+  { q: 'What is your communications strategy with stakeholders?', opts: ['No formal strategy', 'Occasional project updates', 'Regular newsletter + QBR cadence', 'Full comms strategy: brand, newsletter, BR cycle, awareness campaign'] }
+];
+
+function buildDiagnostic() {
+  var html = '';
+  diagQuestions.forEach(function(dq, i) {
+    html += '<div style="margin-bottom:1rem"><label class="tool-label">' + (i+1) + '. ' + dq.q + '</label>';
+    html += '<select class="tool-select" id="diag-' + i + '">';
+    html += '<option value="">— select —</option>';
+    dq.opts.forEach(function(opt, j) {
+      html += '<option value="' + j + '">' + opt + '</option>';
+    });
+    html += '</select></div>';
+  });
+  document.getElementById('diag-questions').innerHTML = html;
+}
+
+function runDiagnostic() {
+  var total = 0; var answered = 0;
+  for (var i = 0; i < diagQuestions.length; i++) {
+    var el = document.getElementById('diag-' + i);
+    if (el.value !== '') { total += parseInt(el.value); answered++; }
+  }
+  if (answered < 5) {
+    document.getElementById('diag-result').innerHTML = 'Please answer all 5 questions.';
+    document.getElementById('diag-result').classList.add('show');
+    return;
+  }
+  var max = (diagQuestions.length) * 3;
+  var pct = Math.round((total / max) * 100);
+  var level, next;
+  if (pct < 20) { level = 'L1 — Experimental'; next = 'Focus: define your customer base and vision. Run 2–3 pilot projects. Build basic intake tracking.'; }
+  else if (pct < 40) { level = 'L2 — Tactical'; next = 'Focus: formalize prioritization matrix and intake barriers. Build team brand and first metrics dashboard.'; }
+  else if (pct < 65) { level = 'L3 — Operational'; next = 'Focus: launch Always On Intelligence. Formalize impact-based KPIs. Establish QBR cadence.'; }
+  else if (pct < 85) { level = 'L4 — Strategic'; next = 'Focus: push toward C-suite customer access. Launch future horizons capability. Consider Centralized Intelligence alignment.'; }
+  else { level = 'L5 — Transformational'; next = 'Focus: maintain trust and challenge the business on long-term strategy. Contribute to industry benchmarking and knowledge.'; }
+  document.getElementById('diag-result').innerHTML =
+    '<div style="font-size:0.75rem;color:#8a7f6a;margin-bottom:0.5rem">Readiness score</div>' +
+    '<div style="font-family:IBM Plex Mono,monospace;font-size:1.6rem;color:#9fe1cb;margin-bottom:0.25rem">' + pct + '%</div>' +
+    '<div style="font-weight:500;margin-bottom:0.5rem">' + level + '</div>' +
+    '<div style="font-size:0.84rem;color:#d0c8b8">' + next + '</div>';
+  document.getElementById('diag-result').classList.add('show');
+}
+
+// ─── BBB Tool ─────────────────────────────────────────────────────
+function runBBB() {
+  var cap = document.getElementById('bbb-cap').value;
+  var mat = document.getElementById('bbb-mat').value;
+  if (!cap || !mat) return;
+  var recs = {
+    lmi: { '1': 'Buy: Start with one platform (LinkedIn Talent Insights or TalentNeuron). Lower cost of entry, faster to value. Avoid building anything custom yet.', '2': 'Buy: Add a second platform for triangulation. Evaluate Draup or Horsefly alongside your first. Borrow from vendor support teams.', '3': 'Buy + Build: License 2–3 platforms with different strengths. Start building internal augmented data views. Consider vendor partnerships.', '4': 'Buy + Bot: Full platform stack with API integrations. Automate data pulls and monitoring. Consider building proprietary augmented datasets.' },
+    analyst: { '1': 'Borrow: Leverage TA sourcers, HR analysts, or vendor workbench support. Don\'t hire dedicated TI yet — validate the model first.', '2': 'Build: Hire your first dedicated TI analyst. Look for sourcing/research background with data curiosity.', '3': 'Build + Borrow: Core TI team + rotation program or contractor augmentation for project spikes.', '4': 'Build: Full TI team with specializations (SI, competitive, M&A, data science). Clear career pathing.' },
+    osint: { '1': 'Build: OSINT is a skill, not a platform. Invest in training existing team members. Leverage free tools (Google Alerts, LinkedIn, company websites).', '2': 'Build + Buy: Add OSINT-adjacent tools (Talkwalker, Owler). Build structured competitor monitoring process.', '3': 'Build + Bot: Systemize OSINT workflows. Automate alerts. Build VoTA program with TA to capture HUMINT at scale.', '4': 'Build + Bot: AoI program running continuously. Automated signal capture with human analysis layer.' },
+    dashboard: { '1': 'Borrow: Use existing HR analytics dashboards. Don\'t build custom yet — too early and too risky.', '2': 'Buy: Leverage platform-built dashboards (LMI vendor tools). Avoid custom build until you know your data needs.', '3': 'Buy + Build: Custom overlay on vendor data for your specific use cases. Build in existing BI tools (Tableau, PowerBI).', '4': 'Build: Proprietary TI intelligence layer built on clean data engineering. Pan-silo data integration.' },
+    competitive: { '1': 'Build: Start with manual OSINT process. Structure it with a template. No platform needed yet.', '2': 'Build + Buy: Formalize battlecard template. Add news monitoring tools. Build VoTA intake from TA.', '3': 'Build + Bot: Launch AoI program. Automate monitoring. Set refresh cadence for battlecards. Ensure refresh capacity exists before launching.', '4': 'Build + Bot + Borrow: Full AoI stack. CI team alignment. Primary research program. External intelligence firm partnership for specialist needs.' },
+    executive: { '1': 'Build: Leverage existing exec search research team. Formalize intelligence capture process from searches.', '2': 'Build: Dedicated ERR-to-TI pipeline. Formalize org mapping and OSINT templates.', '3': 'Build + Borrow: Core ERR capability with TI overlay. Partner with executive search firms for primary intelligence.', '4': 'Build: Full executive intelligence program embedded in TI function. Feeds senior competitor intelligence into AoI.' }
+  };
+  var rec = recs[cap] && recs[cap][mat] ? recs[cap][mat] : 'No specific recommendation — consider consulting your maturity level detail.';
+  document.getElementById('bbb-result').innerHTML = '<strong>Recommendation:</strong> ' + rec;
+  document.getElementById('bbb-result').classList.add('show');
+}
+
+// ─── Operating Model ──────────────────────────────────────────────
+function runOM() {
+  var cust = document.getElementById('om-cust').value;
+  var out = document.getElementById('om-output').value;
+  if (!cust || !out) return;
+  var models = {
+    strategic: { strategic: 'Centralized TI → C-suite. High autonomy, strategic timeframe, minimal operational involvement. Closest to Trusted Adviser model. Ideal home: Centralized Intelligence or SWP.', location: 'Centralized TI → C-suite, with Real Estate + Finance as co-owners. Strong cross-functional integration required. Consider sitting within SWP or reporting to CHRO.', sourcing: 'Risk of misalignment: strategic customers rarely need sourcing output. Reconsider scope, or build a two-track model (strategic TI + embedded SI).', competitive: 'Centralized TI → Strategy team. CI alignment valuable. Consider AoI program structure. Brief leadership regularly.', programmatic: 'Centralized intelligence model. Strong alignment with CI/Market Intelligence teams. Program manager profile needed alongside analysts.' },
+    ta: { strategic: 'Tension: TA customer base limits strategic horizon. Build explicit "route to business leader" pathway alongside TA service. Track customer expansion KPI.', location: 'Works well if TA leadership has strategic budget authority. Otherwise, partner with Real Estate early and often to reach the real decision-maker.', sourcing: 'Natural fit. Sit within TA. Focus on SI-level use cases, build trust, then expand customer base upward.', competitive: 'Viable but limited. TA customers want sourcing-level competitive intel (battlecards, comp). Business leaders want strategic competitor intelligence. Build both if capacity allows.', programmatic: 'Viable for SI monitoring (field alerts, AoI on sourcing competitors). Limited reach for strategic programmatic work.' },
+    hr: { strategic: 'Strong potential: HR Analytics already has routes to CHRO and senior leadership. Use this access to expand TI to strategic decision-makers.', location: 'Good fit: HR Analytics functions often support location decisions. External TI context + internal HR data = strong combined analysis.', sourcing: 'Lower fit: HR Analytics is internally focused. SI work can sit here but feels misaligned. Consider split model.', competitive: 'Viable: HR Analytics can host competitive benchmarking work (org design, comp, DEI). Less natural for OSINT/operational competitive intel.', programmatic: 'Good fit: dashboard culture, self-service tools, automated reporting. Build TI programmatic layer on top of existing BI infrastructure.' },
+    business: { strategic: 'Ideal: BU alignment means TI directly serves the decision-maker. Risk: siloed knowledge, inconsistent standards if multiple BUs.', location: 'Strong fit: BU leaders own location decisions. TI embedded here has direct line to real decision-makers and real business impact.', sourcing: 'Lower fit: BU customers want strategy, not sourcing. Risk of mis-scoping. Ensure SI is handled by TA, with TI doing the strategic layer.', competitive: 'Strong fit: BU leaders want to know what competitors are doing in their space. High demand signal for battlecards and AoI.', programmatic: 'Works if programmatic output is BU-specific. Risk of duplication if multiple BUs run separate programs.' },
+    mixed: { strategic: 'Hybrid matrix or centralized model. Clear RACI essential. Define primary vs. secondary customers to avoid confusion on prioritization.', location: 'Centralized TI with cross-functional intake from Real Estate, Finance, and HR. Structured intake process essential to manage competing demands.', sourcing: 'Two-track model: SI sits with TA, strategic TI sits centrally or with SWP/strategy. Clear handoff protocols between tracks.', competitive: 'Programmatic (AoI) sits centrally. Tactical battlecards sit with TA/BU. Clear ownership prevents duplication.', programmatic: 'Centralized, with clear distribution logic for who receives what output and at what cadence.' }
+  };
+  var rec = models[cust] && models[cust][out] ? models[cust][out] : 'Consider consulting your specific context with the maturity model and org placement frameworks.';
+  document.getElementById('om-result').innerHTML = '<strong>Model recommendation:</strong> ' + rec;
+  document.getElementById('om-result').classList.add('show');
+}
+
+// ─── Project Prioritizer ─────────────────────────────────────────
+function runPP() {
+  var imp = document.getElementById('pp-imp').value;
+  var urg = document.getElementById('pp-urg').value;
+  if (imp === '' || urg === '') return;
+  var score = parseInt(imp) + parseInt(urg);
+  var result;
+  if (score === 3) result = { q: 'Do first', desc: 'High importance + high urgency. This project fulfils TI strategic goals and has clear business impact. Prioritize above all else.', color: '#1d9e75' };
+  else if (score === 2) result = { q: 'Schedule', desc: 'High importance, lower urgency. Fulfils TI strategic goals but business impact not yet fully defined. Schedule in queue; don\'t drop.', color: '#378add' };
+  else if (score === 1) result = { q: 'Delegate or use strategically', desc: 'Low importance to TI goals, but customer has articulated business value. Consider: can it build trust with a strategic stakeholder? If not, decline or delegate.', color: '#ba7517' };
+  else result = { q: 'Do not do', desc: 'Neither fulfils TI strategic goals nor has articulated business impact. Politely decline. Asking customers to articulate impact is a feature, not a bug.', color: '#a32d2d' };
+  document.getElementById('pp-result').innerHTML =
+    '<strong style="color:' + result.color + '">' + result.q + '</strong><br>' +
+    '<span style="font-size:0.84rem;color:#d0c8b8;margin-top:0.25rem;display:block">' + result.desc + '</span>';
+  document.getElementById('pp-result').classList.add('show');
+}
+
+// ─── UC Filter ───────────────────────────────────────────────────
+function filterUC(tag, btn) {
+  document.querySelectorAll('.uc-filter').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.uc-card').forEach(function(c) {
+    if (tag === 'all' || c.classList.contains('tag-' + tag)) {
+      delete c.dataset.hidden; c.style.display = '';
+    } else {
+      c.dataset.hidden = '1'; c.style.display = 'none';
+    }
+  });
+}
+
+// ─── ROI Calculator ──────────────────────────────────────────────
+function calcROI() {
+  var proj = parseInt(document.getElementById('roi-proj').value);
+  var impact = parseInt(document.getElementById('roi-impact').value) * 1000;
+  var rate = parseInt(document.getElementById('roi-rate').value);
+  var days = parseInt(document.getElementById('roi-days').value);
+  var cost = parseInt(document.getElementById('roi-cost').value) * 1000;
+
+  document.getElementById('roi-proj-v').textContent = proj;
+  document.getElementById('roi-impact-v').textContent = '$' + (parseInt(document.getElementById('roi-impact').value)).toLocaleString() + 'K';
+  document.getElementById('roi-rate-v').textContent = '$' + rate.toLocaleString();
+  document.getElementById('roi-days-v').textContent = days + ' days';
+  document.getElementById('roi-cost-v').textContent = '$' + parseInt(document.getElementById('roi-cost').value).toLocaleString() + 'K';
+
+  var totalImpact = proj * impact;
+  var costAvoidance = proj * rate * days;
+  var netValue = totalImpact + costAvoidance - cost;
+  var roi = Math.round(((netValue) / cost) * 100);
+
+  document.getElementById('roi-total').textContent = roi + '%';
+  document.getElementById('roi-label').textContent = 'estimated annual ROI';
+  document.getElementById('roi-rows').innerHTML =
+    '<div class="roi-row"><span class="rk">Total business impact</span><span class="rv">$' + Math.round(totalImpact/1000).toLocaleString() + 'K</span></div>' +
+    '<div class="roi-row"><span class="rk">Cost avoidance vs. firms</span><span class="rv">$' + Math.round(costAvoidance/1000).toLocaleString() + 'K</span></div>' +
+    '<div class="roi-row"><span class="rk">Team cost</span><span class="rv">−$' + parseInt(document.getElementById('roi-cost').value).toLocaleString() + 'K</span></div>' +
+    '<div class="roi-row"><span class="rk">Net value</span><span class="rv">$' + Math.round(netValue/1000).toLocaleString() + 'K</span></div>';
+}
+
+// ─── Stakeholder Message Builder ─────────────────────────────────
+function buildMsg() {
+  var type = document.getElementById('msg-type').value;
+  var level = document.getElementById('msg-level').value;
+  if (!type || !level) return;
+  var msgs = {
+    intro: {
+      exec: 'Subject: Talent Intelligence — how we\'re supporting strategic decisions\n\n[Name], I wanted to take a moment to introduce [Team Name] and how we can support your agenda. Our team provides external labor market intelligence — talent supply, competitor analysis, location feasibility, and skills forecasting — to help you make faster, better-informed decisions on workforce strategy. I\'d value 20 minutes to understand your current priorities and where market intelligence could be most useful. Would [date/time] work?',
+      director: 'Hi [Name], I\'m reaching out from [Team Name] — our team provides talent market intelligence to help teams like yours understand what\'s happening in the external talent landscape. Whether you\'re planning a new hire campaign, expanding a team, or benchmarking against competitors, we can provide the market context to support those decisions. Would you be open to a brief call to discuss your current hiring priorities?',
+      ta: 'Hi [Name], I\'m [Name] from the Talent Intelligence team. We provide sourcing intelligence — market maps, salary benchmarks, competitor analysis, and sourcing playbooks — to help make your recruiting more targeted and efficient. I\'d love to connect and understand which roles or markets are giving you the most difficulty. Happy to set up a quick call.'
+    },
+    project: {
+      exec: 'Subject: [Project Name] — Intelligence Summary\n\n[Name], I\'m pleased to share our completed analysis on [topic]. Key findings: [3 bullet findings]. Recommended action: [recommendation]. Full report attached. I\'m available to present findings and discuss implications at your convenience.',
+      director: 'Hi [Name], [Project Name] is now complete. The headline finding is [key insight]. Full report attached — happy to walk you through the analysis and discuss next steps. Let me know if you\'d like to schedule a delivery call.',
+      ta: 'Hi [Name], the [project] analysis is ready. Main takeaways for your sourcing strategy: [1–2 key points]. Full playbook/market map attached. Shout if you have questions or want to dig into any section.'
+    },
+    newsletter: {
+      exec: '[Team Name] | Market Intelligence Briefing\n\nThis month\'s brief covers: [Topic 1], [Topic 2], and [Topic 3]. The most significant signal in market this month: [key insight]. Full briefing below — reply to this email if you\'d like a deeper dive on any topic.',
+      director: 'Hi team — [Team Name] monthly market update. Here\'s what\'s moving in the talent landscape that\'s most relevant to your work: [3 brief bullets]. Full edition below.',
+      ta: 'Sourcing Intel Update — [Month]\n\nQuick hits from the market this month: [3 bullets relevant to recruiting]. Featured this month: [playbook/resource link]. Questions? Hit reply.'
+    },
+    feedback: {
+      exec: 'Subject: Quick feedback request — [Project Name]\n\nHi [Name], now that [project] has informed [decision], I\'d value 15 minutes to capture your feedback on our work. Specifically: did the intelligence meet your needs, was the timing right, and what would have made it more useful? This helps us improve future delivery and ensures we\'re focused on what matters most to your agenda.',
+      director: 'Hi [Name], thanks for working with us on [project]. Would you be open to a brief feedback call? 15 minutes — we\'d want to hear how useful the research was, what we could have done better, and what\'s coming up where TI could add value.',
+      ta: 'Hi [Name], would you fill in our quick 3-question feedback form on [project]? [link]. Takes 2 minutes and genuinely shapes what we prioritize next. Thanks!'
+    },
+    expand: {
+      exec: 'Subject: Expanding our intelligence support to [new area]\n\nHi [Name], following our work on [previous project], I believe there\'s significant opportunity to apply the same intelligence approach to [new area]. [Brief framing of the business need]. I\'d like to propose a brief conversation to explore whether this would be valuable for your team. Are you open to a 20-minute call?',
+      director: 'Hi [Name], I noticed from [context] that your team is working on [new challenge]. This is exactly the type of question our TI capability is designed to support — [brief example of how]. Would it be useful to connect and scope out what we could bring to it?',
+      ta: 'Hi [Name], now that we\'ve worked on [previous project] together, I wanted to flag that we can also help with [new use case]. Specifically: [1–2 sentences on the value]. Happy to scope something out if useful — just say the word.'
+    }
+  };
+  var text = msgs[type] && msgs[type][level] ? msgs[type][level] : 'No template available for this combination.';
+  document.getElementById('msg-result').innerHTML = '<div style="white-space:pre-wrap;font-family:Inter,sans-serif;font-size:0.82rem;color:#d0c8b8;line-height:1.6">' + text + '</div>';
+  document.getElementById('msg-result').classList.add('show');
+}
+
+// ─── Init ─────────────────────────────────────────────────────────
+buildDiagnostic();
+calcROI();
+updateProgress();
+</script>
+</body>
+</html>

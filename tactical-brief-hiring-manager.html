@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tactical Playbook — Brief a Hiring Manager with Market Data | TI Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F4F0E6;
+  --paper-soft: #EAE4D4;
+  --paper-deep: #DDD4BD;
+  --ink: #1B212C;
+  --ink-soft: #2A3140;
+  --ink-muted: #4A5260;
+  --teal: #0F6E56;
+  --teal-soft: #14876B;
+  --amber: #BA7517;
+  --amber-soft: #D08A28;
+  --rust: #A23A1D;
+  --line: rgba(27,33,44,0.12);
+  --line-strong: rgba(27,33,44,0.22);
+  --shadow: 0 2px 8px rgba(27,33,44,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.container {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ============ MASTHEAD ============ */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 32px 0 40px;
+  border-bottom: 3px solid var(--amber);
+}
+
+.masthead-inner {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.crumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.crumb-sep { opacity: 0.4; }
+.crumb-self { color: var(--paper); }
+
+.masthead h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 44px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+
+.masthead .lede {
+  font-size: 18px;
+  line-height: 1.55;
+  color: rgba(244,240,230,0.8);
+  max-width: 720px;
+}
+
+.tag-row {
+  margin-top: 22px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid rgba(244,240,230,0.25);
+  border-radius: 2px;
+  color: rgba(244,240,230,0.8);
+}
+
+.tag.accent {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+/* ============ TOC ============ */
+.toc {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 22px 26px;
+  margin: 48px 0 40px;
+}
+
+.toc-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 14px;
+}
+
+.toc ol {
+  list-style: none;
+  counter-reset: toc;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+}
+
+.toc li {
+  counter-increment: toc;
+  padding: 6px 0 6px 32px;
+  position: relative;
+  font-size: 14px;
+}
+
+.toc li::before {
+  content: counter(toc, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+
+.toc a {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+
+.toc a:hover {
+  border-bottom-color: var(--teal);
+  color: var(--teal);
+}
+
+/* ============ MAIN ============ */
+main { padding: 0 0 40px; }
+
+.section {
+  margin-bottom: 56px;
+  scroll-margin-top: 24px;
+}
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 1px;
+  background: var(--teal);
+}
+
+.section h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.2;
+  margin-bottom: 18px;
+  letter-spacing: -0.01em;
+}
+
+.section h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 24px 0 12px;
+}
+
+.section p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  color: var(--ink-soft);
+}
+
+.section p strong { color: var(--ink); font-weight: 600; }
+
+.section .preamble {
+  font-size: 17px;
+  margin-bottom: 24px;
+}
+
+/* ============ THE OPENING TENSION ============ */
+.tension {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 28px 32px;
+  border-radius: 4px;
+  margin-bottom: 32px;
+  border-left: 4px solid var(--rust);
+}
+
+.tension-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 10px;
+}
+
+.tension p {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.55;
+  font-style: italic;
+  color: var(--paper);
+  margin: 0;
+}
+
+/* ============ SCENARIOS ============ */
+.scenario-list {
+  list-style: none;
+}
+
+.scenario-list li {
+  padding: 14px 18px 14px 48px;
+  background: var(--paper-soft);
+  border-radius: 3px;
+  margin-bottom: 10px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.55;
+  border-left: 2px solid var(--teal);
+}
+
+.scenario-list li::before {
+  content: '→';
+  position: absolute;
+  left: 18px;
+  top: 14px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.scenario-list strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ============ PREP CHECKLIST ============ */
+.prep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.prep-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-top: 2px solid var(--amber);
+}
+
+.prep-card-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.prep-card h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.prep-card p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* ============ MEETING TIMELINE ============ */
+.timeline {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 26px 28px;
+  margin: 18px 0;
+}
+
+.timeline-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px dashed var(--line-strong);
+}
+
+.timeline-head-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.timeline-head-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-muted);
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px dashed var(--line);
+  align-items: start;
+}
+
+.timeline-row:last-child { border-bottom: none; }
+
+.timeline-time {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+  letter-spacing: 0.05em;
+}
+
+.timeline-content h4 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+
+.timeline-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ============ QUESTIONS ============ */
+.q-card {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  padding: 22px 26px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.q-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.q-question {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 21px;
+  line-height: 1.3;
+  margin-bottom: 14px;
+  color: var(--ink);
+}
+
+.q-question::before {
+  content: '"';
+  color: var(--amber);
+  font-size: 26px;
+  vertical-align: -3px;
+  margin-right: 2px;
+}
+
+.q-question::after {
+  content: '"';
+  color: var(--amber);
+  font-size: 26px;
+  vertical-align: -3px;
+  margin-left: 2px;
+}
+
+.q-translation {
+  background: rgba(27,33,44,0.04);
+  padding: 10px 14px;
+  border-radius: 3px;
+  border-left: 2px solid var(--ink-muted);
+  margin-bottom: 14px;
+}
+
+.q-translation-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.q-translation p {
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.q-answer {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.q-answer strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.q-data {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line-strong);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--teal);
+}
+
+.q-data-label {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  color: var(--ink-muted);
+  margin-right: 8px;
+  font-weight: 600;
+}
+
+/* ============ TRANSLATION TABLE ============ */
+.translation-table {
+  background: var(--paper-soft);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.translation-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+}
+
+.translation-row:last-child { border-bottom: none; }
+
+.translation-row.header {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.translation-row.header > div {
+  padding: 12px 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.translation-row.header > div:first-child { color: var(--amber); }
+.translation-row.header > div:last-child { color: var(--paper); }
+
+.translation-cell {
+  padding: 13px 18px;
+  font-size: 14px;
+  line-height: 1.5;
+  border-right: 1px dashed var(--line);
+}
+
+.translation-cell:last-child { border-right: none; }
+
+.translation-cell.from {
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
+.translation-cell.to {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ============ STARTER TEMPLATE ============ */
+.template-card {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(27,33,44,0.15);
+}
+
+.template-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: rgba(244,240,230,0.06);
+  border-bottom: 1px solid rgba(244,240,230,0.12);
+}
+
+.template-head-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--amber);
+}
+
+.copy-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid rgba(244,240,230,0.3);
+  padding: 5px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--ink);
+}
+
+.copy-btn.copied {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
+}
+
+.template-body {
+  padding: 24px 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* ============ GUARDRAILS ============ */
+.guardrails {
+  background: var(--paper-deep);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 24px 28px;
+}
+
+.guardrails ul {
+  list-style: none;
+  padding: 0;
+}
+
+.guardrails li {
+  padding: 10px 0 10px 32px;
+  position: relative;
+  font-size: 15px;
+  line-height: 1.6;
+  border-bottom: 1px dashed var(--line);
+}
+
+.guardrails li:last-child { border-bottom: none; }
+
+.guardrails li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 22px;
+  height: 22px;
+  background: var(--teal);
+  color: var(--paper);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.guardrails strong { color: var(--ink); font-weight: 600; }
+
+/* ============ XREF ============ */
+.xref {
+  margin-top: 48px;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 32px;
+}
+
+.xref-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 16px;
+}
+
+.xref-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.xref-card {
+  background: var(--paper-soft);
+  padding: 16px 18px;
+  border-radius: 3px;
+  border-left: 2px solid var(--teal);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s ease;
+  display: block;
+}
+
+.xref-card:hover { background: var(--paper-deep); }
+
+.xref-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.xref-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ============ LINKS ============ */
+a.src {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(15,110,86,0.3);
+}
+
+a.src:hover { border-bottom-color: var(--teal); }
+
+/* ============ FOOTER ============ */
+footer {
+  background: var(--ink);
+  color: rgba(244,240,230,0.6);
+  padding: 28px 0;
+  font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 60px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 700px) {
+  .container, .masthead-inner { padding: 0 22px; }
+  .masthead h1 { font-size: 30px; }
+  .masthead .lede { font-size: 16px; }
+  .section h2 { font-size: 24px; }
+  .q-card { padding: 18px 20px; }
+  .q-question { font-size: 17px; }
+  .timeline-row { grid-template-columns: 64px 1fr; gap: 12px; }
+  .translation-row { grid-template-columns: 1fr; }
+  .translation-cell { border-right: none; border-bottom: 1px dashed var(--line); }
+  .translation-row.header > div:last-child { border-top: 1px dashed rgba(244,240,230,0.2); }
+  .template-body { font-size: 11.5px; padding: 18px; }
+  .xref-grid, .toc ol { grid-template-columns: 1fr; }
+}
+
+/* ============ A11Y ============ */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+@media (prefers-color-scheme: dark) {
+  body { background: #14181F; color: #E8E2D2; }
+  .scenario-list li, .prep-card, .q-card, .timeline, .xref-card, .toc, .translation-table { background: #1F2530; }
+  .q-answer, .timeline-content p, .prep-card p, .section p { color: rgba(232,226,210,0.75); }
+  .guardrails { background: #1A1F28; border-color: rgba(232,226,210,0.15); }
+  .guardrails strong, .q-question, .translation-cell.to { color: #E8E2D2; }
+  .xref-card { color: #E8E2D2; }
+  .xref-card:hover { background: #252C38; }
+  .q-translation { background: rgba(232,226,210,0.04); }
+  .toc { border-color: rgba(232,226,210,0.15); }
+  .toc a { color: #E8E2D2; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== MASTHEAD ========== -->
+<div class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <span>TI Playbook</span>
+      <span class="crumb-sep">/</span>
+      <span>Tactical Playbooks</span>
+      <span class="crumb-sep">/</span>
+      <span class="crumb-self">Tier 2 · Brief a Hiring Manager</span>
+    </div>
+    <h1>Brief a hiring manager with market data</h1>
+    <p class="lede">The conversation where TI delivers value or doesn't. A field playbook for the 30 minutes when a recruiter or TI analyst walks into a room with market data and walks out with a hiring manager who's actually changed their mind about something. Built for the semi/AI context, where the manager is technical, time-poor, and skeptical of HR framing.</p>
+    <div class="tag-row">
+      <span class="tag accent">Tier 2 Tactical Playbook</span>
+      <span class="tag">Field Guide</span>
+      <span class="tag">~12 min read</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container">
+
+<!-- ========== OPENING TENSION ========== -->
+<div class="tension">
+  <div class="tension-label">The honest problem</div>
+  <p>Most market-data briefings fail not because the data is wrong, but because the data answers questions the hiring manager isn't asking. They show up wanting to know "why is this so hard" and leave with twelve charts about pool sizes. This guide is about closing that gap.</p>
+</div>
+
+<!-- ========== TOC ========== -->
+<nav class="toc">
+  <div class="toc-label">Inside this playbook</div>
+  <ol>
+    <li><a href="#when">When this conversation matters</a></li>
+    <li><a href="#prep">Pre-meeting prep — what you bring</a></li>
+    <li><a href="#flow">The 30-minute meeting structure</a></li>
+    <li><a href="#questions">The 8 questions they actually ask</a></li>
+    <li><a href="#translate">Translation cheat sheet</a></li>
+    <li><a href="#commit">Post-meeting commit template</a></li>
+    <li><a href="#guardrails">Guardrails</a></li>
+  </ol>
+</nav>
+
+<!-- ========== WHEN ========== -->
+<section class="section" id="when">
+  <div class="section-label">01 &nbsp;·&nbsp; The Trigger</div>
+  <h2>When this conversation matters</h2>
+  <p class="preamble">Not every market data conversation needs this much structure. The five scenarios where it does — because the meeting carries real weight on a decision:</p>
+
+  <ul class="scenario-list">
+    <li><strong>Opening a hard req where the comp band is below market.</strong> The manager wants the role filled. You need them to either approve the comp lift or reframe the role. The meeting is where that happens.</li>
+    <li><strong>A mid-funnel role that's been stuck 60+ days.</strong> They're frustrated. You need to land that the math is broken, not the recruiting effort, and propose what changes.</li>
+    <li><strong>Geo expansion or remote-vs-site debate.</strong> They want Austin again. You need to show them what the data says about Austin, and what the alternatives actually look like.</li>
+    <li><strong>Quarterly or pipeline-health TI refresh.</strong> Standing meeting where you give them market context they'll forget half of unless it's structured around their actual decisions.</li>
+    <li><strong>New initiative ramp-up.</strong> They're building a new team and need to know what's realistic on volume, comp, time-to-fill, and geo. This is where the early framing gets locked in.</li>
+  </ul>
+</section>
+
+<!-- ========== PREP ========== -->
+<section class="section" id="prep">
+  <div class="section-label">02 &nbsp;·&nbsp; The Setup</div>
+  <h2>Pre-meeting prep — what you bring</h2>
+  <p class="preamble">A hiring manager's tolerance for analyst presentation is roughly 90 seconds. Compress aggressively. The prep checklist that holds up in real semi/AI meetings:</p>
+
+  <div class="prep-grid">
+    <div class="prep-card">
+      <div class="prep-card-label">Bring</div>
+      <h4>One page</h4>
+      <p>A single page they can scan in 60 seconds. No appendix. If they want depth, send the backing file after, not during.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Bring</div>
+      <h4>Three numbers</h4>
+      <p>Three numbers they will remember and repeat. Choose them deliberately. Everything else is supporting cast.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Bring</div>
+      <h4>One chart, maybe</h4>
+      <p>If a chart genuinely changes how they think — bring it. If it just decorates, leave it. A bar chart of pool sizes is rarely the chart that matters.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Bring</div>
+      <h4>One recommendation</h4>
+      <p>Named, specific, owned. "Here's what I think we should do differently." Without this, the meeting ends in nodding and nothing changes.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Leave</div>
+      <h4>The deck</h4>
+      <p>If you find yourself building a 15-slide deck, you are preparing for the wrong meeting. Send a doc after.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Leave</div>
+      <h4>The methodology</h4>
+      <p>They don't care how the BLS OES data was filtered. They care what the data says about their hire. Methodology lives in the appendix.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Leave</div>
+      <h4>Hedging language</h4>
+      <p>"It's complicated" and "there are many factors" are how analyst credibility dies. Be specific. Be wrong sometimes if you have to. Wrong-and-specific beats vague-and-safe.</p>
+    </div>
+    <div class="prep-card">
+      <div class="prep-card-label">Leave</div>
+      <h4>HR framing</h4>
+      <p>Avoid "EVP," "talent acquisition lifecycle," "candidate experience signal," "engagement KPI." Talk like an engineer who happens to know the market.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FLOW ========== -->
+<section class="section" id="flow">
+  <div class="section-label">03 &nbsp;·&nbsp; The Meeting</div>
+  <h2>The 30-minute meeting structure</h2>
+  <p class="preamble">A working default flow for a recurring or initiative meeting. Adjust for shorter and longer slots, but keep the proportions. Most TI briefings overrun on Section 2 and skip Section 4, which is exactly backwards.</p>
+
+  <div class="timeline">
+    <div class="timeline-head">
+      <div class="timeline-head-title">Default 30-minute flow</div>
+      <div class="timeline-head-meta">Recurring or initiative briefing</div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-time">0–3 min</div>
+      <div class="timeline-content">
+        <h4>What's changed in the market since last time</h4>
+        <p>One paragraph, max. New data point, new signal, new shift. Sets the frame: "the world is different than when we last talked, here's how." Skip if you've never met.</p>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-time">3–8 min</div>
+      <div class="timeline-content">
+        <h4>The answer to their question</h4>
+        <p>The thing they asked you to investigate. Three numbers, one line of interpretation each. Lead with the punchline. Do not bury the answer in setup.</p>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-time">8–18 min</div>
+      <div class="timeline-content">
+        <h4>The thing they didn't ask but should have</h4>
+        <p>The 2–3 second-order findings that change the picture. This is where TI earns its seat. Pace it — leave room for them to push back. If they don't push back, you didn't say anything sharp enough.</p>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-time">18–25 min</div>
+      <div class="timeline-content">
+        <h4>Your recommendation and the trade-off</h4>
+        <p>"Here's what I'd do." Then the cost of doing it and the cost of not. They may disagree — that's fine, but the recommendation has to be on the table for them to react to.</p>
+      </div>
+    </div>
+
+    <div class="timeline-row">
+      <div class="timeline-time">25–30 min</div>
+      <div class="timeline-content">
+        <h4>What we commit to differently</h4>
+        <p>Concrete. "I'll re-scope role X by Friday." "We'll open Austin posting for senior IC only." "I'll come back in three weeks with comp comparison vs Apple Silicon." Write it down in the room.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== THE 8 QUESTIONS ========== -->
+<section class="section" id="questions">
+  <div class="section-label">04 &nbsp;·&nbsp; The Questions</div>
+  <h2>The 8 questions hiring managers actually ask</h2>
+  <p class="preamble">Eight questions show up in nearly every semi/AI hiring conversation. The data answer matters — but so does the translation. Here's the pattern for each: what they're really asking, and how to answer with market data without sliding into HR-speak.</p>
+
+  <!-- Q1 -->
+  <div class="q-card">
+    <div class="q-num">Q1 · Pool / scarcity</div>
+    <div class="q-question">Why is this so hard to hire?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>Is recruiting screwing this up, or is the role genuinely scarce? They want a math answer they can defend to <em>their</em> leadership.</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Give them the funnel math out loud. Total pool in market. Accessible pool after employer concentration. Movable pool in 12 months. Annual senior hires happening in this skill nationwide. Compare to your open req count. The friction is either real (math is brutal) or coachable (math is fine, our process is the problem). Tell them which one this is.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Step 02 (Pool sizing) · annual senior-IC hires in skill family · realistic conversion rates</div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="q-card">
+    <div class="q-num">Q2 · Comp</div>
+    <div class="q-question">How much are we underpaying?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>Tell me what to take to comp. They want a number — ideally one that won't get challenged by total rewards in five minutes.</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Don't lead with base. Lead with total. P50 / P75 / P90 of total comp at the target level. Note the stack (base / bonus / equity / sign-on). Name the dataset (Levels.fyi for tech, internal comp survey, regulated-disclosure postings). End with "and here's what our offer looks like in that distribution." That's the number they take to their VP.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Step 05 (Comp benchmarks) · Levels.fyi · H1B Data · pay-transparency postings</div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="q-card">
+    <div class="q-num">Q3 · Geo</div>
+    <div class="q-question">Can we just go remote?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>I want to stop fighting for the same Bay Area candidates everyone else is fighting for. Is the data on my side?</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Probably yes, with shape. Show the pool delta — how much the pool grows once you drop the geo constraint. Show what comp arbitrage actually exists (often less than they hope at senior IC). Flag the operational reality: if the team is on-site dependent, hybrid is the honest answer. Be specific about which roles in their org can and can't.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>National pool size · regional comp distribution · remote-acceptance rates by role family</div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="q-card">
+    <div class="q-num">Q4 · Sourcing</div>
+    <div class="q-question">Where else should we look?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>Recruiters are giving me the same five companies' candidates. Are we missing people because we have a thin source list?</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Give them three concrete additions, not "we should broaden our sourcing." Name companies, alumni networks, or adjacent skill pools. "Our top three current sources are X, Y, Z — based on the market, we should also be sourcing from A (recent layoff window), B (skills adjacency in compiler), and C (alumni network of recently-acquired team)." Then commit to a follow-up with the search lists.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Library Guide 03 (Competitor analysis) · alumni network analysis · adjacent skills mapping</div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="q-card">
+    <div class="q-num">Q5 · Loss</div>
+    <div class="q-question">Why don't candidates pick us?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>Is it comp? Is it our brand? Is it me? They want to know what to change, not a survey readout.</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Pair the quantitative (offer-decline reasons from your last 30 losses) with the qualitative (verbatim themes from exit interviews / lost-candidate notes). Resist the urge to soften. "Three of the last five top losses cited equity below the market" is the kind of line that changes behavior. "We have some comp gaps" doesn't.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Internal loss data · structured lost-candidate exit notes · competitor battlecard comp section</div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="q-card">
+    <div class="q-num">Q6 · Timing</div>
+    <div class="q-question">How long should this take?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>I'm getting heat about cycle time. I want to know what's realistic so I can either push recruiting to move faster or push leadership to be patient.</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Honest benchmark — average days-to-fill for this role family at this level in this market. Then the diagnosis: is your current cycle in-line, slow, or fast for the role? If slow, name the stage that's breaking. Don't promise dates. Do commit to next checkpoint.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Internal cycle time by stage · industry benchmarks · funnel drop-off data</div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="q-card">
+    <div class="q-num">Q7 · Competitive</div>
+    <div class="q-question">Why does [competitor] keep beating us?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>What does X have that I don't? I want to know whether to build that thing, position around it, or accept the loss.</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> The battlecard from Library Guide 03 is the asset here. Name the three concrete strengths (with data), the two real weaknesses (with data), the three positioning plays you'd lead with. Avoid the trap of trashing the competitor — engineers see through it. Be specific about the trade-off the candidate is making and why your side wins for the candidate profile you want.</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Library Guide 03 (Competitor battlecard) · current loss-to-competitor share · positioning plays</div>
+  </div>
+
+  <!-- Q8 -->
+  <div class="q-card">
+    <div class="q-num">Q8 · Build-vs-buy</div>
+    <div class="q-question">Can we just acqui-hire?</div>
+    <div class="q-translation">
+      <div class="q-translation-label">What they're really asking</div>
+      <p>Is there a faster path than slogging through individual recs? They want a yes/no with a name attached, or a clear no-it's-not-realistic.</p>
+    </div>
+    <div class="q-answer"><strong>The answer pattern:</strong> Honest read. Are there 3–5 small companies with the team profile you'd want? What's the realistic acquisition cost vs the cost of 18 individual hires? What's the integration risk? This is often a "no, but" conversation — "no, the targets you'd want aren't realistic, but here's the 6-person team at company X we should pursue as a coordinated outreach play."</div>
+    <div class="q-data"><span class="q-data-label">Data to bring</span>Library Guide 04 (Market mapping — entry-mode section) · acquisition target landscape · realistic cost comparison</div>
+  </div>
+</section>
+
+<!-- ========== TRANSLATION ========== -->
+<section class="section" id="translate">
+  <div class="section-label">05 &nbsp;·&nbsp; The Language</div>
+  <h2>Translation cheat sheet</h2>
+  <p class="preamble">The single most reliable predictor of whether a TI briefing lands is whether it's spoken in the language of the room. In a semi/AI hiring meeting, the room is engineers and engineering managers. Translate aggressively.</p>
+
+  <div class="translation-table">
+    <div class="translation-row header">
+      <div>Stop saying</div>
+      <div>Start saying</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Accessible talent pool"</div>
+      <div class="translation-cell to">"People we could realistically convince"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Employer value proposition gap"</div>
+      <div class="translation-cell to">"Why candidates pick them over us"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Sources of supply"</div>
+      <div class="translation-cell to">"Where we'd be hunting"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Attrition rate of X%"</div>
+      <div class="translation-cell to">"X out of every 10 leave in a year"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Time-to-fill predictor"</div>
+      <div class="translation-cell to">"How long this is realistically going to take"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Candidate experience signal"</div>
+      <div class="translation-cell to">"What people say about us after they interview"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Compensation philosophy alignment"</div>
+      <div class="translation-cell to">"Whether our offers are competitive"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Talent acquisition lifecycle friction"</div>
+      <div class="translation-cell to">"Where we're losing people in the process"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Pipeline conversion rates"</div>
+      <div class="translation-cell to">"What % of resumes become offers"</div>
+    </div>
+    <div class="translation-row">
+      <div class="translation-cell from">"Sourcing channel optimization"</div>
+      <div class="translation-cell to">"What's actually working vs what we keep doing"</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== COMMIT TEMPLATE ========== -->
+<section class="section" id="commit">
+  <div class="section-label">06 &nbsp;·&nbsp; The Closeout</div>
+  <h2>Post-meeting commit template</h2>
+  <p class="preamble">A briefing without a written commit is a briefing that gets re-litigated next month. Fill this in during the last 5 minutes of the meeting, share it within 24 hours, and reference it in the next session.</p>
+
+  <div class="template-card">
+    <div class="template-head">
+      <span class="template-head-label">Template · post-meeting commit doc</span>
+      <button class="copy-btn" onclick="copyTemplate(this)">Copy</button>
+    </div>
+    <div class="template-body" id="template-text">═════════════════════════════════════════════════════════════
+MARKET-DATA BRIEFING — COMMIT DOC
+═════════════════════════════════════════════════════════════
+
+Role / initiative:   [Name]
+Hiring manager:      [Name]
+TI / recruiter:      [Name]
+Date of meeting:     [YYYY-MM-DD]    Next checkpoint: [Date]
+
+─────────────────────────────────────────────────────────────
+01 · THE QUESTION WE ANSWERED
+[One sentence: what they came in wanting to know]
+
+02 · WHAT THE DATA SAID
+- [Number 1 with interpretation]
+- [Number 2 with interpretation]
+- [Number 3 with interpretation]
+
+03 · WHAT CHANGED IN OUR THINKING
+[The thing they came in believing that the data updated]
+[Or: "the data confirmed our prior — we're going to keep doing X"]
+
+─────────────────────────────────────────────────────────────
+04 · COMMITMENTS — WHO DOES WHAT BY WHEN
+[ ] [Owner] will [action] by [date]
+[ ] [Owner] will [action] by [date]
+[ ] [Owner] will [action] by [date]
+
+05 · OPEN QUESTIONS FOR NEXT TIME
+- [Question 1]
+- [Question 2]
+
+─────────────────────────────────────────────────────────────
+NEXT CHECKPOINT
+Date:       [YYYY-MM-DD]
+Format:     [30-min standing / async update / TBD]
+What we'll  [What we expect to know or have decided by then]
+revisit:
+
+═════════════════════════════════════════════════════════════</div>
+  </div>
+</section>
+
+<!-- ========== GUARDRAILS ========== -->
+<section class="section" id="guardrails">
+  <div class="section-label">07 &nbsp;·&nbsp; Guardrails</div>
+  <h2>Guardrails</h2>
+
+  <div class="guardrails">
+    <ul>
+      <li><strong>Land one thing.</strong> If they remember one number, one insight, one action — pick which one before the meeting. Don't outsource that choice to them.</li>
+      <li><strong>Push back when you should.</strong> A briefing where you nodded the whole time was not a briefing. TI's job includes telling hiring managers when their assumption is wrong. Do it kindly. Do it.</li>
+      <li><strong>Never punt with "it's complicated."</strong> Even if it really is. Pick the most likely answer and label your confidence. "Best guess: X, ~70% confident, here's what would change it" is a usable line. "It's complicated" is not.</li>
+      <li><strong>Don't blame other functions in the room.</strong> If comp is the problem, say "comp is the problem" — not "it's a comp issue, that's not really our area." Own the analysis, even when the fix lives elsewhere.</li>
+      <li><strong>Write the commits down in the room.</strong> Not after. In the room. Out loud. Hiring managers who watched you type the commit are far more likely to honor it.</li>
+      <li><strong>Send the followup within 24 hours.</strong> 48 if there's no way around it. Anything longer and the data falls out of the manager's head and the meeting effectively didn't happen.</li>
+      <li><strong>Reference the prior commit at the start of the next session.</strong> "Last time we agreed X — here's where we landed on it." This is how TI gets a real seat at the table over time.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ========== XREF ========== -->
+<section class="xref">
+  <div class="xref-label">↗ Cross-references · feeds and feeders</div>
+  <div class="xref-grid">
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 01</div>
+      <div class="xref-title">Pull a talent supply snapshot</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 02</div>
+      <div class="xref-title">Build a comp benchmark brief</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 03</div>
+      <div class="xref-title">Run a competitor talent analysis</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Library Guide 04</div>
+      <div class="xref-title">Map a talent pool for a new market</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 02 · Shared module</div>
+      <div class="xref-title">Size the qualified pool</div>
+    </a>
+    <a href="#" class="xref-card">
+      <div class="xref-step">Step 05 · Shared module</div>
+      <div class="xref-title">Pull comp benchmarks</div>
+    </a>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div>Talent Intelligence Playbook · Tactical Playbook · Brief a Hiring Manager with Market Data · v1.0</div>
+</footer>
+
+<script>
+function copyTemplate(btn) {
+  const text = document.getElementById('template-text').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1800);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+  });
+}
+</script>
+
+</body>
+</html>

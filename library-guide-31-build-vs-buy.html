@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build vs Buy — Location Strategy Brief · TI Playbook 3.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:#F4F0E6; --paper-soft:#EAE4D4; --paper-deep:#DDD4BD;
+    --ink:#1B212C; --ink-soft:#2A3140; --ink-muted:#4A5260;
+    --teal:#0F6E56; --teal-light:#E6F2EE;
+    --amber:#BA7517; --amber-light:#F8EDD6;
+    --rust:#A23A1D; --rust-light:#F2E1DA;
+    --font-display:'Fraunces',Georgia,serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'IBM Plex Mono','Courier New',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink-soft);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* MASTHEAD */
+  .masthead{background:var(--ink);border-bottom:3px solid var(--amber);padding:40px 32px 36px;}
+  .masthead-inner{max-width:880px;margin:0 auto;}
+  .crumb{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--amber);text-transform:uppercase;margin-bottom:16px;}
+  .crumb a{color:var(--amber);text-decoration:none;opacity:.7;transition:opacity .15s;}
+  .crumb a:hover{opacity:1;}
+  .crumb span{opacity:.4;margin:0 6px;}
+  .masthead h1{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;color:#F4F0E6;line-height:1.15;margin-bottom:14px;}
+  .masthead-lede{font-size:17px;font-weight:300;color:rgba(244,240,230,.72);max-width:600px;line-height:1.55;margin-bottom:24px;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:rgba(255,255,255,.08);color:rgba(244,240,230,.6);border:1px solid rgba(255,255,255,.12);}
+  .tag.accent{background:rgba(186,117,23,.22);color:#D89A45;border-color:rgba(186,117,23,.4);}
+
+  /* MAIN */
+  .main{max-width:880px;margin:0 auto;padding:48px 32px 80px;}
+  section{margin-bottom:52px;}
+  .section-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+  .section-label::before{content:'';display:block;width:28px;height:1px;background:var(--teal);flex-shrink:0;}
+  h2{font-family:var(--font-display);font-weight:500;font-size:26px;letter-spacing:-.01em;color:var(--ink);line-height:1.2;margin-bottom:14px;}
+  h3{font-family:var(--font-display);font-weight:500;font-size:19px;letter-spacing:-.01em;color:var(--ink);line-height:1.25;margin-bottom:8px;}
+  p{margin-bottom:14px;}
+  p:last-child{margin-bottom:0;}
+  .lead{font-size:18px;color:var(--ink-soft);line-height:1.55;}
+  a.src{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(15,110,86,.3);transition:border-color .15s;}
+  a.src:hover{border-color:var(--teal);}
+
+  /* TENSION CALLOUT */
+  .tension{background:var(--rust-light);border-left:3px solid var(--rust);border-radius:0 3px 3px 0;padding:24px 28px;margin:24px 0;}
+  .tension .t-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--rust);margin-bottom:10px;}
+  .tension p{color:var(--ink-soft);}
+  .tension .t-big{font-family:var(--font-display);font-size:20px;font-weight:500;color:var(--ink);line-height:1.3;margin-bottom:10px;}
+
+  /* PATHWAY CARDS */
+  .pathway-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+  .pathway{background:var(--paper-soft);border:1px solid var(--paper-deep);border-radius:3px;padding:22px 24px;position:relative;overflow:hidden;}
+  .pathway::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--teal);}
+  .pathway.p-buy::before{background:var(--amber);}
+  .pathway.p-partner::before{background:var(--ink-muted);}
+  .pathway.p-relocate::before{background:var(--rust);}
+  .pathway .p-tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+  .pathway.p-buy .p-tag{color:var(--amber);}
+  .pathway.p-partner .p-tag{color:var(--ink-muted);}
+  .pathway.p-relocate .p-tag{color:var(--rust);}
+  .pathway h3{margin-bottom:8px;}
+  .pathway .p-desc{font-size:13.5px;color:var(--ink-muted);line-height:1.5;margin-bottom:14px;}
+  .pathway .p-row{display:flex;gap:8px;font-size:12px;margin-bottom:6px;align-items:baseline;}
+  .pathway .p-row .k{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted);min-width:64px;flex-shrink:0;}
+  .pathway .p-row .v{color:var(--ink-soft);}
+
+  /* INTERACTIVE RECOMMENDER (SIGNATURE) */
+  .recommender{background:var(--ink);border-radius:3px;overflow:hidden;}
+  .rec-head{padding:24px 28px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .rec-head .rec-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+  .rec-head h3{font-family:var(--font-display);font-weight:500;font-size:21px;color:#F4F0E6;margin-bottom:6px;}
+  .rec-head p{font-size:13.5px;color:rgba(244,240,230,.55);margin:0;}
+  .rec-body{padding:24px 28px;}
+  .rec-q{margin-bottom:22px;}
+  .rec-q .q-text{font-size:14px;color:#F4F0E6;margin-bottom:10px;font-weight:500;}
+  .rec-opts{display:flex;gap:8px;flex-wrap:wrap;}
+  .rec-opt{font-family:var(--font-mono);font-size:11px;letter-spacing:.03em;padding:8px 14px;border-radius:2px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:rgba(244,240,230,.7);cursor:pointer;transition:all .12s;}
+  .rec-opt:hover{border-color:var(--amber);color:#F4F0E6;}
+  .rec-opt.selected{background:var(--amber);border-color:var(--amber);color:var(--ink);font-weight:500;}
+  .rec-result{margin-top:8px;padding:22px 24px;background:rgba(15,110,86,.12);border:1px solid rgba(15,110,86,.3);border-radius:3px;display:none;}
+  .rec-result.show{display:block;}
+  .rec-result .res-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#6ABFA4;margin-bottom:8px;}
+  .rec-result .res-path{font-family:var(--font-display);font-size:22px;font-weight:500;color:#F4F0E6;margin-bottom:10px;}
+  .rec-result .res-why{font-size:13.5px;color:rgba(244,240,230,.7);line-height:1.5;}
+  .rec-result .res-caveat{font-size:12px;color:rgba(244,240,230,.45);margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);font-style:italic;}
+
+  /* COMPARISON MATRIX */
+  .matrix-wrap{overflow-x:auto;margin-top:8px;border:1px solid var(--paper-deep);border-radius:3px;}
+  table.matrix{width:100%;border-collapse:collapse;min-width:640px;}
+  table.matrix th{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);text-align:left;padding:12px 14px;background:var(--paper-deep);}
+  table.matrix th:first-child{position:sticky;left:0;background:var(--paper-deep);}
+  table.matrix td{font-size:13px;color:var(--ink-soft);padding:13px 14px;border-bottom:1px solid var(--paper-deep);vertical-align:top;}
+  table.matrix tr:last-child td{border-bottom:none;}
+  table.matrix .path-name{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink);font-weight:500;background:var(--paper-soft);position:sticky;left:0;}
+  table.matrix .rank-hi{color:var(--teal);font-weight:500;}
+  table.matrix .rank-lo{color:var(--rust);}
+
+  /* FIVE LENS */
+  .lens-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+  .lens{background:var(--paper-soft);border:1px solid var(--paper-deep);border-radius:3px;padding:18px 20px;}
+  .lens .l-num{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--amber);text-transform:uppercase;margin-bottom:6px;}
+  .lens h4{font-family:var(--font-body);font-weight:600;font-size:14.5px;color:var(--ink);margin-bottom:6px;}
+  .lens p{font-size:13px;color:var(--ink-muted);line-height:1.45;margin:0;}
+  .lens .l-favors{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.03em;color:var(--teal);margin-top:10px;padding-top:10px;border-top:1px solid var(--paper-deep);}
+
+  /* STEP CARDS */
+  .step{background:var(--paper-soft);border:1px solid var(--paper-deep);border-radius:3px;padding:22px 24px;margin-bottom:14px;}
+  .step .step-num{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+  .step h3{font-size:17px;margin-bottom:8px;}
+  .step p{font-size:14px;color:var(--ink-soft);margin-bottom:10px;}
+  .step .step-do{border-left:2px solid var(--ink-muted);padding:6px 0 6px 14px;font-size:13px;color:var(--ink-muted);margin-top:10px;}
+  .step .step-do strong{color:var(--ink-soft);font-weight:600;}
+
+  /* QUOTE PANEL */
+  .quote{background:var(--ink);border-radius:3px;padding:28px 32px;margin:24px 0;}
+  .quote .q-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;}
+  .quote blockquote{font-family:var(--font-display);font-style:italic;font-size:19px;font-weight:400;color:#F4F0E6;line-height:1.45;margin-bottom:14px;}
+  .quote .cite{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.5);letter-spacing:.03em;}
+  .quote .cite a{color:rgba(244,240,230,.7);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2);}
+  .quote .cite a:hover{color:#F4F0E6;}
+
+  /* TEMPLATE BLOCK */
+  .template{background:var(--ink);border-radius:3px;overflow:hidden;margin-top:8px;}
+  .template-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .template-head .tpl-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);}
+  .copy-btn{font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:6px 12px;border-radius:2px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:rgba(244,240,230,.7);cursor:pointer;transition:all .12s;}
+  .copy-btn:hover{border-color:var(--teal);color:#6ABFA4;}
+  .copy-btn.copied{background:rgba(15,110,86,.3);border-color:var(--teal);color:#6ABFA4;}
+  .template pre{font-family:var(--font-mono);font-size:12.5px;line-height:1.7;color:rgba(244,240,230,.82);padding:22px 24px;white-space:pre-wrap;overflow-x:auto;}
+
+  /* GUARDRAILS */
+  .guardrails{background:var(--paper-deep);border-radius:3px;padding:28px 32px;}
+  .guardrails h3{margin-bottom:18px;}
+  .guard-item{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;}
+  .guard-item:last-child{margin-bottom:0;}
+  .guard-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;}
+  .guard-icon.yes{background:var(--teal);color:#fff;}
+  .guard-icon.no{background:var(--rust);color:#fff;}
+  .guard-item .g-text{font-size:14px;color:var(--ink-soft);line-height:1.5;}
+  .guard-item .g-text strong{color:var(--ink);font-weight:600;}
+
+  /* WHAT GOOD LOOKS LIKE */
+  .good-list{list-style:none;}
+  .good-list li{padding:12px 0 12px 32px;border-bottom:1px solid var(--paper-deep);position:relative;font-size:14.5px;color:var(--ink-soft);line-height:1.5;}
+  .good-list li:last-child{border-bottom:none;}
+  .good-list li::before{content:'✓';position:absolute;left:0;top:12px;color:var(--teal);font-weight:700;}
+
+  /* XREF FOOTER */
+  .xref{margin-top:8px;}
+  .xref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .xref-card{background:var(--paper-soft);border:1px solid var(--paper-deep);border-left:3px solid var(--teal);border-radius:0 3px 3px 0;padding:18px 20px;text-decoration:none;color:inherit;transition:box-shadow .15s,transform .15s;display:block;}
+  .xref-card:hover{box-shadow:0 3px 14px rgba(27,33,44,.1);transform:translateY(-1px);}
+  .xref-card .x-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+  .xref-card h4{font-family:var(--font-display);font-weight:500;font-size:16px;color:var(--ink);margin-bottom:4px;}
+  .xref-card p{font-size:12.5px;color:var(--ink-muted);margin:0;line-height:1.4;}
+
+  /* FOOTER */
+  .page-footer{background:var(--ink);padding:28px 32px;}
+  .footer-inner{max-width:880px;margin:0 auto;text-align:center;}
+  .footer-inner .f-line{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.35);letter-spacing:.04em;}
+  .footer-inner .f-sources{font-family:var(--font-mono);font-size:10px;color:rgba(244,240,230,.22);letter-spacing:.04em;margin-top:6px;}
+
+  /* RESPONSIVE */
+  @media(max-width:700px){
+    .masthead,.main,.page-footer{padding-left:20px;padding-right:20px;}
+    .pathway-grid,.lens-grid,.xref-grid{grid-template-columns:1fr;}
+  }
+  /* DARK MODE */
+  @media(prefers-color-scheme:dark){
+    :root{--paper:#14181F;--paper-soft:#1F2530;--paper-deep:#252D3A;--ink-soft:#C8D0DC;--ink-muted:#7A8698;--rust-light:#2A1E1A;--teal-light:#16261F;}
+    .pathway,.lens,.step,.xref-card{border-color:rgba(255,255,255,.07);}
+    table.matrix th,table.matrix .path-name{background:#252D3A;}
+    table.matrix td{border-bottom-color:rgba(255,255,255,.06);}
+  }
+  /* REDUCED MOTION */
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <a href="talent-supply-snapshot-guide.html">TI Playbook</a><span>/</span><a href="ti-playbook-index.html">Field Library</a><span>/</span>Build vs Buy
+    </div>
+    <h1>Build it, or buy it?</h1>
+    <p class="masthead-lede">
+      When leadership asks whether to expand engineering into a new location, the real question is almost never "is there talent there?" It's whether to build the capability yourself or buy access to it. This brief is how you answer that.
+    </p>
+    <div class="tag-row">
+      <span class="tag accent">I'm selling mode</span>
+      <span class="tag">Guide 3.1</span>
+      <span class="tag">Leadership-facing</span>
+      <span class="tag">Five-Lens grounded</span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- WHEN TO USE -->
+  <section>
+    <div class="section-label">When to reach for this</div>
+    <h2>The moment leadership poses a location question</h2>
+    <p class="lead">
+      A VP of Engineering wants to know if they can stand up an inference team in Bangalore. A Chief People Officer is weighing whether to acqui-hire a stealth chiplet startup or grow the capability in-house. A site leader asks whether to relocate from a saturated Bay Area office or seed a new hub in Penang.
+    </p>
+    <p>
+      Each of these is a build-vs-buy decision wearing a location costume. This brief gives you a defensible recommendation - one that names the pathways, scores them against the location, and lands on a verdict leadership can act on.
+    </p>
+  </section>
+
+  <!-- THE REFRAME -->
+  <section>
+    <div class="section-label">The core reframe</div>
+    <h2>It's a time-and-control question, not a talent question</h2>
+    <p>
+      The instinct is to answer "is there talent in [location]?" and stop there. But supply density is only one input. Two locations with identical talent pools can call for completely different pathways depending on how fast you need capability and how much control you need over it.
+    </p>
+
+    <div class="tension">
+      <div class="t-label">The tension to surface</div>
+      <p class="t-big">Speed and control pull in opposite directions. The fastest pathways give you the least control; the highest-control pathways take the longest to pay off.</p>
+      <p>
+        Your job in the brief is not to pretend this tension away. It's to tell leadership which side of it their situation actually sits on - and to make the tradeoff explicit so the decision is theirs, made with eyes open.
+      </p>
+    </div>
+  </section>
+
+  <!-- FOUR PATHWAYS -->
+  <section>
+    <div class="section-label">The four pathways</div>
+    <h2>Every location decision collapses to one of these</h2>
+    <p>
+      Leadership tends to frame the question as binary - build or buy. There are really four pathways, and naming all four is half the value of the brief. It shows you considered the full space, not just the two options already on the table.
+    </p>
+
+    <div class="pathway-grid">
+      <div class="pathway p-build">
+        <div class="p-tag">Pathway 1</div>
+        <h3>Build (Greenfield)</h3>
+        <p class="p-desc">Stand up a new site or team, hire net-new, develop capability organically over time.</p>
+        <div class="p-row"><span class="k">Time</span><span class="v">12-24 months to real capability</span></div>
+        <div class="p-row"><span class="k">Control</span><span class="v">Highest - full IP and culture ownership</span></div>
+        <div class="p-row"><span class="k">Wins when</span><span class="v">Skill is core to differentiation, density is high, horizon is long</span></div>
+      </div>
+
+      <div class="pathway p-buy">
+        <div class="p-tag">Pathway 2</div>
+        <h3>Buy (Acqui-hire / M&A)</h3>
+        <p class="p-desc">Acquire a company or intact team to absorb capability and IP fast.</p>
+        <div class="p-row"><span class="k">Time</span><span class="v">3-9 months, plus integration drag</span></div>
+        <div class="p-row"><span class="k">Control</span><span class="v">High, but integration-dependent</span></div>
+        <div class="p-row"><span class="k">Wins when</span><span class="v">Capability is rare and clustered, you need an intact team now</span></div>
+      </div>
+
+      <div class="pathway p-partner">
+        <div class="p-tag">Pathway 3</div>
+        <h3>Partner (GCC / Vendor / Contract)</h3>
+        <p class="p-desc">Access capability through a global capability center, vendor, or contractors.</p>
+        <div class="p-row"><span class="k">Time</span><span class="v">1-4 months to spin up</span></div>
+        <div class="p-row"><span class="k">Control</span><span class="v">Lowest - flexibility traded for ownership</span></div>
+        <div class="p-row"><span class="k">Wins when</span><span class="v">Skill is non-differentiating, you're testing a market, sovereignty blocks direct presence</span></div>
+      </div>
+
+      <div class="pathway p-relocate">
+        <div class="p-tag">Pathway 4</div>
+        <h3>Relocate (Internal mobility)</h3>
+        <p class="p-desc">Move existing talent to a new or consolidating location to seed capability.</p>
+        <div class="p-row"><span class="k">Time</span><span class="v">2-6 months, gated by acceptance rates</span></div>
+        <div class="p-row"><span class="k">Control</span><span class="v">High - they're already your people</span></div>
+        <div class="p-row"><span class="k">Wins when</span><span class="v">You have the talent but current site is saturated; you want culture-carriers in a new hub</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE RECOMMENDER (SIGNATURE) -->
+  <section>
+    <div class="section-label">Pathway recommender</div>
+    <h2>Start with a directional read</h2>
+    <p>
+      Three questions get you to a starting pathway. This is a directional read to anchor the conversation - not a verdict. The brief still needs the full Five-Lens scoring below before you commit a recommendation to leadership.
+    </p>
+
+    <div class="recommender">
+      <div class="rec-head">
+        <div class="rec-eyebrow">Interactive · directional only</div>
+        <h3>What does your situation call for?</h3>
+        <p>Answer all three to see a recommended starting pathway.</p>
+      </div>
+      <div class="rec-body">
+        <div class="rec-q" data-q="time">
+          <div class="q-text">1. How fast do you need real capability?</div>
+          <div class="rec-opts">
+            <button class="rec-opt" data-val="fast">Now (under 6 months)</button>
+            <button class="rec-opt" data-val="mid">This year (6-12 months)</button>
+            <button class="rec-opt" data-val="slow">Long horizon (12+ months)</button>
+          </div>
+        </div>
+        <div class="rec-q" data-q="core">
+          <div class="q-text">2. How core is this skill to your differentiation?</div>
+          <div class="rec-opts">
+            <button class="rec-opt" data-val="core">Core IP - it's what we win on</button>
+            <button class="rec-opt" data-val="support">Important but not differentiating</button>
+            <button class="rec-opt" data-val="commodity">Commoditized / supporting work</button>
+          </div>
+        </div>
+        <div class="rec-q" data-q="have">
+          <div class="q-text">3. Do you already have this talent elsewhere in the org?</div>
+          <div class="rec-opts">
+            <button class="rec-opt" data-val="yes">Yes, but in the wrong location</button>
+            <button class="rec-opt" data-val="no">No - it's net-new capability</button>
+          </div>
+        </div>
+
+        <div class="rec-result" id="rec-result">
+          <div class="res-label">Starting pathway</div>
+          <div class="res-path" id="res-path"></div>
+          <div class="res-why" id="res-why"></div>
+          <div class="res-caveat">Directional only. Run the Five-Lens scoring before this becomes a recommendation.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON MATRIX -->
+  <section>
+    <div class="section-label">Pathway comparison</div>
+    <h2>The tradeoffs, side by side</h2>
+    <p>
+      This is the table leadership will look at longest. Keep it honest - every pathway has a column where it loses. Showing the losses is what makes the recommendation credible.
+    </p>
+
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th>Pathway</th>
+            <th>Time to capability</th>
+            <th>Control &amp; IP</th>
+            <th>Cost profile</th>
+            <th>Flexibility</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="path-name">Build</td>
+            <td class="rank-lo">Slowest (12-24mo)</td>
+            <td class="rank-hi">Highest</td>
+            <td>High fixed, low marginal</td>
+            <td class="rank-lo">Low - hard to unwind</td>
+          </tr>
+          <tr>
+            <td class="path-name">Buy</td>
+            <td>Fast (3-9mo)</td>
+            <td>High, integration risk</td>
+            <td class="rank-lo">Highest upfront</td>
+            <td class="rank-lo">Low - it's permanent</td>
+          </tr>
+          <tr>
+            <td class="path-name">Partner</td>
+            <td class="rank-hi">Fastest (1-4mo)</td>
+            <td class="rank-lo">Lowest</td>
+            <td class="rank-hi">Variable, opex</td>
+            <td class="rank-hi">Highest - scale up or down</td>
+          </tr>
+          <tr>
+            <td class="path-name">Relocate</td>
+            <td>Fast (2-6mo)</td>
+            <td class="rank-hi">High - your people</td>
+            <td>Moderate, relo cost</td>
+            <td>Moderate</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FIVE LENS OVERLAY -->
+  <section>
+    <div class="section-label">The Five-Lens overlay</div>
+    <h2>Score each pathway against the actual location</h2>
+    <p>
+      The pathways are generic. The location is not. Run the location through Draup's Five-Lens Framework, and each lens will tip the recommendation toward or away from specific pathways. This is the analytical core of the brief.
+    </p>
+
+    <div class="lens-grid">
+      <div class="lens">
+        <div class="l-num">Lens 1</div>
+        <h4>Policy Friction</h4>
+        <p>Visa regimes, hiring law, IP transfer rules, export controls. High friction slows Build and complicates Buy.</p>
+        <div class="l-favors">High friction → favors Partner or Relocate</div>
+      </div>
+      <div class="lens">
+        <div class="l-num">Lens 2</div>
+        <h4>Economic Gravity</h4>
+        <p>Cost of talent, incentives, infrastructure maturity, currency stability. Strong gravity rewards long-term Build.</p>
+        <div class="l-favors">Strong gravity → favors Build</div>
+      </div>
+      <div class="lens">
+        <div class="l-num">Lens 3</div>
+        <h4>Capability Density</h4>
+        <p>How much of the specific skill actually exists locally. Thin density makes Build slow and Buy expensive.</p>
+        <div class="l-favors">Thin density → favors Buy or Relocate</div>
+      </div>
+      <div class="lens">
+        <div class="l-num">Lens 4</div>
+        <h4>Sovereignty Constraints</h4>
+        <p>Data residency, national security review, local-ownership mandates. Hard constraints can rule out direct presence entirely.</p>
+        <div class="l-favors">Hard constraints → favors Partner (GCC)</div>
+      </div>
+      <div class="lens">
+        <div class="l-num">Lens 5</div>
+        <h4>Execution Reality</h4>
+        <p>Can your org actually run a site here? Management bandwidth, time-zone overlap, prior track record. The lens most often skipped.</p>
+        <div class="l-favors">Low readiness → favors Partner or Relocate first</div>
+      </div>
+      <div class="lens" style="background:var(--ink);border-color:var(--ink);">
+        <div class="l-num" style="color:var(--amber);">Synthesis</div>
+        <h4 style="color:#F4F0E6;">No lens decides alone</h4>
+        <p style="color:rgba(244,240,230,.6);">The recommendation comes from the pattern across all five - not the loudest single signal. Name which lenses are decisive for this location and say why.</p>
+      </div>
+    </div>
+
+    <div class="quote">
+      <div class="q-label">On portfolio thinking</div>
+      <blockquote>Location strategy is no longer a single-site bet. The strongest organizations design a portfolio - scale hubs, resilience hubs, and micro-hubs - so no one decision carries the whole risk.</blockquote>
+      <div class="cite">Paraphrased from <a href="https://draup.com" target="_blank" rel="noopener">The New Geography of Work</a> (Draup, Jan 2026)</div>
+    </div>
+  </section>
+
+  <!-- BUILDING THE BRIEF -->
+  <section>
+    <div class="section-label">Building the brief</div>
+    <h2>Six steps to a defensible recommendation</h2>
+
+    <div class="step">
+      <div class="step-num">Step 1</div>
+      <h3>Restate the decision in build-vs-buy terms</h3>
+      <p>Translate leadership's location question into the underlying capability decision. "Should we open in Bangalore?" becomes "Should we build, buy, partner, or relocate to get inference capability, and is Bangalore the right place for the chosen pathway?"</p>
+      <div class="step-do"><strong>Do this:</strong> Write the reframed question as the first line of the brief. It signals you understood the real ask.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 2</div>
+      <h3>Name all four pathways explicitly</h3>
+      <p>Even the ones you'll rule out. Listing Build / Buy / Partner / Relocate shows leadership you scoped the full space. Ruling options out with a one-line reason is more persuasive than silently omitting them.</p>
+      <div class="step-do"><strong>Do this:</strong> For each pathway, write one sentence on why it's in or out before scoring.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3</div>
+      <h3>Score the location through all five lenses</h3>
+      <p>Pull the real signal - capability density from a supply snapshot, policy friction from current visa and export-control status, economic gravity from comp benchmarks. Don't estimate what you can source.</p>
+      <div class="step-do"><strong>Do this:</strong> Cite the source behind each lens score. A scored lens with no source is an opinion.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 4</div>
+      <h3>Map lenses to pathways</h3>
+      <p>Each lens tips toward or away from pathways. Lay out the pattern: which pathways survive all five lenses, which die on a single hard constraint, which are merely sub-optimal.</p>
+      <div class="step-do"><strong>Do this:</strong> Flag any lens that is a hard gate (sovereignty, export control) versus a soft preference. Gates override preferences.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 5</div>
+      <h3>Land a single recommendation with the tradeoff named</h3>
+      <p>Leadership wants a verdict, not a menu. Give one recommended pathway, state the specific tradeoff they're accepting, and name the conditions under which you'd switch.</p>
+      <div class="step-do"><strong>Do this:</strong> Write the recommendation as "Build, accepting an 18-month ramp, because density and economic gravity outweigh the speed penalty." Tradeoff in the sentence.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 6</div>
+      <h3>Add the trigger to revisit</h3>
+      <p>A location recommendation has a shelf life. Policy shifts, a competitor moves in, density thins. Name the signal that should reopen the decision so the brief stays a living document, not a one-time artifact.</p>
+      <div class="step-do"><strong>Do this:</strong> End with "Revisit if: export controls tighten on this node, or a direct competitor announces a site within 50km." Concrete triggers, not "review annually."</div>
+    </div>
+  </section>
+
+  <!-- TEMPLATE -->
+  <section>
+    <div class="section-label">Starter template</div>
+    <h2>The one-page leadership brief</h2>
+    <p>Copy this scaffold and fill it. It's built to fit on one page - leadership reads the recommendation first, then the evidence if they want it.</p>
+
+    <div class="template">
+      <div class="template-head">
+        <span class="tpl-title">Leadership brief scaffold</span>
+        <button class="copy-btn" data-target="tpl-brief">Copy</button>
+      </div>
+      <pre id="tpl-brief">BUILD VS BUY: [CAPABILITY] IN [LOCATION]
+Prepared by: [name] · [date] · Revisit by: [trigger]
+
+THE DECISION
+We need [capability] and are evaluating how to get it in [location].
+Underlying question: build, buy, partner, or relocate?
+
+RECOMMENDATION
+[Pathway], accepting [the specific tradeoff], because [the
+decisive lenses] outweigh [the penalty].
+
+PATHWAYS CONSIDERED
+- Build:     [in / out] - [one-line reason]
+- Buy:       [in / out] - [one-line reason]
+- Partner:   [in / out] - [one-line reason]
+- Relocate:  [in / out] - [one-line reason]
+
+FIVE-LENS READ ON [LOCATION]
+- Policy Friction:        [score] - [source]
+- Economic Gravity:       [score] - [source]
+- Capability Density:     [score] - [source]
+- Sovereignty:            [score] - [source]
+- Execution Reality:      [score] - [source]
+
+THE TRADEOFF WE'RE ACCEPTING
+[Plain statement of what we give up by choosing this pathway.]
+
+REVISIT IF
+- [Concrete signal 1]
+- [Concrete signal 2]</pre>
+    </div>
+  </section>
+
+  <!-- WHAT GOOD LOOKS LIKE -->
+  <section>
+    <div class="section-label">What good looks like</div>
+    <h2>The marks of a brief leadership trusts</h2>
+    <ul class="good-list">
+      <li>The recommendation is one pathway, stated in a single sentence, with the tradeoff inside it.</li>
+      <li>All four pathways appear, even the ruled-out ones, each with a reason.</li>
+      <li>Every lens score has a source - a supply snapshot, a comp benchmark, a current policy citation.</li>
+      <li>Hard gates (sovereignty, export control) are visibly separated from soft preferences.</li>
+      <li>There's a concrete trigger to revisit, not a vague "review periodically."</li>
+      <li>It fits on one page. The evidence supports the verdict; it doesn't bury it.</li>
+    </ul>
+  </section>
+
+  <!-- GUARDRAILS -->
+  <section>
+    <div class="section-label">Guardrails</div>
+    <div class="guardrails">
+      <h3>Where AI helps, and where it can't</h3>
+
+      <div class="guard-item">
+        <div class="guard-icon yes">✓</div>
+        <div class="g-text"><strong>Let AI draft the pathway comparison and first-pass lens scoring.</strong> It's good at structuring the tradeoff table and pulling public signal into a first read.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon yes">✓</div>
+        <div class="g-text"><strong>Let AI surface the revisit triggers you might miss.</strong> Ask it what would change this recommendation - it often catches a policy or competitor signal you didn't list.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon no">✕</div>
+        <div class="g-text"><strong>Never let AI set the final pathway on sovereignty or export-control questions.</strong> These are hard legal gates. A confident-sounding wrong answer here is a compliance risk, not a strategy miss. Verify against current regulation with a human.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon no">✕</div>
+        <div class="g-text"><strong>Never present AI cost or timeline estimates as commitments.</strong> "12-24 months to build" is a planning range, not a promise. Mark estimates as estimates in the brief.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon no">✕</div>
+        <div class="g-text"><strong>Don't let AI skip the Execution Reality lens.</strong> Models reliably over-weight density and cost and under-weight whether your org can actually run a site there. That's the lens a human has to own.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- XREF FOOTER -->
+  <section class="xref">
+    <div class="section-label">Related guides</div>
+    <div class="xref-grid">
+      <a href="library-guide-04-new-market-mapping.html" class="xref-card">
+        <div class="x-eyebrow">Guide 04 · Feeds this brief</div>
+        <h4>Map a talent pool for a new market</h4>
+        <p>Produces the capability-density and Five-Lens read this brief depends on.</p>
+      </a>
+      <a href="talent-supply-snapshot-guide.html" class="xref-card">
+        <div class="x-eyebrow">Guide 01 · Feeds this brief</div>
+        <h4>Pull a talent supply snapshot</h4>
+        <p>Sizes the local pool and benchmarks comp - your economic-gravity inputs.</p>
+      </a>
+      <a href="library-guide-03-competitor-analysis.html" class="xref-card">
+        <div class="x-eyebrow">Guide 03 · Pairs with this</div>
+        <h4>Run a competitor talent analysis</h4>
+        <p>Tells you if a competitor is already moving on the location - a key revisit trigger.</p>
+      </a>
+      <a href="ti-playbook-index.html" class="xref-card">
+        <div class="x-eyebrow">Field Library</div>
+        <h4>Back to the toolkit</h4>
+        <p>Browse all guides and pick the right one for the next task.</p>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="footer-inner">
+    <div class="f-line">TI Playbook · Guide 3.1 · Build vs Buy Location Strategy · v1.0 · June 2026</div>
+    <div class="f-sources">Five-Lens Framework: Draup Global Talent Location Strategy 2026 · Portfolio thesis: The New Geography of Work</div>
+  </div>
+</footer>
+
+<script>
+  // COPY BUTTONS
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      navigator.clipboard.writeText(target.innerText).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied ✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+
+  // PATHWAY RECOMMENDER
+  const answers = { time: null, core: null, have: null };
+
+  document.querySelectorAll('.rec-q').forEach(q => {
+    const key = q.dataset.q;
+    q.querySelectorAll('.rec-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        q.querySelectorAll('.rec-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        answers[key] = opt.dataset.val;
+        evaluate();
+      });
+    });
+  });
+
+  function evaluate() {
+    if (!answers.time || !answers.core || !answers.have) return;
+
+    let path, why;
+
+    // Relocate dominates when you already have the talent
+    if (answers.have === 'yes' && answers.core !== 'commodity') {
+      path = 'Relocate';
+      why = 'You already hold this capability - moving culture-carriers to the new site is faster and higher-control than rebuilding it from scratch. Use Build later to scale around the seed team.';
+    }
+    // Partner dominates for commodity / non-core, especially under speed pressure
+    else if (answers.core === 'commodity' || (answers.core === 'support' && answers.time === 'fast')) {
+      path = 'Partner';
+      why = 'The skill is not where you differentiate, so trading control for flexibility and speed is the right call. A GCC or vendor gets you capacity fast and stays easy to unwind.';
+    }
+    // Buy dominates for core capability needed fast
+    else if (answers.core === 'core' && answers.time === 'fast') {
+      path = 'Buy';
+      why = 'You need core capability quickly and can\'t wait out a build cycle. An acqui-hire brings an intact team and IP - just budget for integration drag and a retention plan.';
+    }
+    // Build dominates for core capability with a long horizon
+    else if (answers.core === 'core' && answers.time === 'slow') {
+      path = 'Build';
+      why = 'Core capability plus a long horizon is the textbook case for greenfield. You get full IP and culture ownership, and time is on your side to develop depth.';
+    }
+    // Mid-horizon core: Build with a Partner bridge
+    else if (answers.core === 'core' && answers.time === 'mid') {
+      path = 'Build, with a Partner bridge';
+      why = 'Core skill but a tighter timeline. Start building for long-term ownership, but bridge the gap with a vendor or contractors so you have capacity before the build matures.';
+    }
+    // Default fallback
+    else {
+      path = 'Build';
+      why = 'Your inputs point toward developing the capability in-house. Run the Five-Lens scoring to confirm the location supports a build before committing.';
+    }
+
+    document.getElementById('res-path').textContent = path;
+    document.getElementById('res-why').textContent = why;
+    document.getElementById('rec-result').classList.add('show');
+  }
+</script>
+
+</body>
+</html>
