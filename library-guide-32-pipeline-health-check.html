@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pipeline Health Check · TI Playbook 3.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper:#F4F0E6; --paper-soft:#EAE4D4; --paper-deep:#DDD4BD;
+    --ink:#1B212C; --ink-soft:#2A3140; --ink-muted:#4A5260;
+    --teal:#0F6E56; --teal-light:#E6F2EE;
+    --amber:#BA7517; --amber-light:#F8EDD6;
+    --rust:#A23A1D; --rust-light:#F2E1DA;
+    --green-dot:#0F6E56; --amber-dot:#BA7517; --rust-dot:#A23A1D;
+    --font-display:'Fraunces',Georgia,serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'IBM Plex Mono','Courier New',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--paper);color:var(--ink-soft);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+  /* MASTHEAD */
+  .masthead{background:var(--ink);border-bottom:3px solid var(--amber);padding:40px 32px 36px;}
+  .masthead-inner{max-width:880px;margin:0 auto;}
+  .crumb{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;color:var(--amber);text-transform:uppercase;margin-bottom:16px;}
+  .crumb a{color:var(--amber);text-decoration:none;opacity:.7;transition:opacity .15s;}
+  .crumb a:hover{opacity:1;}
+  .crumb span{opacity:.4;margin:0 6px;}
+  .masthead h1{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,4vw,40px);letter-spacing:-.01em;color:#F4F0E6;line-height:1.15;margin-bottom:14px;}
+  .masthead-lede{font-size:17px;font-weight:300;color:rgba(244,240,230,.72);max-width:600px;line-height:1.55;margin-bottom:24px;}
+  .tag-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:2px;background:rgba(255,255,255,.08);color:rgba(244,240,230,.6);border:1px solid rgba(255,255,255,.12);}
+  .tag.accent{background:rgba(186,117,23,.22);color:#D89A45;border-color:rgba(186,117,23,.4);}
+
+  /* MAIN */
+  .main{max-width:880px;margin:0 auto;padding:48px 32px 80px;}
+  section{margin-bottom:52px;}
+  .section-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+  .section-label::before{content:'';display:block;width:28px;height:1px;background:var(--teal);flex-shrink:0;}
+  h2{font-family:var(--font-display);font-weight:500;font-size:26px;letter-spacing:-.01em;color:var(--ink);line-height:1.2;margin-bottom:14px;}
+  h3{font-family:var(--font-display);font-weight:500;font-size:19px;letter-spacing:-.01em;color:var(--ink);line-height:1.25;margin-bottom:8px;}
+  p{margin-bottom:14px;}
+  p:last-child{margin-bottom:0;}
+  .lead{font-size:18px;color:var(--ink-soft);line-height:1.55;}
+  a.src{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(15,110,86,.3);transition:border-color .15s;}
+  a.src:hover{border-color:var(--teal);}
+
+  /* SIGNAL CARDS */
+  .signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+  .signal{background:var(--paper-soft);border:1px solid var(--paper-deep);border-radius:3px;padding:18px 20px;position:relative;overflow:hidden;}
+  .signal::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--teal);}
+  .signal .s-num{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--amber);text-transform:uppercase;margin-bottom:6px;}
+  .signal h4{font-family:var(--font-body);font-weight:600;font-size:15px;color:var(--ink);margin-bottom:6px;}
+  .signal p{font-size:13px;color:var(--ink-muted);line-height:1.45;margin:0;}
+  .signal .s-flag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.03em;color:var(--rust);margin-top:10px;padding-top:10px;border-top:1px solid var(--paper-deep);}
+
+  /* === DASHBOARD (SIGNATURE) === */
+  .dash{background:var(--ink);border-radius:4px;overflow:hidden;margin-top:8px;}
+  .dash-head{padding:20px 26px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+  .dash-head .dh-left .dh-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:6px;}
+  .dash-head .dh-left h3{font-family:var(--font-display);font-weight:500;font-size:20px;color:#F4F0E6;margin:0;}
+  .dash-toggle{display:flex;gap:0;border:1px solid rgba(255,255,255,.16);border-radius:3px;overflow:hidden;}
+  .dash-toggle button{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;padding:8px 16px;background:transparent;border:none;color:rgba(244,240,230,.6);cursor:pointer;transition:all .12s;}
+  .dash-toggle button.active{background:var(--amber);color:var(--ink);font-weight:500;}
+  .dash-toggle button:not(.active):hover{color:#F4F0E6;background:rgba(255,255,255,.06);}
+
+  .dash-body{padding:24px 26px;}
+
+  /* overall health banner */
+  .dash-overall{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:3px;margin-bottom:22px;}
+  .dash-overall.st-green{background:rgba(15,110,86,.15);border:1px solid rgba(15,110,86,.35);}
+  .dash-overall.st-rust{background:rgba(162,58,29,.15);border:1px solid rgba(162,58,29,.4);}
+  .dash-overall .ov-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+  .dash-overall.st-green .ov-dot{background:var(--green-dot);box-shadow:0 0 0 4px rgba(15,110,86,.2);}
+  .dash-overall.st-rust .ov-dot{background:var(--rust-dot);box-shadow:0 0 0 4px rgba(162,58,29,.2);}
+  .dash-overall .ov-text .ov-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(244,240,230,.5);margin-bottom:3px;}
+  .dash-overall .ov-text .ov-verdict{font-family:var(--font-display);font-size:17px;color:#F4F0E6;font-weight:500;}
+
+  /* KPI tiles */
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+  .kpi{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:3px;padding:14px 16px;}
+  .kpi .k-label{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:rgba(244,240,230,.45);margin-bottom:8px;line-height:1.3;}
+  .kpi .k-val{font-family:var(--font-display);font-size:26px;font-weight:500;color:#F4F0E6;line-height:1;display:flex;align-items:baseline;gap:6px;}
+  .kpi .k-val .k-unit{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.4);font-weight:400;}
+  .kpi .k-status{font-family:var(--font-mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;margin-top:8px;display:flex;align-items:center;gap:5px;}
+  .kpi .k-status .kd{width:7px;height:7px;border-radius:50%;}
+  .k-status.green{color:#6ABFA4;} .k-status.green .kd{background:var(--green-dot);}
+  .k-status.amber{color:#D89A45;} .k-status.amber .kd{background:var(--amber-dot);}
+  .k-status.rust{color:#D07B5F;} .k-status.rust .kd{background:var(--rust-dot);}
+
+  /* panel within dash */
+  .dash-panel{margin-bottom:24px;}
+  .dash-panel:last-child{margin-bottom:0;}
+  .dp-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(244,240,230,.55);margin-bottom:14px;}
+
+  /* coverage bars */
+  .cov-row{display:grid;grid-template-columns:160px 1fr 70px;gap:12px;align-items:center;margin-bottom:11px;}
+  .cov-row:last-child{margin-bottom:0;}
+  .cov-name{font-size:12.5px;color:rgba(244,240,230,.8);display:flex;align-items:center;gap:7px;}
+  .cov-name .cd{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .cd.green{background:var(--green-dot);} .cd.amber{background:var(--amber-dot);} .cd.rust{background:var(--rust-dot);}
+  .cov-track{height:8px;background:rgba(255,255,255,.07);border-radius:4px;position:relative;overflow:hidden;}
+  .cov-fill{height:100%;border-radius:4px;transition:width .4s ease;}
+  .cov-fill.green{background:var(--green-dot);} .cov-fill.amber{background:var(--amber-dot);} .cov-fill.rust{background:var(--rust-dot);}
+  .cov-target{position:absolute;top:-3px;bottom:-3px;width:2px;background:rgba(244,240,230,.45);}
+  .cov-val{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.65);text-align:right;}
+
+  /* source mix */
+  .src-bar{height:30px;border-radius:3px;overflow:hidden;display:flex;margin-bottom:12px;}
+  .src-seg{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;color:rgba(255,255,255,.9);transition:width .4s ease;min-width:0;overflow:hidden;white-space:nowrap;}
+  .src-legend{display:flex;flex-wrap:wrap;gap:14px;}
+  .src-leg-item{display:flex;align-items:center;gap:6px;font-size:11.5px;color:rgba(244,240,230,.6);}
+  .src-leg-item .sl-dot{width:9px;height:9px;border-radius:2px;}
+  .src-note{font-family:var(--font-mono);font-size:11px;margin-top:12px;padding:8px 12px;border-radius:3px;}
+  .src-note.warn{background:rgba(162,58,29,.15);color:#D07B5F;border:1px solid rgba(162,58,29,.3);}
+  .src-note.ok{background:rgba(15,110,86,.15);color:#6ABFA4;border:1px solid rgba(15,110,86,.3);}
+
+  /* funnel */
+  .funnel-stage{margin-bottom:4px;}
+  .fs-row{display:grid;grid-template-columns:130px 1fr 60px;gap:12px;align-items:center;}
+  .fs-name{font-size:12px;color:rgba(244,240,230,.75);}
+  .fs-track{height:26px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;}
+  .fs-fill{height:100%;background:linear-gradient(90deg,rgba(15,110,86,.7),rgba(15,110,86,.4));border-radius:3px;transition:width .4s ease;}
+  .fs-fill.bottleneck{background:linear-gradient(90deg,rgba(162,58,29,.8),rgba(162,58,29,.45));}
+  .fs-count{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.7);text-align:right;}
+  .fs-conv{font-family:var(--font-mono);font-size:10px;color:rgba(244,240,230,.4);padding:2px 0 2px 142px;}
+  .fs-conv.drop{color:#D07B5F;}
+
+  /* READING PANEL */
+  .read-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px;}
+  .read-card{background:var(--paper-soft);border:1px solid var(--paper-deep);border-radius:3px;padding:18px 20px;}
+  .read-card .rc-metric{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+  .read-card h4{font-family:var(--font-body);font-weight:600;font-size:14px;color:var(--ink);margin-bottom:6px;}
+  .read-card p{font-size:13px;color:var(--ink-muted);line-height:1.45;margin:0;}
+
+  /* STEPS */
+  .step{background:var(--paper-soft);border:1px solid var(--paper-deep);border-radius:3px;padding:22px 24px;margin-bottom:14px;}
+  .step .step-num{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+  .step h3{font-size:17px;margin-bottom:8px;}
+  .step p{font-size:14px;color:var(--ink-soft);margin-bottom:10px;}
+  .step .step-do{border-left:2px solid var(--ink-muted);padding:6px 0 6px 14px;font-size:13px;color:var(--ink-muted);margin-top:10px;}
+  .step .step-do strong{color:var(--ink-soft);font-weight:600;}
+
+  /* QUOTE */
+  .quote{background:var(--ink);border-radius:3px;padding:28px 32px;margin:24px 0;}
+  .quote .q-label{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin-bottom:14px;}
+  .quote blockquote{font-family:var(--font-display);font-style:italic;font-size:19px;font-weight:400;color:#F4F0E6;line-height:1.45;margin-bottom:14px;}
+  .quote .cite{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.5);letter-spacing:.03em;}
+  .quote .cite a{color:rgba(244,240,230,.7);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.2);}
+  .quote .cite a:hover{color:#F4F0E6;}
+
+  /* TEMPLATE */
+  .template{background:var(--ink);border-radius:3px;overflow:hidden;margin-top:8px;}
+  .template-head{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
+  .template-head .tpl-title{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--amber);}
+  .copy-btn{font-family:var(--font-mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:6px 12px;border-radius:2px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:rgba(244,240,230,.7);cursor:pointer;transition:all .12s;}
+  .copy-btn:hover{border-color:var(--teal);color:#6ABFA4;}
+  .copy-btn.copied{background:rgba(15,110,86,.3);border-color:var(--teal);color:#6ABFA4;}
+  .template pre{font-family:var(--font-mono);font-size:12.5px;line-height:1.7;color:rgba(244,240,230,.82);padding:22px 24px;white-space:pre-wrap;overflow-x:auto;}
+
+  /* GUARDRAILS */
+  .guardrails{background:var(--paper-deep);border-radius:3px;padding:28px 32px;}
+  .guardrails h3{margin-bottom:18px;}
+  .guard-item{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;}
+  .guard-item:last-child{margin-bottom:0;}
+  .guard-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;}
+  .guard-icon.yes{background:var(--teal);color:#fff;}
+  .guard-icon.no{background:var(--rust);color:#fff;}
+  .guard-item .g-text{font-size:14px;color:var(--ink-soft);line-height:1.5;}
+  .guard-item .g-text strong{color:var(--ink);font-weight:600;}
+
+  /* GOOD LIST */
+  .good-list{list-style:none;}
+  .good-list li{padding:12px 0 12px 32px;border-bottom:1px solid var(--paper-deep);position:relative;font-size:14.5px;color:var(--ink-soft);line-height:1.5;}
+  .good-list li:last-child{border-bottom:none;}
+  .good-list li::before{content:'✓';position:absolute;left:0;top:12px;color:var(--teal);font-weight:700;}
+
+  /* XREF */
+  .xref{margin-top:8px;}
+  .xref-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .xref-card{background:var(--paper-soft);border:1px solid var(--paper-deep);border-left:3px solid var(--teal);border-radius:0 3px 3px 0;padding:18px 20px;text-decoration:none;color:inherit;transition:box-shadow .15s,transform .15s;display:block;}
+  .xref-card:hover{box-shadow:0 3px 14px rgba(27,33,44,.1);transform:translateY(-1px);}
+  .xref-card .x-eyebrow{font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+  .xref-card h4{font-family:var(--font-display);font-weight:500;font-size:16px;color:var(--ink);margin-bottom:4px;}
+  .xref-card p{font-size:12.5px;color:var(--ink-muted);margin:0;line-height:1.4;}
+
+  /* FOOTER */
+  .page-footer{background:var(--ink);padding:28px 32px;}
+  .footer-inner{max-width:880px;margin:0 auto;text-align:center;}
+  .footer-inner .f-line{font-family:var(--font-mono);font-size:11px;color:rgba(244,240,230,.35);letter-spacing:.04em;}
+  .footer-inner .f-sources{font-family:var(--font-mono);font-size:10px;color:rgba(244,240,230,.22);letter-spacing:.04em;margin-top:6px;}
+
+  /* RESPONSIVE */
+  @media(max-width:700px){
+    .masthead,.main,.page-footer{padding-left:20px;padding-right:20px;}
+    .signal-grid,.read-grid,.xref-grid{grid-template-columns:1fr;}
+    .kpi-row{grid-template-columns:1fr 1fr;}
+    .cov-row{grid-template-columns:110px 1fr 56px;gap:8px;}
+    .fs-row{grid-template-columns:96px 1fr 48px;gap:8px;}
+    .fs-conv{padding-left:104px;}
+    .dash-head{flex-direction:column;align-items:flex-start;}
+  }
+  /* DARK MODE */
+  @media(prefers-color-scheme:dark){
+    :root{--paper:#14181F;--paper-soft:#1F2530;--paper-deep:#252D3A;--ink-soft:#C8D0DC;--ink-muted:#7A8698;--rust-light:#2A1E1A;--teal-light:#16261F;}
+    .signal,.read-card,.step,.xref-card{border-color:rgba(255,255,255,.07);}
+  }
+  /* REDUCED MOTION */
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="crumb">
+      <a href="talent-supply-snapshot-guide.html">TI Playbook</a><span>/</span><a href="ti-playbook-index.html">Field Library</a><span>/</span>Pipeline Health Check
+    </div>
+    <h1>Is the pipeline actually healthy?</h1>
+    <p class="masthead-lede">
+      "We have 200 candidates in the pipeline" tells leadership nothing. This is the quarterly health check that tells them whether they can fill what's open - from sources that won't dry up, without candidates stalling out.
+    </p>
+    <div class="tag-row">
+      <span class="tag accent">I'm selling mode</span>
+      <span class="tag">Guide 3.2</span>
+      <span class="tag">Dashboard format</span>
+      <span class="tag">Quarterly review</span>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- WHEN TO USE -->
+  <section>
+    <div class="section-label">When to reach for this</div>
+    <h2>The quarterly pipeline review</h2>
+    <p class="lead">
+      Once a quarter, leadership wants to know if the talent pipeline is in good shape. The temptation is to answer with volume - candidate counts, reqs filled. But volume hides the things that actually break a pipeline.
+    </p>
+    <p>
+      This health check replaces "how many candidates" with five signals that predict whether you'll hit hiring plan next quarter. The output is a dashboard leadership can read in two minutes and a verdict they can act on.
+    </p>
+  </section>
+
+  <!-- THE CORE IDEA -->
+  <section>
+    <div class="section-label">The core idea</div>
+    <h2>Health is coverage, diversity, and flow - not volume</h2>
+    <p>
+      A pipeline of 200 candidates can be unhealthy and a pipeline of 60 can be in great shape. What separates them is whether the candidates are spread across your open roles, sourced from channels that won't collapse, and moving through stages instead of aging out.
+    </p>
+    <p>
+      The five signals below are what a strong health check measures. Each maps to a panel on the dashboard.
+    </p>
+
+    <div class="signal-grid">
+      <div class="signal">
+        <div class="s-num">Signal 1</div>
+        <h4>Coverage vs open headcount</h4>
+        <p>Qualified candidates per open req, measured against a role-specific target. Thin pools like chiplet need a different bar than verification.</p>
+        <div class="s-flag">Breaks when: a critical role sits below 2 per req</div>
+      </div>
+      <div class="signal">
+        <div class="s-num">Signal 2</div>
+        <h4>Depth by role</h4>
+        <p>Coverage broken out per role, not averaged. A healthy blended number can hide one role that's starving.</p>
+        <div class="s-flag">Breaks when: the average looks fine but one role is red</div>
+      </div>
+      <div class="signal">
+        <div class="s-num">Signal 3</div>
+        <h4>Source concentration</h4>
+        <p>How much of the pipeline comes from a single source. Over-reliance on one competitor or channel is fragility, not strength.</p>
+        <div class="s-flag">Breaks when: one source exceeds ~50% of inflow</div>
+      </div>
+      <div class="signal">
+        <div class="s-num">Signal 4</div>
+        <h4>Time-in-stage / aging</h4>
+        <p>How much of the pipeline has gone untouched too long. Aging candidates are effectively gone, even if they're still in the system.</p>
+        <div class="s-flag">Breaks when: 40%+ untouched in 90+ days</div>
+      </div>
+      <div class="signal">
+        <div class="s-num">Signal 5</div>
+        <h4>Stage conversion / flow</h4>
+        <p>Where candidates drop off. A single stage with a conversion cliff is where your pipeline is actually leaking.</p>
+        <div class="s-flag">Breaks when: one transition falls below ~30%</div>
+      </div>
+      <div class="signal" style="background:var(--ink);border-color:var(--ink);">
+        <div class="s-num" style="color:var(--amber);">Together</div>
+        <h4 style="color:#F4F0E6;">One red signal is a warning</h4>
+        <p style="color:rgba(244,240,230,.6);">Two or more red signals at once is a pipeline that will miss plan. The dashboard exists to catch the combination early.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD SIGNATURE -->
+  <section>
+    <div class="section-label">The dashboard</div>
+    <h2>What the health check looks like</h2>
+    <p>
+      Toggle between a healthy quarter and an at-risk quarter to see what each signal looks like in good and bad shape. The data is a worked example for a semiconductor engineering org.
+    </p>
+
+    <div class="dash">
+      <div class="dash-head">
+        <div class="dh-left">
+          <div class="dh-eyebrow">Q3 Pipeline Health · Eng Hiring · sample data</div>
+          <h3 id="dash-title">At-risk quarter</h3>
+        </div>
+        <div class="dash-toggle" role="group" aria-label="Toggle dashboard state">
+          <button data-state="risk" class="active">At-risk</button>
+          <button data-state="healthy">Healthy</button>
+        </div>
+      </div>
+      <div class="dash-body">
+
+        <!-- overall -->
+        <div class="dash-overall st-rust" id="dash-overall">
+          <div class="ov-dot"></div>
+          <div class="ov-text">
+            <div class="ov-label">Overall pipeline health</div>
+            <div class="ov-verdict" id="ov-verdict">At risk — 3 of 5 signals red. Will miss plan without intervention.</div>
+          </div>
+        </div>
+
+        <!-- KPI tiles -->
+        <div class="kpi-row" id="kpi-row"></div>
+
+        <!-- coverage by role -->
+        <div class="dash-panel">
+          <div class="dp-title">Coverage by role — candidates per open req (▏ = target)</div>
+          <div id="cov-panel"></div>
+        </div>
+
+        <!-- source mix -->
+        <div class="dash-panel">
+          <div class="dp-title">Source mix — where the pipeline comes from</div>
+          <div class="src-bar" id="src-bar"></div>
+          <div class="src-legend" id="src-legend"></div>
+          <div id="src-note"></div>
+        </div>
+
+        <!-- funnel -->
+        <div class="dash-panel">
+          <div class="dp-title">Stage flow — where candidates drop off</div>
+          <div id="funnel-panel"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- READING THE DASHBOARD -->
+  <section>
+    <div class="section-label">Reading the dashboard</div>
+    <h2>What each panel is telling you</h2>
+    <div class="read-grid">
+      <div class="read-card">
+        <div class="rc-metric">Coverage tiles</div>
+        <h4>Read the reds first</h4>
+        <p>A green blended coverage number means nothing if chiplet sits at 1.2 per req. Always scan the per-role bars before quoting the average.</p>
+      </div>
+      <div class="read-card">
+        <div class="rc-metric">Source mix</div>
+        <h4>Concentration is hidden risk</h4>
+        <p>If 60% of the pipeline comes from one competitor and they freeze hiring or get acquired, your inflow collapses overnight. Diversify before it's forced.</p>
+      </div>
+      <div class="read-card">
+        <div class="rc-metric">Aging</div>
+        <h4>Stale equals gone</h4>
+        <p>A candidate untouched for 90 days has almost certainly moved on or cooled off. Counting them as pipeline inflates the picture and delays the real problem.</p>
+      </div>
+      <div class="read-card">
+        <div class="rc-metric">Stage flow</div>
+        <h4>Find the cliff, fix the cliff</h4>
+        <p>One transition with a conversion drop is where the leak is. An onsite-to-offer cliff usually points at calibration or comp, not sourcing.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILDING IT -->
+  <section>
+    <div class="section-label">Building the health check</div>
+    <h2>Six steps to a quarterly dashboard</h2>
+
+    <div class="step">
+      <div class="step-num">Step 1</div>
+      <h3>Set role-specific coverage targets</h3>
+      <p>Don't use one bar for every role. Thin pools (chiplet, RF/analog) might target 3 per req; deeper pools (verification) might target 4-5. Set the target from the supply snapshot, not a gut number.</p>
+      <div class="step-do"><strong>Do this:</strong> Anchor each target to the role's pool size from Guide 01. Document why each target is what it is.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 2</div>
+      <h3>Pull coverage per role, never blended only</h3>
+      <p>Compute candidates-per-req for each role separately. Keep the blended number for the headline, but the per-role breakdown is what surfaces the starving role.</p>
+      <div class="step-do"><strong>Do this:</strong> Color each role green / amber / rust against its own target, not the average.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3</div>
+      <h3>Map source concentration</h3>
+      <p>Tag every pipeline candidate by source and compute the top source's share. Flag anything over ~50% from one channel or competitor as a concentration risk, even if volume looks healthy.</p>
+      <div class="step-do"><strong>Do this:</strong> Name the dominant source explicitly. "61% from one competitor" lands harder than a generic bar.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 4</div>
+      <h3>Measure aging, then discount it</h3>
+      <p>Calculate the share of pipeline untouched in 90+ days. Then re-run coverage excluding aged candidates - the "real" coverage is almost always lower than the headline.</p>
+      <div class="step-do"><strong>Do this:</strong> Show both numbers. The gap between raw and active coverage is the credibility of the review.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 5</div>
+      <h3>Trace stage-to-stage conversion</h3>
+      <p>Compute conversion at every transition. Flag the single biggest drop. That's your bottleneck - and it usually has a specific, fixable cause.</p>
+      <div class="step-do"><strong>Do this:</strong> Pair the bottleneck with a hypothesis. Onsite-to-offer cliff → likely comp or calibration. Screen-to-HM cliff → likely a misaligned bar.</div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 6</div>
+      <h3>Write the verdict and the one move</h3>
+      <p>End with a single health verdict and the one intervention that matters most this quarter. Leadership doesn't want five action items - they want to know the one thing to fix.</p>
+      <div class="step-do"><strong>Do this:</strong> "Pipeline at risk; the one move is diversifying chiplet sourcing off our single competitor source." One verdict, one move.</div>
+    </div>
+  </section>
+
+  <div class="quote">
+    <div class="q-label">On continuous measurement</div>
+    <blockquote>The decision cadence has shifted from annual to continuous. A pipeline reviewed once a year is a pipeline you find out is broken a year too late.</blockquote>
+    <div class="cite">Paraphrased from <a href="https://draup.com" target="_blank" rel="noopener">Draup Labor Market Intelligence</a></div>
+  </div>
+
+  <!-- TEMPLATE -->
+  <section>
+    <div class="section-label">Starter template</div>
+    <h2>The quarterly review one-pager</h2>
+    <p>Copy this scaffold for the written summary that accompanies the dashboard.</p>
+
+    <div class="template">
+      <div class="template-head">
+        <span class="tpl-title">Quarterly pipeline review</span>
+        <button class="copy-btn" data-target="tpl-pipeline">Copy</button>
+      </div>
+      <pre id="tpl-pipeline">PIPELINE HEALTH CHECK — [QUARTER] — ENG HIRING
+Prepared by: [name] · [date]
+
+VERDICT
+[Healthy / At watch / At risk] — [X] of 5 signals red.
+The one move this quarter: [single most important intervention].
+
+THE FIVE SIGNALS
+1. Coverage (blended):   [X] per req   — [G/A/R]
+2. Depth by role:        [worst role] at [X]/req vs [target] — [G/A/R]
+3. Source concentration: [X]% from [dominant source] — [G/A/R]
+4. Aging:                [X]% untouched 90+ days — [G/A/R]
+   Active coverage (ex-aged): [X] per req
+5. Stage flow:           bottleneck at [stage]→[stage] ([X]%) — [G/A/R]
+
+WHAT'S WORKING
+- [healthy signal + why]
+
+WHAT'S AT RISK
+- [red signal + the cause + the fix]
+
+THE ONE MOVE
+[The single intervention, who owns it, by when.]
+
+NEXT REVIEW: [date]</pre>
+    </div>
+  </section>
+
+  <!-- WHAT GOOD LOOKS LIKE -->
+  <section>
+    <div class="section-label">What good looks like</div>
+    <h2>The marks of a health check leadership acts on</h2>
+    <ul class="good-list">
+      <li>The verdict is one of three states, not a paragraph - healthy, at watch, or at risk.</li>
+      <li>Coverage is shown per role, with the worst role visible, never hidden in a blended average.</li>
+      <li>The dominant source is named, with its exact share, and flagged if it's a concentration risk.</li>
+      <li>Aging is discounted - active coverage is shown alongside the raw number.</li>
+      <li>The bottleneck stage is identified with a specific, testable cause.</li>
+      <li>It ends with one move, an owner, and a date - not a list of five.</li>
+    </ul>
+  </section>
+
+  <!-- GUARDRAILS -->
+  <section>
+    <div class="section-label">Guardrails</div>
+    <div class="guardrails">
+      <h3>Where AI helps, and where it can't</h3>
+      <div class="guard-item">
+        <div class="guard-icon yes">✓</div>
+        <div class="g-text"><strong>Let AI compute the metrics and flag the reds.</strong> Coverage ratios, source concentration, aging percentages, stage conversion - this is exactly the structured math AI is reliable at.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon yes">✓</div>
+        <div class="g-text"><strong>Let AI draft the bottleneck hypothesis.</strong> Ask it what typically causes a drop at a given stage - it'll surface the usual suspects to investigate.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon no">✕</div>
+        <div class="g-text"><strong>Don't let AI set the coverage targets.</strong> The right target per role comes from the actual pool size and your hiring plan, not a model's generic benchmark. A wrong target makes every status light wrong.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon no">✕</div>
+        <div class="g-text"><strong>Don't trust AI to know if a candidate is really "active."</strong> Aging logic depends on your ATS hygiene. If last-touch dates are unreliable, the aging signal is garbage in, garbage out - a human has to vouch for the data quality.</div>
+      </div>
+      <div class="guard-item">
+        <div class="guard-icon no">✕</div>
+        <div class="g-text"><strong>Don't let AI pick the one move.</strong> The intervention is a judgment call about what's tractable this quarter given your team and constraints. AI can list options; the prioritization is yours.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- XREF -->
+  <section class="xref">
+    <div class="section-label">Related guides</div>
+    <div class="xref-grid">
+      <a href="talent-supply-snapshot-guide.html" class="xref-card">
+        <div class="x-eyebrow">Guide 01 · Sets the targets</div>
+        <h4>Pull a talent supply snapshot</h4>
+        <p>Pool sizing here sets the role-specific coverage targets the dashboard scores against.</p>
+      </a>
+      <a href="library-guide-06-always-on-cadence.html" class="xref-card">
+        <div class="x-eyebrow">Guide 06 · Pairs with this</div>
+        <h4>Set up an always-on cadence</h4>
+        <p>The quarterly health check is one beat in a larger always-on intelligence rhythm.</p>
+      </a>
+      <a href="library-guide-03-competitor-analysis.html" class="xref-card">
+        <div class="x-eyebrow">Guide 03 · Diversify sourcing</div>
+        <h4>Run a competitor talent analysis</h4>
+        <p>When source concentration flags red, this is how you find new channels to draw from.</p>
+      </a>
+      <a href="ti-playbook-index.html" class="xref-card">
+        <div class="x-eyebrow">Field Library</div>
+        <h4>Back to the toolkit</h4>
+        <p>Browse all guides and pick the right one for the next task.</p>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="footer-inner">
+    <div class="f-line">TI Playbook · Guide 3.2 · Pipeline Health Check · v1.0 · June 2026</div>
+    <div class="f-sources">Continuous-cadence framing: Draup Labor Market Intelligence · Sample data illustrative only</div>
+  </div>
+</footer>
+
+<script>
+  // COPY
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const t = document.getElementById(btn.dataset.target);
+      if (!t) return;
+      navigator.clipboard.writeText(t.innerText).then(() => {
+        const o = btn.textContent;
+        btn.textContent = 'Copied ✓'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = o; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+
+  // === DASHBOARD DATA ===
+  const DATA = {
+    risk: {
+      title: 'At-risk quarter',
+      overallClass: 'st-rust',
+      verdict: 'At risk — 3 of 5 signals red. Will miss plan without intervention.',
+      kpis: [
+        { label: 'Coverage / req', val: '2.1', unit: 'avg', status: 'rust', word: 'Below bar' },
+        { label: 'Top source share', val: '61', unit: '%', status: 'rust', word: 'Concentrated' },
+        { label: 'Aged 90+ days', val: '44', unit: '%', status: 'rust', word: 'Stale' },
+        { label: 'Worst transition', val: '22', unit: '%', status: 'amber', word: 'Onsite→Offer' }
+      ],
+      coverage: [
+        { role: 'Chiplet Architect', val: 1.2, target: 3, status: 'rust' },
+        { role: 'RF / Analog Design', val: 2.0, target: 3, status: 'rust' },
+        { role: 'ML Systems Eng', val: 3.8, target: 4, status: 'amber' },
+        { role: 'Physical Design', val: 5.1, target: 4, status: 'green' },
+        { role: 'Verification', val: 7.2, target: 4, status: 'green' }
+      ],
+      covMax: 8,
+      sources: [
+        { name: 'Competitor A', pct: 61, color: '#A23A1D' },
+        { name: 'Inbound', pct: 16, color: '#BA7517' },
+        { name: 'Referral', pct: 13, color: '#0F6E56' },
+        { name: 'Other', pct: 10, color: '#4A5260' }
+      ],
+      srcNote: { cls: 'warn', text: '⚠ 61% from one competitor — if they freeze hiring, inflow collapses.' },
+      funnel: [
+        { stage: 'Sourced', count: 420, pct: 100, conv: null, drop: false, bottleneck: false },
+        { stage: 'Screened', count: 168, pct: 40, conv: '40%', drop: false, bottleneck: false },
+        { stage: 'HM Review', count: 92, pct: 22, conv: '55%', drop: false, bottleneck: false },
+        { stage: 'Onsite', count: 41, pct: 10, conv: '45%', drop: false, bottleneck: false },
+        { stage: 'Offer', count: 9, pct: 2.1, conv: '22%', drop: true, bottleneck: true },
+        { stage: 'Accept', count: 7, pct: 1.7, conv: '78%', drop: false, bottleneck: false }
+      ]
+    },
+    healthy: {
+      title: 'Healthy quarter',
+      overallClass: 'st-green',
+      verdict: 'Healthy — 5 of 5 signals green. On track to hit plan.',
+      kpis: [
+        { label: 'Coverage / req', val: '4.8', unit: 'avg', status: 'green', word: 'On target' },
+        { label: 'Top source share', val: '32', unit: '%', status: 'green', word: 'Diversified' },
+        { label: 'Aged 90+ days', val: '18', unit: '%', status: 'green', word: 'Fresh' },
+        { label: 'Worst transition', val: '48', unit: '%', status: 'green', word: 'Onsite→Offer' }
+      ],
+      coverage: [
+        { role: 'Chiplet Architect', val: 3.4, target: 3, status: 'green' },
+        { role: 'RF / Analog Design', val: 3.1, target: 3, status: 'green' },
+        { role: 'ML Systems Eng', val: 4.6, target: 4, status: 'green' },
+        { role: 'Physical Design', val: 5.0, target: 4, status: 'green' },
+        { role: 'Verification', val: 6.8, target: 4, status: 'green' }
+      ],
+      covMax: 8,
+      sources: [
+        { name: 'Inbound', pct: 32, color: '#0F6E56' },
+        { name: 'Referral', pct: 28, color: '#BA7517' },
+        { name: 'Sourced', pct: 24, color: '#2A3140' },
+        { name: 'Competitor A', pct: 16, color: '#4A5260' }
+      ],
+      srcNote: { cls: 'ok', text: '✓ No single source over 35% — inflow is resilient to any one channel drying up.' },
+      funnel: [
+        { stage: 'Sourced', count: 510, pct: 100, conv: null, drop: false, bottleneck: false },
+        { stage: 'Screened', count: 230, pct: 45, conv: '45%', drop: false, bottleneck: false },
+        { stage: 'HM Review', count: 145, pct: 28, conv: '63%', drop: false, bottleneck: false },
+        { stage: 'Onsite', count: 78, pct: 15, conv: '54%', drop: false, bottleneck: false },
+        { stage: 'Offer', count: 37, pct: 7.3, conv: '48%', drop: false, bottleneck: false },
+        { stage: 'Accept', count: 31, pct: 6.1, conv: '84%', drop: false, bottleneck: false }
+      ]
+    }
+  };
+
+  function render(state) {
+    const d = DATA[state];
+    document.getElementById('dash-title').textContent = d.title;
+
+    const ov = document.getElementById('dash-overall');
+    ov.className = 'dash-overall ' + d.overallClass;
+    document.getElementById('ov-verdict').textContent = d.verdict;
+
+    // KPIs
+    document.getElementById('kpi-row').innerHTML = d.kpis.map(k => `
+      <div class="kpi">
+        <div class="k-label">${k.label}</div>
+        <div class="k-val">${k.val}<span class="k-unit">${k.unit}</span></div>
+        <div class="k-status ${k.status}"><span class="kd"></span>${k.word}</div>
+      </div>`).join('');
+
+    // coverage
+    document.getElementById('cov-panel').innerHTML = d.coverage.map(c => {
+      const w = Math.min(100, (c.val / d.covMax) * 100);
+      const tpos = Math.min(100, (c.target / d.covMax) * 100);
+      return `
+      <div class="cov-row">
+        <div class="cov-name"><span class="cd ${c.status}"></span>${c.role}</div>
+        <div class="cov-track">
+          <div class="cov-fill ${c.status}" style="width:${w}%"></div>
+          <div class="cov-target" style="left:${tpos}%"></div>
+        </div>
+        <div class="cov-val">${c.val.toFixed(1)}/req</div>
+      </div>`;
+    }).join('');
+
+    // source mix
+    document.getElementById('src-bar').innerHTML = d.sources.map(s =>
+      `<div class="src-seg" style="width:${s.pct}%;background:${s.color}">${s.pct >= 12 ? s.pct + '%' : ''}</div>`
+    ).join('');
+    document.getElementById('src-legend').innerHTML = d.sources.map(s =>
+      `<div class="src-leg-item"><span class="sl-dot" style="background:${s.color}"></span>${s.name} · ${s.pct}%</div>`
+    ).join('');
+    document.getElementById('src-note').innerHTML =
+      `<div class="src-note ${d.srcNote.cls}">${d.srcNote.text}</div>`;
+
+    // funnel
+    document.getElementById('funnel-panel').innerHTML = d.funnel.map(f => `
+      <div class="funnel-stage">
+        <div class="fs-row">
+          <div class="fs-name">${f.stage}</div>
+          <div class="fs-track"><div class="fs-fill ${f.bottleneck ? 'bottleneck' : ''}" style="width:${f.pct}%"></div></div>
+          <div class="fs-count">${f.count}</div>
+        </div>
+        ${f.conv ? `<div class="fs-conv ${f.drop ? 'drop' : ''}">${f.drop ? '↓ ' : ''}${f.conv} convert from prior stage${f.bottleneck ? ' · bottleneck' : ''}</div>` : ''}
+      </div>`).join('');
+  }
+
+  document.querySelectorAll('.dash-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.dash-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render(btn.dataset.state);
+    });
+  });
+
+  render('risk');
+</script>
+
+</body>
+</html>
